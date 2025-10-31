@@ -1,0 +1,266 @@
+﻿/* ========== RESET & FONT ========== */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    background-color: #fff;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5 {
+    font-weight: 700;
+}
+
+.text-success {
+    color: #2E7D32 !important;
+}
+
+/* ========== BANNER ĐẦU TRANG ========== */
+section.text-center img {
+    max-height: 450px;
+    object-fit: cover;
+}
+
+/* ========== BRANDS SECTION ========== */
+.brand-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .brand-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+.brand-img {
+    height: 320px; /* chỉnh theo ý muốn: 280–350px */
+    object-fit: cover;
+    display: block;
+}
+
+.brand-logo {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+
+.brand-info {
+    background-color: #fff;
+}
+
+.brand-text {
+    font-size: 0.95rem;
+}
+
+
+
+/* ========== SWAPFIT BANNER (phối đồ cực chất) ========== */
+.swapfit-banner {
+    background-color: #E3F2E1;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.banner-text h2 {
+    font-size: 2rem;
+    line-height: 1.4;
+}
+
+.banner-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 20px;
+}
+
+    .banner-grid img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+    }
+
+        .banner-grid img:hover {
+            transform: scale(1.05);
+        }
+
+@media (max-width: 768px) {
+    .banner-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+        .banner-grid img {
+            height: 120px;
+        }
+}
+
+/* ========== PRODUCT SECTION ========== */
+.product-section {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+    .product-section h2 {
+        font-size: 2rem;
+        margin-bottom: 30px;
+        color: #2E7D32;
+        font-weight: 700;
+    }
+
+/* Danh mục sản phẩm */
+.category-section {
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.see-more {
+    position: absolute;
+    top: -40px;
+    right: 15px;
+    font-size: 0.9rem;
+    color: #2E7D32;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    justify-items: center;
+    padding: 10px 0;
+}
+
+.category-item {
+    background-color: #F0F9F0;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #2E7D32;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+    .category-item:hover {
+        background-color: #C8E6C9;
+        transform: translateY(-4px);
+    }
+
+/* ========== GREEN CAMPAIGN ========== */
+.green-campaign {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.green-img {
+    position: relative;
+    max-width: 500px;
+}
+
+    .green-img img {
+        width: 100%;
+        border-radius: 20px;
+        object-fit: cover;
+        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+
+    .green-img .overlay-text {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        background-color: rgba(46,125,50,0.85);
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+.green-text {
+    max-width: 400px;
+}
+
+    .green-text h2 {
+        color: #2E7D32;
+        font-weight: 700;
+    }
+
+    .green-text p {
+        color: #666;
+        font-size: 1rem;
+    }
+
+/* ========== SWAPFIT SECTION CUỐI ========== */
+.swapfit-section {
+    background-color: #E3F2E1;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+    .swapfit-section h2 {
+        font-weight: 700;
+        color: #2E7D32;
+        margin-bottom: 40px;
+    }
+
+.swapfit-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.swapfit-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 25px 20px;
+    width: 250px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+    .swapfit-card:hover {
+        transform: translateY(-5px);
+    }
+
+.icon-box {
+    width: 70px;
+    height: 70px;
+    background-color: #E8F5E9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+    .icon-box img {
+        width: 40px;
+        height: 40px;
+    }
+
+.swapfit-card p {
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+}
+
+/* ========== RESPONSIVE CHUNG ========== */
+@media (max-width: 576px) {
+    .swapfit-card {
+        width: 90%;
+    }
+
+    .banner-text h2 {
+        font-size: 1.5rem;
+    }
+
+    .product-section h2 {
+        font-size: 1.5rem;
+    }
+}
