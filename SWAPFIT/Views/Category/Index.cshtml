@@ -1,0 +1,46 @@
+﻿@model IEnumerable<SWAPFIT.Models.DanhMuc>
+
+@{
+    ViewData["Title"] = "Danh sách danh mục";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<div class="container mt-3">
+    <h2 class="text-success mb-4">📂 Quản lý danh mục</h2>
+
+    <a href="/Category/Create" class="btn btn-success mb-3">+ Thêm danh mục</a>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-success">
+                <tr>
+                    <th class="text-center" style="width: 10%">Mã</th>
+                    <th style="width: 25%">Tên danh mục</th>
+                    <th style="width: 40%">Mô tả</th>
+                    <th class="text-center" style="width: 25%">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center">@item.MaDanhMuc</td>
+                        <td>@item.TenDanhMuc</td>
+                        <td>@item.MoTa</td>
+                        <td class="text-center">
+                            <a href="/Category/Edit/@item.MaDanhMuc" class="btn btn-primary btn-sm me-1">Sửa</a>
+                            <a href="/Category/Delete/@item.MaDanhMuc" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Bạn có chắc muốn xóa danh mục này?')">Xóa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning">Hiện chưa có danh mục nào trong hệ thống.</div>
+    }
+</div>

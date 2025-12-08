@@ -1,0 +1,49 @@
+﻿@model IEnumerable<SWAPFIT.Models.DoCu>
+@{
+    ViewData["Title"] = "Bài viết của tôi";
+}
+
+<h3 class="text-center mt-4 mb-4 text-success">📦 Bài viết của tôi</h3>
+
+<div class="container">
+    @if (!Model.Any())
+    {
+        <p class="text-center text-muted">Bạn chưa đăng bài viết nào.</p>
+    }
+    else
+    {
+        <table class="table table-bordered align-middle">
+            <thead class="table-success">
+                <tr>
+                    <th>Ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Loại</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var firstImage = item.AnhSanPham?.Split(',').FirstOrDefault();
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(firstImage))
+                            {
+                                <img src="@firstImage" width="80" height="80" style="object-fit:cover;border-radius:8px;" />
+                            }
+                        </td>
+                        <td>@item.TenSanPham</td>
+                        <td>@item.LoaiBaiDang</td>
+                        <td>
+                            <span class="badge bg-@(item.TrangThai == "Đang chờ xác nhận" ? "warning" : "success")">
+                                @item.TrangThai
+                            </span>
+                        </td>
+                        <td>@item.NgayTao.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

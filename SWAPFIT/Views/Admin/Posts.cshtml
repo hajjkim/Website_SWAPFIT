@@ -1,0 +1,81 @@
+﻿@model IEnumerable<SWAPFIT.Models.BaiViet>
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Quản lý bài viết";
+}
+
+<div class="container mt-5">
+    <h2 class="fw-bold text-success mb-4 text-center">Quản lý bài viết</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success text-center">@TempData["Success"]</div>
+    }
+
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-success text-center">
+            <tr>
+                <th>ID</th>
+                <th>Tiêu đề</th>
+                <th>Người đăng</th>
+                <th>Loại bài đăng</th>
+                <th>Ngày tạo</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in Model)
+            {
+                <tr>
+                    <td class="text-center">@post.MaBaiViet</td>
+                    <td>@post.TieuDe</td>
+
+                    <!-- HIỂN THỊ TÊN NGƯỜI ĐĂNG ĐÚNG & AN TOÀN -->
+                    <td class="text-center">
+                        @{
+                            var tenNguoiDang = post.NguoiDung?.HoTen;
+
+                            if (string.IsNullOrWhiteSpace(tenNguoiDang))
+                            {
+                                tenNguoiDang = post.NguoiDung?.TenDangNhap;
+                            }
+
+                            if (string.IsNullOrWhiteSpace(tenNguoiDang))
+                            {
+                                tenNguoiDang = "Không tìm thấy";
+                            }
+                        }
+                        @tenNguoiDang
+                    </td>
+
+
+
+                    <td class="text-center">@post.LoaiBaiDang</td>
+                    <td class="text-center">@post.NgayTao?.ToString("dd/MM/yyyy")</td>
+
+                    <td class="text-center">
+                        <span class="badge @(post.TrangThai == "Đã duyệt" ? "bg-success" :
+                                                                          post.TrangThai == "Từ chối" ? "bg-danger" :
+                                                                          "bg-warning text-dark")">
+                        @post.TrangThai
+                    </span>
+                </td>
+
+                    <td class="text-center">
+                        <a asp-action="PostDetails" asp-route-id="@post.MaBaiViet" class="btn btn-info btn-sm">Xem</a>
+
+                        <form asp-action="DeletePostAdmin" asp-route-id="@post.MaBaiViet" method="post" class="d-inline">
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Bạn có chắc muốn xóa bài viết này?')">
+                                Xóa
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                        }
+ <!-- ĐÓNG foreach ĐÚNG CHỖ -->
+        </tbody>
+    </table>
+</div>

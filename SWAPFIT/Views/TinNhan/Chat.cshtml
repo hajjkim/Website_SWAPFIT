@@ -1,0 +1,184 @@
+﻿<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    /* Giảm kích thước ảnh trong chat */
+    .chat-container .chat-header img {
+        width: 40px; /* Giảm kích thước ảnh header */
+        height: 40px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .chat-container .msg-other img.avatar {
+        width: 35px; /* Giảm kích thước ảnh người gửi tin nhắn */
+        height: 35px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    /* Cải thiện không gian trong chat */
+    .chat-container {
+        max-width: 750px;
+        margin: auto;
+        background: #ffffff;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Giảm chiều cao của chat-box và cải thiện khoảng cách tin nhắn */
+    #chat-box {
+        height: 400px; /* Giảm chiều cao của hộp chat */
+        overflow-y: auto;
+        padding: 15px;
+        background: #f2f5f7;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* Cải thiện kích thước của các bubble chat */
+    .bubble {
+        padding: 10px 14px;
+        border-radius: 18px;
+        font-size: 14px;
+        line-height: 1.4;
+        display: inline-block;
+        max-width: 80%;
+        word-wrap: break-word;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease-in-out;
+    }
+
+    /* Thêm khoảng cách cho phần nhập tin nhắn */
+    .chat-input-area {
+        background: white;
+        border-top: 1px solid #e5e7eb;
+        padding: 10px 15px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .chat-input {
+        flex: 1;
+        border: 1px solid #ccc;
+        border-radius: 25px;
+        padding: 10px 15px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .btn-send {
+        background: #28a745;
+        border: none;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+        .btn-send:hover {
+            background: #23953c;
+        }
+
+
+</style>
+
+<div class="chat-container">
+    <!-- HEADER -->
+    <div class="chat-header">
+        <img src="@(ViewBag.OtherUser.AnhDaiDien ?? "/images/default-avatar.png")">
+        <div>
+            <h5 class="mb-0">@ViewBag.OtherUser.HoTen</h5>
+            <small>Đang trò chuyện</small>
+        </div>
+    </div>
+
+    <!-- CHAT BOX -->
+    <div id="chat-box">
+        @if (Model != null)
+        {
+            foreach (var m in Model)
+            {
+                bool isMe = m.MaNguoiGui == @Context.Session.GetInt32("MaNguoiDung");
+
+                <div class="@(isMe ? "msg-me" : "msg-other")">
+                    @if (!isMe)
+                    {
+                        <img src="@(ViewBag.OtherUser.AnhDaiDien ?? "/images/default-avatar.png")" class="avatar" />
+                    }
+
+                    <div>
+                        <div class="bubble">@m.NoiDung</div>
+                        <div class="time">@m.ThoiGianGui?.ToString("HH:mm dd/MM")</div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- INPUT -->
+    <div class="chat-input-area">
+        <input id="msg" class="chat-input" placeholder="Nhập tin nhắn..." />
+        <button id="btnSend" class="btn-send">
+            <i class="bi bi-send-fill"></i>
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+    <script>
+        // Get 'me' and 'other' from Razor context
+        const me = @Context.Session.GetInt32("MaNguoiDung");
+        const other = @ViewBag.OtherUser.MaNguoiDung;
+
+        const connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+
+        connection.start().then(() => {
+            connection.invoke("JoinConversation", me, other);
+        });
+
+        connection.on("ReceiveMessage", function (senderId, message, time) {
+            const isMe = senderId == me;
+
+            $("#chat-box").append(`
+                <div class="${isMe ? "msg-me" : "msg-other"}">
+
+                    ${!isMe ? `<img src='@ViewBag.OtherUser.AnhDaiDien' class='avatar'/>` : ""}
+
+                    <div>
+                        <div class="bubble">${message}</div>
+                        <div class="time">${time}</div>
+                    </div>
+
+                </div>
+            `);
+
+            const box = document.getElementById("chat-box");
+            box.scrollTop = box.scrollHeight;
+        });
+
+        $("#btnSend").click(sendMsg);
+        $("#msg").keypress(e => { if (e.which === 13) sendMsg(); });
+
+        function sendMsg() {
+            let message = $("#msg").val().trim();
+            if (message === "") return;
+
+            connection.invoke("SendMessage", me, other, message);
+            $("#msg").val(""); // Clear input field after sending
+        }
+
+        // Auto scroll when entering chat
+        document.getElementById("chat-box").scrollTop = document.getElementById("chat-box").scrollHeight;
+    </script>
+}

@@ -1,0 +1,193 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using SWAPFIT.Models;
+using SWAPFIT.Data;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using System;
+using System.Linq;
+
+// ⭐ thêm namespace để dùng Claims + Cookie Authentication
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
+namespace SWAPFIT.Controllers
+{
+    public class AccountController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+
+        public AccountController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // ============================
+        // 🟢 GET: LOGIN
+        // ============================
+        [HttpGet]
+        public IActionResult Login()
+        {
+            var role = HttpContext.Session.GetString("Role");
+
+            if (role != null)
+            {
+                if (role.ToLower() == "admin")
+                    return RedirectToAction("Dashboard", "Admin");
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View();
+        }
+
+        // ============================
+        // 🟢 POST: LOGIN
+        // ============================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(string tenDangNhap, string matKhau)
+        {
+            if (string.IsNullOrWhiteSpace(tenDangNhap) || string.IsNullOrWhiteSpace(matKhau))
+            {
+                ViewBag.Error = "⚠️ Vui lòng nhập đầy đủ thông tin đăng nhập.";
+                return View();
+            }
+
+            var user = _context.NguoiDungs
+                .FirstOrDefault(u =>
+                    u.TenDangNhap.ToLower() == tenDangNhap.Trim().ToLower()
+                    && u.MatKhau == matKhau.Trim()
+                );
+
+            if (user == null)
+            {
+                ViewBag.Error = "❌ Sai tên đăng nhập hoặc mật khẩu!";
+                return View();
+            }
+
+            // Chặn user bị khóa (trừ admin)
+            if (user.VaiTro?.ToLower() != "admin")
+            {
+                if (user.TrangThai != "Hoạt động")
+                {
+                    ViewBag.Error = "🚫 Tài khoản của bạn đang bị khóa hoặc chưa kích hoạt.";
+                    return View();
+                }
+            }
+
+            // ================================
+            // ⭐ Thêm CLAIMS cho SignalR nhận diện USER
+            // ================================
+            var claims = new List<Claim>
+            {
+                new Claim("MaNguoiDung", user.MaNguoiDung.ToString()),
+                new Claim(ClaimTypes.Name, user.TenDangNhap),
+                new Claim(ClaimTypes.Role, user.VaiTro ?? "User")
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal,
+                new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTime.UtcNow.AddHours(12)
+                }
+            );
+            // ================================
+
+            // 🟢 Lưu SESSION như cũ
+            HttpContext.Session.SetInt32("MaNguoiDung", user.MaNguoiDung);
+            HttpContext.Session.SetString("TenDangNhap", user.TenDangNhap);
+            HttpContext.Session.SetString("Role", user.VaiTro.ToLower());
+
+            if (user.VaiTro.ToLower() == "admin")
+                return RedirectToAction("Dashboard", "Admin");
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        // ============================
+        // 🟢 GET: REGISTER
+        // ============================
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        // ============================
+        // 🟢 POST: REGISTER
+        // ============================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Register(NguoiDung model, IFormFile? anhDaiDien)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = "Vui lòng nhập đầy đủ thông tin hợp lệ!";
+                return View(model);
+            }
+
+            // Kiểm tra trùng tên đăng nhập
+            if (_context.NguoiDungs.Any(u => u.TenDangNhap == model.TenDangNhap))
+            {
+                ViewBag.Error = "Tên đăng nhập đã tồn tại!";
+                return View(model);
+            }
+
+            // Kiểm tra trùng email
+            if (!string.IsNullOrEmpty(model.Email) &&
+                _context.NguoiDungs.Any(u => u.Email == model.Email))
+            {
+                ViewBag.Error = "Email đã được sử dụng!";
+                return View(model);
+            }
+
+            // Upload avatar
+            if (anhDaiDien != null && anhDaiDien.Length > 0)
+            {
+                string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(),
+                    "wwwroot", "uploads", "avatars");
+
+                if (!Directory.Exists(uploadFolder))
+                    Directory.CreateDirectory(uploadFolder);
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(anhDaiDien.FileName);
+                string filePath = Path.Combine(uploadFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    anhDaiDien.CopyTo(stream);
+                }
+
+                model.AnhDaiDien = "/uploads/avatars/" + fileName;
+            }
+
+            // Giá trị mặc định
+            model.NgayTao = DateTime.Now;
+            model.VaiTro = "User";
+            model.TrangThai = "Hoạt động";
+
+            _context.NguoiDungs.Add(model);
+            _context.SaveChanges();
+
+            TempData["Success"] = "Đăng ký thành công! Vui lòng đăng nhập.";
+            return RedirectToAction("Login");
+        }
+
+        // ============================
+        // 🟢 LOGOUT
+        // ============================
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login");
+        }
+    }
+}

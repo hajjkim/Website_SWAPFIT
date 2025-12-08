@@ -1,0 +1,24 @@
+﻿@model SWAPFIT.Models.DanhMuc
+@{
+    ViewData["Title"] = "Danh sách danh mục";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<h2>Sửa danh mục</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="MaDanhMuc" />
+
+    <div class="form-group">
+        <label>Tên danh mục</label>
+        <input asp-for="TenDanhMuc" class="form-control" />
+        <span asp-validation-for="TenDanhMuc" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <label>Mô tả</label>
+        <textarea asp-for="MoTa" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Cập nhật</button>
+    <a href="/Category" class="btn btn-secondary mt-3">Hủy</a>
+</form>

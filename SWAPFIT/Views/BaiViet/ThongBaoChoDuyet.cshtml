@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Bài viết chờ duyệt";
+}
+
+<div class="container text-center my-5">
+    <div class="alert alert-warning shadow p-4 rounded-3">
+        <h4 class="text-success mb-3">🎉 Bài viết đã được gửi thành công!</h4>
+        <p class="fs-5">
+            Bài viết của bạn đang <strong>chờ quản trị viên xét duyệt</strong>.<br />
+            Sau khi được duyệt, bài viết sẽ hiển thị công khai trên trang chính.
+        </p>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-success mt-3">
+            <i class="fa-solid fa-house me-1"></i> Quay lại trang chủ
+        </a>
+    </div>
+</div>

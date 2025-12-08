@@ -1,4 +1,4 @@
-namespace SWAPFIT.Models
+﻿namespace SWAPFIT.Models
 {
     public class ErrorViewModel
     {

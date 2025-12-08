@@ -1,0 +1,71 @@
+﻿@model List<SWAPFIT.Models.DonHang>
+
+<h2 class="mb-3">Lịch sử đơn hàng</h2>
+
+@if (!Model.Any())
+{
+    <p>Chưa có đơn hàng nào.</p>
+}
+else
+{
+    <table class="table table-bordered align-middle">
+        <thead>
+            <tr>
+                <th style="width:90px;">Mã ĐH</th>
+                <th style="width:130px;">Ngày đặt</th>
+                <th style="width:140px;">Tổng tiền</th>
+                <th style="width:140px;">Trạng thái</th>
+                <th>Sản phẩm</th>
+                <th style="width:130px;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dh in Model)
+            {
+                // Đổi trạng thái nội bộ (HoanThanh, DaHuy, ...) sang tiếng Việt dễ đọc
+                string trangThaiHienThi = dh.TrangThai switch
+                {
+                    "HoanThanh" => "Hoàn thành",
+                    "DaHuy" => "Đã hủy",
+                    "DaGiao" => "Đã giao",
+                    _ => "Đang xử lý"
+                };
+
+                <tr>
+                    <td>#@dh.MaDonHang</td>
+                    <td>@dh.NgayDat.ToString("dd/MM/yyyy")</td>
+                    <td>@dh.TongTien.ToString("N0") đ</td>
+                    <td>@trangThaiHienThi</td>
+                    <td>
+                        @foreach (var ct in dh.ChiTietDonHangs)
+                        {
+                            <div>- @ct.BaiViet.TieuDe (SL: @ct.SoLuong)</div>
+                        }
+                    </td>
+                    <td>
+                        @* Chỉ cho người mua hủy khi đơn chưa Hoàn thành / Đã giao / Đã hủy *@
+                        @if (dh.TrangThai != "HoanThanh"
+                                        && dh.TrangThai != "DaGiao"
+                                        && dh.TrangThai != "DaHuy")
+                        {
+                            <form asp-action="HuyDonHangNguoiMua"
+                                  asp-controller="DonHang"
+                                  method="post"
+                                  class="d-inline"
+                                  onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn hàng #@dh.MaDonHang ?');">
+                                <input type="hidden" name="id" value="@dh.MaDonHang" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    Hủy đơn
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted small">Không thể hủy</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

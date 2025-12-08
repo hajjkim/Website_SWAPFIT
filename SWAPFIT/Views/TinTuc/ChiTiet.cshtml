@@ -1,0 +1,342 @@
+﻿@model SWAPFIT.Models.BaiViet
+@{
+    ViewData["Title"] = Model.TieuDe;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    .product-title { font-weight: 600; font-size: 1.4rem; }
+    .product-price { font-size: 1.5rem; color: #28a745; font-weight: bold; }
+    .btn-cart { background-color: #cdeed3; color: #2e7d32; border: none; font-weight: 500; }
+    .btn-buy { background-color: #28a745; color: #fff; font-weight: 500; }
+    .btn-cart:hover, .btn-buy:hover { opacity: 0.9; }
+
+    .info-box {
+        background-color: #f5fff5;
+        border: 1px solid #d7f0da;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .product-specs td { padding: 6px 10px; font-size: 0.95rem; }
+
+    .rating-box, .comment-box {
+        background-color: #fafafa;
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 30px;
+    }
+
+    .comment-item {
+        background: #fff;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .seller-box {
+        background-color: #f9fff9;
+        border: 1px solid #d7f0da;
+        border-radius: 12px;
+    }
+
+    .seller-box h5 { color: #2e7d32; font-weight: 600; }
+
+    .related-card {
+        border: none;
+        transition: 0.3s;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .related-card:hover { transform: translateY(-5px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+    .related-img { height: 200px; object-fit: cover; border-top-left-radius: 10px; border-top-right-radius: 10px; }
+
+    /* Overlay HẾT HÀNG */
+    .soldout-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        z-index: 10;
+    }
+
+    .soldout-text {
+        color: white;
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 7px rgba(0,0,0,0.7);
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row g-4">
+
+        <!-- ẢNH SẢN PHẨM -->
+        <!-- ẢNH SẢN PHẨM + GALLERY -->
+        <div class="col-md-6 text-center position-relative">
+
+            @{
+                var images = Model.AnhBaiViets?.ToList() ?? new List<SWAPFIT.Models.AnhBaiViet>();
+
+                var bigImg = images.FirstOrDefault()?.DuongDan;
+                if (string.IsNullOrEmpty(bigImg)) bigImg = "/images/no-image.png";
+                else if (!bigImg.StartsWith("/")) bigImg = "/" + bigImg;
+            }
+
+            <!-- Ảnh lớn -->
+            <img id="mainProductImg"
+                 src="@bigImg"
+                 class="img-fluid rounded shadow-sm mb-3"
+                 style="max-height:500px;object-fit:contain;"
+                 alt="@Model.TieuDe">
+
+            @if (Model.SoLuong <= 0)
+            {
+                <div class="soldout-overlay">
+                    <span class="soldout-text">HẾT HÀNG</span>
+                </div>
+            }
+
+            <!-- Thumbnail gallery -->
+            @if (images.Count > 1)
+            {
+                <div class="d-flex flex-wrap justify-content-center gap-2 mt-2">
+                    @foreach (var img in images)
+                    {
+                        var path = img.DuongDan;
+                        if (string.IsNullOrEmpty(path)) { continue; }
+                        if (!path.StartsWith("/")) path = "/" + path;
+
+                        <img src="@path"
+                             class="rounded border"
+                             style="width:80px;height:80px;object-fit:cover;cursor:pointer;"
+                             onclick="changeMainImg('@path')"
+                             alt="thumb" />
+                    }
+                </div>
+            }
+        </div>
+
+
+        <!-- THÔNG TIN SẢN PHẨM -->
+        <div class="col-md-6">
+            <h3 class="product-title">@Model.TieuDe</h3>
+
+            <p class="text-secondary mb-1">
+                <i class="bi bi-box-seam text-success"></i> @Model.DanhMuc?.TenDanhMuc
+            </p>
+
+            <p class="product-price mb-2">
+                @((Model.GiaSanPham ?? 0).ToString("N0")) đ
+            </p>
+
+            <p><strong>Kích thước:</strong> <span>@Model.Size</span></p>
+
+            <p>
+                <strong>Số lượng còn lại:</strong>
+                <span class="@(Model.SoLuong <= 5 ? "text-danger fw-bold" : "text-success")">
+                    @Model.SoLuong
+                </span>
+            </p>
+
+            <div class="d-flex gap-2 mb-3">
+                @if (Model.SoLuong > 0)
+                {
+                    <form asp-controller="GioHang" asp-action="ThemVaoGio" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="maBaiViet" value="@Model.MaBaiViet" />
+                        <button type="submit" class="btn btn-success">🛒 Thêm vào giỏ hàng</button>
+                    </form>
+
+                    <form asp-controller="ThanhToan" asp-action="MuaNgay" method="get">
+                        <input type="hidden" name="id" value="@Model.MaBaiViet" />
+                        <button type="submit" class="btn btn-success px-4 py-2">
+                            🧾 Thanh toán ngay
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <button class="btn btn-secondary flex-grow-1" disabled>Hết hàng</button>
+                }
+            </div>
+
+            <div class="info-box mt-3">
+                <p class="mb-1"><i class="bi bi-truck"></i> Chi phí vận chuyển: theo địa chỉ giao hàng</p>
+                <p class="mb-1"><i class="bi bi-cash-coin"></i> Thanh toán khi nhận hàng (COD)</p>
+                <p class="mb-0"><i class="bi bi-arrow-counterclockwise"></i> Không áp dụng hoàn trả với hàng tặng</p>
+            </div>
+
+            <!-- THÔNG TIN NGƯỜI BÁN -->
+            <div class="seller-box mt-4 p-3 border rounded shadow-sm bg-white">
+                <h5 class="text-success fw-semibold mb-3">
+                    <i class="bi bi-person-circle"></i> Người bán
+                </h5>
+
+                <div class="d-flex align-items-center mb-2">
+
+                    @{
+                        var avatar = Model.NguoiDung?.AnhDaiDien;
+                        if (string.IsNullOrEmpty(avatar)) avatar = "/images/default-avatar.png";
+                        else if (!avatar.StartsWith("/")) avatar = "/" + avatar;
+                    }
+
+                    <img src="@avatar"
+                         class="rounded-circle me-3"
+                         width="70" height="70"
+                         style="object-fit:cover;border:1px solid #d5e8d4;" />
+
+                    <div>
+                        <h5 class="mb-1 text-success fw-bold">
+                            @(Model.NguoiDung?.HoTen
+                                ?? Model.NguoiDung?.TenDangNhap
+                                ?? "Người bán")
+                        </h5>
+
+                        <p class="text-muted mb-1">
+                            <i class="bi bi-person-badge"></i>
+                            Vai trò: @(Model.NguoiDung?.VaiTro ?? "User")
+                        </p>
+
+                        @if (!string.IsNullOrEmpty(Model.NguoiDung?.SoDienThoai))
+                        {
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-telephone"></i>
+                                @Model.NguoiDung.SoDienThoai
+                            </p>
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-3 d-flex flex-wrap gap-2">
+
+                    @if (!string.IsNullOrEmpty(Model.NguoiDung?.SoDienThoai))
+                    {
+                        <a href="tel:@Model.NguoiDung.SoDienThoai"
+                           class="btn btn-outline-success btn-sm">
+                            <i class="bi bi-telephone"></i> Gọi ngay
+                        </a>
+                    }
+
+                    @if (Model.NguoiDung != null)
+                    {
+                        <a href="@Url.Action("XemTrangCaNhan", "User", new { id = Model.NguoiDung.MaNguoiDung })"
+                           class="btn btn-success btn-sm">
+                            <i class="bi bi-person-lines-fill"></i> Trang cá nhân
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- THÔNG TIN SẢN PHẨM -->
+    <div class="mt-5">
+        <h5 class="fw-semibold mb-3">Thông tin sản phẩm</h5>
+        <table class="table table-borderless product-specs w-75">
+            <tr>
+                <td class="fw-semibold">Mô tả</td>
+                <td>@Html.Raw(Model.NoiDung ?? "-")</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- BÌNH LUẬN -->
+    <div class="rating-box mt-5">
+        <h5 class="fw-semibold mb-3">Phản hồi từ khách hàng</h5>
+
+@if (ViewBag.BinhLuans is List<SWAPFIT.Models.BinhLuanTinTuc> binhLuans && binhLuans.Any())
+{
+        foreach (var bl in binhLuans)
+    {
+        var blAvatar = bl.NguoiDung?.AnhDaiDien;
+        if (string.IsNullOrEmpty(blAvatar)) blAvatar = "/images/default-avatar.png";
+        else if (!blAvatar.StartsWith("/")) blAvatar = "/" + blAvatar;
+
+        string tenHienThi = bl.NguoiDung?.HoTen
+                            ?? bl.NguoiDung?.TenDangNhap
+                            ?? "Khách";
+
+        <div class="comment-item mb-4 p-3 border rounded bg-white shadow-sm">
+            <div class="d-flex gap-3">
+                <img src="@blAvatar" class="rounded-circle" width="48" height="48" style="object-fit:cover;" />
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong class="text-success">@tenHienThi</strong>
+                            <small class="text-muted ms-2">@bl.NgayBinhLuan?.ToString("HH:mm - dd/MM/yyyy")</small>
+                        </div>
+                    </div>
+                    <p class="mt-2 mb-0">@bl.NoiDung</p>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p class="text-muted">Chưa có bình luận nào. Hãy là người đầu tiên!</p>
+}
+
+<form asp-action="ThemBinhLuan" method="post" class="mt-4">
+    <input type="hidden" name="baiVietId" value="@Model.MaBaiViet" />
+    <div class="input-group">
+        <input type="text" name="noiDung" class="form-control" placeholder="Viết bình luận..." required />
+        <button class="btn btn-success" type="submit">Gửi</button>
+    </div>
+</form>
+</div>
+
+<!-- QUAY LẠI -->
+<div class="mt-4">
+    <a href="javascript:history.back()" class="btn btn-outline-success">← Quay lại danh sách</a>
+</div>
+
+<!-- SẢN PHẨM LIÊN QUAN -->
+@if (ViewBag.SanPhamLienQuan is List<SWAPFIT.Models.BaiViet> related && related.Any())
+{
+    <div class="mt-5">
+        <h4 class="fw-semibold text-success mb-4">
+            <i class="bi bi-stars"></i> Sản phẩm liên quan
+        </h4>
+
+        <div class="row g-4">
+            @foreach (var sp in related)
+            {
+                var anh = sp.AnhBaiViets?.FirstOrDefault()?.DuongDan;
+                if (string.IsNullOrEmpty(anh)) anh = "/images/no-image.png";
+                else if (!anh.StartsWith("/")) anh = "/" + anh;
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="card related-card h-100">
+                        <img src="@anh" class="related-img" alt="@sp.TieuDe">
+                        <div class="card-body">
+                            <h6 class="card-title text-truncate">@sp.TieuDe</h6>
+                            <p class="text-success fw-bold mb-2">@((sp.GiaSanPham ?? 0).ToString("N0")) đ</p>
+                            <a href="@Url.Action("ChiTiet", "TinTuc", new { id = sp.MaBaiViet })"
+                               class="btn btn-outline-success btn-sm w-100">
+                                Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+</div>
+<script>
+    function changeMainImg(src) {
+        var img = document.getElementById('mainProductImg');
+        if (img) {
+            img.src = src;
+        }
+    }
+</script>

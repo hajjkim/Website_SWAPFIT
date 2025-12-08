@@ -1,0 +1,599 @@
+﻿@model IEnumerable<SWAPFIT.Models.BaiViet>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Bảng điều khiển - Admin";
+
+    // Lấy danh sách báo cáo tài khoản từ ViewBag (AdminController truyền vào)
+    var baoCaoTaiKhoans = ViewBag.BaoCaoTaiKhoan as List<SWAPFIT.Models.BaoCaoTaiKhoan>;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    body {
+        background: #f4f6fb;
+    }
+
+    .dashboard-wrapper {
+        padding: 24px;
+    }
+
+    .dashboard-title {
+        font-weight: 700;
+        color: #ff7b1a;
+    }
+
+    .dashboard-subtitle {
+        font-size: 14px;
+        color: #888;
+    }
+
+    /* CARD CHUNG */
+    .dashboard-card {
+        border: none;
+        border-radius: 18px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+        background: #ffffff;
+    }
+
+    .dashboard-card-header {
+        font-weight: 600;
+        font-size: 14px;
+        color: #555;
+    }
+
+    /* THẺ THỐNG KÊ NHỎ */
+    .stat-card {
+        border-radius: 16px;
+        border: none;
+        background: #ffffff;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.03);
+        display: flex;
+        align-items: center;
+        padding: 14px 18px;
+        margin-bottom: 16px;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-size: 18px;
+        color: #fff;
+    }
+
+    .stat-text {
+        font-size: 13px;
+        color: #777;
+        margin-bottom: 2px;
+    }
+
+    .stat-number {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .icon-users {
+        background: #007bff;
+    }
+
+    .icon-posts {
+        background: #28a745;
+    }
+
+    .icon-cate {
+        background: #ffc107;
+    }
+
+    .icon-brand {
+        background: #17a2b8;
+    }
+
+    .icon-voucher {
+        background: #6c757d;
+    }
+
+    /* QUICK ACTIONS */
+    /* QUICK ACTIONS */
+    .quick-action-btn {
+        border-radius: 50%;
+        width: 58px;
+        height: 58px;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        background: #f8f9ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 4px;
+        font-size: 24px;
+        transition: background 0.3s;
+    }
+
+        .quick-action-btn:hover {
+            background: #e7e7e7;
+        }
+
+    .quick-action-label {
+        font-size: 12px;
+        color: #555;
+    }
+
+    /* Sử dụng các kích thước linh hoạt cho các thẻ */
+    .row .col-4 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .quick-action-btn {
+        margin: 10px 0; /* Giãn cách giữa các nút */
+    }
+
+    @@media (max-width: 768px) {
+        .quick-action-btn
+
+    {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .quick-action-label {
+        font-size: 10px;
+    }
+
+    }
+
+
+    /* BẢNG BÀI VIẾT CHỜ DUYỆT */
+    .table-pending th {
+        font-size: 13px;
+    }
+
+    .table-pending td {
+        font-size: 13px;
+    }
+
+    .badge-status {
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+    }
+
+    /* VÙNG LINK ĐIỀU HƯỚNG */
+    .nav-actions a {
+        border-radius: 20px;
+        font-size: 13px;
+    }
+
+</style>
+
+<div class="dashboard-wrapper">
+
+    <!-- TIÊU ĐỀ TRÊN CÙNG -->
+    @* <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h4 class="dashboard-title mb-0">Dashboard quản trị</h4>
+            <div class="dashboard-subtitle">Tổng quan hệ thống SWAPFIT</div>
+        </div>
+
+        <div class="nav-actions d-flex gap-2 flex-wrap">
+            <a asp-action="Users" class="btn btn-outline-primary btn-sm">👤 Quản lý người dùng</a>
+            <a asp-controller="Category" asp-action="Index" class="btn btn-outline-warning btn-sm">📂 Danh mục</a>
+            <a asp-action="Brands" class="btn btn-outline-secondary btn-sm">🏷️ Thương hiệu</a>
+            <a asp-action="Posts" class="btn btn-outline-success btn-sm">📰 Bài viết</a>
+            <a asp-action="ManageVouchers" class="btn btn-outline-info btn-sm">🎟️ Voucher</a>
+            <a asp-controller="Admin"
+               asp-action="ThongKeDanhMuc"
+               class="btn btn-outline-dark btn-sm">
+                📊 Thống kê danh mục
+            </a>
+            <a asp-controller="Admin"
+               asp-action="Orders"
+               class="btn btn-outline-secondary btn-sm">
+                📦 Quản lý đơn hàng
+            </a>
+            <a asp-controller="Admin"
+               asp-action="BaoCaoTaiKhoan"
+               class="btn btn-outline-danger btn-sm">
+                ⚠ Báo cáo tài khoản
+            </a>
+        </div>
+    </div> *@
+
+    <!-- THÔNG BÁO -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success text-center fw-semibold">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger text-center fw-semibold">@TempData["Error"]</div>
+    }
+
+    <!-- HÀNG 1: THỐNG KÊ + QUICK ACTION -->
+    <div class="row mb-4">
+        <!-- CỘT 1: THỐNG KÊ NHỎ -->
+        <div class="col-lg-4 mb-3">
+            <div class="dashboard-card p-3">
+                <div class="dashboard-card-header mb-2">Tổng quan hệ thống</div>
+
+                <div class="stat-card">
+                    <div class="stat-icon icon-users">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div>
+                        <div class="stat-text">Người dùng</div>
+                        <div class="stat-number text-primary">@ViewBag.TotalUsers</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon icon-posts">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+                    <div>
+                        <div class="stat-text">Bài viết</div>
+                        <div class="stat-number text-success">@ViewBag.TotalPosts</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon icon-cate">
+                        <i class="bi bi-grid"></i>
+                    </div>
+                    <div>
+                        <div class="stat-text">Danh mục</div>
+                        <div class="stat-number text-warning">@ViewBag.TotalCategories</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon icon-brand">
+                        <i class="bi bi-tags"></i>
+                    </div>
+                    <div>
+                        <div class="stat-text">Thương hiệu</div>
+                        <div class="stat-number text-info">@ViewBag.TotalBrands</div>
+                    </div>
+                </div>
+
+                <div class="stat-card mb-0">
+                    <div class="stat-icon icon-voucher">
+                        <i class="bi bi-ticket-perforated"></i>
+                    </div>
+                    <div>
+                        <div class="stat-text">Voucher</div>
+                        <div class="stat-number text-secondary">@ViewBag.TotalVouchers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT 2: BIỂU ĐỒ -->
+        <div class="col-lg-4 mb-3">
+            <div class="dashboard-card p-3 h-100">
+                <div class="dashboard-card-header mb-2">📈 Thống kê tổng quan</div>
+                <canvas id="chartPosts" height="170"></canvas>
+            </div>
+        </div>
+
+        <!-- CỘT 3: QUICK ACTION -->
+        <!-- CỘT 3: QUICK ACTION -->
+        <div class="col-lg-4 mb-3">
+            <div class="dashboard-card p-3 h-100">
+                <div class="dashboard-card-header mb-3">⚡ Thao tác nhanh</div>
+                <div class="row text-center gy-3">
+                    <!-- Row 1 -->
+                    <div class="col-4">
+                        <button type="button" class="quick-action-btn" onclick="location.href='@Url.Action("Users")'">
+                            👤
+                        </button>
+                        <div class="quick-action-label">Người dùng</div>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="quick-action-btn" onclick="location.href='@Url.Action("Posts")'">
+                            📰
+                        </button>
+                        <div class="quick-action-label">Bài viết</div>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="quick-action-btn" onclick="location.href='@Url.Action("ManageVouchers")'">
+                            🎟️
+                        </button>
+                        <div class="quick-action-label">Voucher</div>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="col-4">
+                        <button type="button" class="quick-action-btn" onclick="location.href='@Url.Action("Brands")'">
+                            🏷️
+                        </button>
+                        <div class="quick-action-label">Thương hiệu</div>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="quick-action-btn" onclick="location.href='@Url.Action("Index", "Category")'">
+                            📂
+                        </button>
+                        <div class="quick-action-label">Danh mục</div>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="quick-action-btn" onclick="location.href='@Url.Action("Index", "Home")'">
+                            🏠
+                        </button>
+                        <div class="quick-action-label">Trang chủ</div>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="col-4">
+                        <button type="button" class="quick-action-btn" onclick="location.href='@Url.Action("ThongKeDanhMuc", "Admin")'">
+                            📊
+                        </button>
+                        <div class="quick-action-label">Thống kê danh mục</div>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="quick-action-btn" onclick="location.href='@Url.Action("Orders", "Admin")'">
+                            📦
+                        </button>
+                        <div class="quick-action-label">Quản lý đơn hàng</div>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="quick-action-btn" onclick="location.href='@Url.Action("BaoCaoTaiKhoan", "Admin")'">
+                            ⚠️
+                        </button>
+                        <div class="quick-action-label">Báo cáo tài khoản</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    <!-- HÀNG 2: BÀI VIẾT CHỜ DUYỆT -->
+    <div class="row">
+        <div class="col-12">
+            <div class="dashboard-card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0 fw-semibold text-secondary">🕓 Bài viết chờ duyệt</h5>
+                </div>
+
+                @if (!Model.Any())
+                {
+                    <div class="alert alert-light border text-center mb-0">
+                        Không có bài viết nào đang chờ duyệt.
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-pending mb-0">
+                            <thead class="table-light">
+                                <tr class="text-center">
+                                    <th>#</th>
+                                    <th class="text-start">Tiêu đề</th>
+                                    <th>Người đăng</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var post in Model)
+                                {
+                                    <tr>
+                                        <td class="text-center fw-semibold">@post.MaBaiViet</td>
+
+                                        <!-- CỘT 2: TIÊU ĐỀ (CLICK ĐỂ XEM CHI TIẾT) -->
+                                        <td class="text-start">
+                                            <a asp-action="PostDetails"
+                                               asp-route-id="@post.MaBaiViet"
+                                               class="text-decoration-none text-dark fw-semibold">
+                                                @post.TieuDe
+                                            </a>
+                                        </td>
+
+
+                                        <!-- CỘT 3: NGƯỜI ĐĂNG -->
+                                        <td class="text-center">
+                                            @{
+                                                var tenNguoiDang = post.NguoiDung?.HoTen;
+
+                                                if (string.IsNullOrWhiteSpace(tenNguoiDang))
+                                                {
+                                                    tenNguoiDang = post.NguoiDung?.TenDangNhap;
+                                                }
+
+                                                if (string.IsNullOrWhiteSpace(tenNguoiDang))
+                                                {
+                                                    tenNguoiDang = "Không tìm thấy";
+                                                }
+                                            }
+                                            @tenNguoiDang
+                                        </td>
+
+                                        <!-- CỘT 4: NGÀY TẠO -->
+                                        <td class="text-center">
+                                            @post.NgayTao?.ToString("dd/MM/yyyy")
+                                        </td>
+
+                                        <!-- CỘT 5: TRẠNG THÁI -->
+                                        <td class="text-center">
+                                            @{
+                                                string badgeClass = post.TrangThai == "Đã duyệt"
+                                                ? "bg-success"
+                                                : post.TrangThai == "Từ chối"
+                                                ? "bg-danger"
+                                                : "bg-warning text-dark";
+                                            }
+                                            <span class="badge badge-status @badgeClass">
+                                                @post.TrangThai
+                                            </span>
+                                        </td>
+
+                                        <!-- CỘT 6: THAO TÁC -->
+                                        <td class="text-center">
+                                            <a asp-action="Duyet" asp-route-id="@post.MaBaiViet" class="btn btn-success btn-sm me-1">✔ Duyệt</a>
+                                            <a asp-action="TuChoi" asp-route-id="@post.MaBaiViet" class="btn btn-warning btn-sm me-1">✖ Từ chối</a>
+                                            @* <a asp-action="DeletePostAdmin"
+                                               asp-route-id="@post.MaBaiViet"
+                                               class="btn btn-danger btn-sm"
+                                               onclick="return confirm('Bạn chắc chắn muốn xóa bài viết này?');">
+                                                🗑️ Xóa
+                                            </a> *@
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- HÀNG 3: BÁO CÁO TÀI KHOẢN GẦN ĐÂY -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="dashboard-card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0 fw-semibold text-secondary">⚠ Báo cáo tài khoản gần đây</h5>
+                    <a asp-controller="Admin"
+                       asp-action="BaoCaoTaiKhoan"
+                       class="btn btn-sm btn-outline-secondary">
+                        Xem tất cả
+                    </a>
+                </div>
+
+                @if (baoCaoTaiKhoans == null || !baoCaoTaiKhoans.Any())
+                {
+                    <div class="alert alert-light border text-center mb-0">
+                        Hiện chưa có báo cáo tài khoản nào.
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-pending mb-0">
+                            <thead class="table-light">
+                                <tr class="text-center">
+                                    <th>#</th>
+                                    <th class="text-start">Người bị báo cáo</th>
+                                    <th class="text-start">Người báo cáo</th>
+                                    <th>Lý do</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var bc in baoCaoTaiKhoans)
+                                {
+                                    <tr>
+                                        <td class="text-center fw-semibold">@bc.Id</td>
+
+                                        <!-- NGƯỜI BỊ BÁO CÁO -->
+                                        <td>
+                                            @{
+                                                var tenBiBaoCao = bc.NguoiBiBaoCao?.HoTen;
+                                                if (string.IsNullOrWhiteSpace(tenBiBaoCao))
+                                                {
+                                                    tenBiBaoCao = bc.NguoiBiBaoCao?.TenDangNhap ?? "Không rõ";
+                                                }
+                                            }
+                                            @tenBiBaoCao
+                                        </td>
+
+                                        <!-- NGƯỜI BÁO CÁO -->
+                                        <td>
+                                            @{
+                                                var tenBaoCao = bc.NguoiBaoCao?.HoTen;
+                                                if (string.IsNullOrWhiteSpace(tenBaoCao))
+                                                {
+                                                    tenBaoCao = bc.NguoiBaoCao?.TenDangNhap ?? "Không rõ";
+                                                }
+                                            }
+                                            @tenBaoCao
+                                        </td>
+
+                                        <!-- LÝ DO -->
+                                        <td class="text-truncate" style="max-width: 240px;" title="@bc.LyDo">
+                                            @bc.LyDo
+                                        </td>
+
+                                        <!-- NGÀY TẠO -->
+                                        <td class="text-center">
+                                            @bc.NgayTao.ToString("dd/MM/yyyy")
+                                        </td>
+
+                                        <!-- TRẠNG THÁI -->
+                                        <td class="text-center">
+                                            @{
+                                                string badgeBaoCao = bc.TrangThai == "DaXuLy" || bc.TrangThai == "Đã xử lý"
+                                                ? "bg-success"
+                                                : "bg-warning text-dark";
+                                            }
+                                            <span class="badge badge-status @badgeBaoCao">
+                                                @bc.TrangThai
+                                            </span>
+                                        </td>
+
+                                        <!-- THAO TÁC -->
+                                        <td class="text-center">
+                                            <a asp-controller="Admin"
+                                               asp-action="ChiTietBaoCaoTaiKhoan"
+                                               asp-route-id="@bc.Id"
+                                               class="btn btn-sm btn-outline-primary">
+                                                Xem
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const ctx = document.getElementById('chartPosts').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Người dùng', 'Bài viết', 'Danh mục', 'Thương hiệu', 'Voucher'],
+            datasets: [{
+                label: 'Số lượng',
+                data: [
+                    @ViewBag.TotalUsers,
+                    @ViewBag.TotalPosts,
+                    @ViewBag.TotalCategories,
+                    @ViewBag.TotalBrands,
+                    @ViewBag.TotalVouchers
+                ],
+                backgroundColor: ['#007bff', '#28a745', '#ffc107', '#17a2b8', '#6c757d'],
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+</script>

@@ -1,0 +1,152 @@
+﻿@* @model IEnumerable<SWAPFIT.Models.BaiViet>
+@{
+    ViewData["Title"] = "Bảng điều khiển - Admin";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    /* ---------- SIDEBAR ---------- */
+    .sidebar {
+        width: 260px;
+        background: #fff;
+        border-radius: 0 32px 32px 0;
+        padding: 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+    }
+
+        .sidebar .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ff7b1a;
+            margin-bottom: 20px;
+        }
+
+    .logo span {
+        color: #27ae60;
+    }
+
+    .sidebar-menu {
+        margin-top: 10px;
+        padding: 0;
+        list-style: none;
+    }
+
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            text-decoration: none;
+            color: #4b5675;
+            border-radius: 50px;
+            transition: 0.2s ease;
+            font-size: 14px;
+        }
+
+            .sidebar-menu a:hover {
+                background: #f3f6ff;
+                color: #ff7b1a;
+            }
+
+            .sidebar-menu a.active {
+                background: linear-gradient(90deg, #ff7b1a, #ffa84a);
+                color: #fff;
+                box-shadow: 0 6px 15px rgba(255,150,60,0.3);
+            }
+
+            .sidebar-menu a i {
+                font-size: 18px;
+            }
+
+    /* ---------- MAIN CONTENT ---------- */
+    .content {
+        margin-left: 280px;
+        padding: 25px;
+    }
+</style>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="logo">SWAPFIT <span>Admin</span></div>
+
+    <ul class="sidebar-menu">
+        <li><a href="/Admin/Dashboard" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+        <li><a href="/Admin/Users"><i class="bi bi-people"></i> Quản lý người dùng</a></li>
+        <li><a href="/Category/Index"><i class="bi bi-grid"></i> Danh mục</a></li>
+        <li><a href="/Brands/Index"><i class="bi bi-tags"></i> Thương hiệu</a></li>
+        <li><a href="/Admin/Posts"><i class="bi bi-journal-text"></i> Bài viết</a></li>
+        <li><a href="/Admin/Vouchers"><i class="bi bi-ticket-perforated"></i> Voucher</a></li>
+        <li><a href="#"><i class="bi bi-gear"></i> Cài đặt</a></li>
+    </ul>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+
+    <div class="container mt-3">
+        <h2 class="mb-4 text-center">📊 BẢNG ĐIỀU KHIỂN ADMIN</h2>
+
+        <!-- Thống kê -->
+        <div class="row text-center mb-4">
+            <div class="col-md-3"><div class="card shadow-sm border-primary"><div class="card-body"><h5>Người dùng</h5><h3 class="text-primary">@ViewBag.TotalUsers</h3></div></div></div>
+            <div class="col-md-3"><div class="card shadow-sm border-success"><div class="card-body"><h5>Bài viết</h5><h3 class="text-success">@ViewBag.TotalPosts</h3></div></div></div>
+            <div class="col-md-3"><div class="card shadow-sm border-warning"><div class="card-body"><h5>Danh mục</h5><h3 class="text-warning">@ViewBag.TotalCategories</h3></div></div></div>
+            <div class="col-md-3"><div class="card shadow-sm border-info"><div class="card-body"><h5>Thương hiệu</h5><h3 class="text-info">@ViewBag.TotalBrands</h3></div></div></div>
+        </div>
+
+        <!-- Menu điều hướng -->
+        <div class="d-flex justify-content-center gap-3 mb-4">
+            <a asp-action="Users" class="btn btn-outline-primary">👤 Quản lý người dùng</a>
+            <a asp-controller="Category" asp-action="Index" class="btn btn-outline-warning">📂 Quản lý danh mục</a>
+            <a asp-action="/Brands/Index" class="btn btn-outline-info">🏷️ Quản lý thương hiệu</a>
+        </div>
+
+        <h4 class="mb-3">🕓 Bài viết chờ duyệt</h4>
+        @if (!Model.Any())
+        {
+            <p class="text-muted">Không có bài viết nào chờ duyệt.</p>
+        }
+        else
+        {
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tiêu đề</th>
+                        <th>Người đăng</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var post in Model)
+                    {
+                        <tr>
+                            <td>@post.MaBaiViet</td>
+                            <td>@post.TieuDe</td>
+                            <td>@post.MaNguoiDung</td>
+                            <td>@post.NgayTao?.ToShortDateString()</td>
+                            <td>@post.TrangThai</td>
+                            <td>
+                                <a asp-action="Approve" asp-route-id="@post.MaBaiViet" class="btn btn-sm btn-success">Duyệt</a>
+                                <a asp-action="DeletePost" asp-route-id="@post.MaBaiViet" class="btn btn-sm btn-danger">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+</div> *@

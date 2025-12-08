@@ -1,0 +1,267 @@
+﻿@model SWAPFIT.Models.NguoiDung
+@using Microsoft.AspNetCore.Http
+
+@{
+    ViewData["Title"] = "Trang cá nhân của " + (Model.HoTen ?? Model.TenDangNhap);
+
+    var currentUserId = Context.Session.GetInt32("MaNguoiDung");
+    bool coTheBaoCao = currentUserId.HasValue && currentUserId.Value != Model.MaNguoiDung;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #f7fff7;
+    }
+
+    .seller-header {
+        background-color: #e8f8ee;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+        .seller-header img {
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+    .seller-info h4 {
+        color: #2e7d32;
+        font-weight: 600;
+    }
+
+    .product-card {
+        border: 1px solid #d7f0da;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #fff;
+        transition: transform 0.2s ease;
+    }
+
+        .product-card:hover {
+            transform: scale(1.02);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .product-card .card-body {
+            padding: 12px;
+        }
+
+    .btn-chat {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        font-weight: 500;
+    }
+
+        .btn-chat:hover {
+            opacity: 0.9;
+        }
+</style>
+
+<div class="container mt-4 mb-5">
+
+    <!-- TOAST THÔNG BÁO -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+        @if (TempData["Success"] != null)
+        {
+            <div id="toastSuccess" class="toast align-items-center text-bg-success border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-check-circle-fill"></i>
+                        @TempData["Success"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div id="toastError" class="toast align-items-center text-bg-danger border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        @TempData["Error"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        }
+    </div>
+
+
+    <!-- Thông tin người bán -->
+    <div class="seller-header d-flex align-items-center gap-3">
+        <img src="@(Model.AnhDaiDien ?? "/images/default-avatar.png")"
+             alt="avatar" width="90" height="90" />
+
+        <div class="seller-info">
+            <h4>@(Model.HoTen ?? Model.TenDangNhap)</h4>
+            <p class="mb-1"><i class="bi bi-telephone"></i> @Model.SoDienThoai</p>
+            <p class="mb-1"><i class="bi bi-envelope"></i> @(Model.Email ?? "Chưa cập nhật")</p>
+            <p class="mb-1"><i class="bi bi-calendar"></i> Tham gia từ: @(Model.NgayTao?.ToString("MM/yyyy") ?? "Không rõ")</p>
+            <p class="mb-0">
+                <i class="bi bi-person-badge"></i> Trạng thái:
+                <span class="@(Model.TrangThai == "Hoạt động" ? "text-success" : "text-danger")">@Model.TrangThai</span>
+            </p>
+        </div>
+
+        <div class="ms-auto d-flex flex-column gap-2">
+            <!-- Nhắn tin -->
+            <a href="@Url.Action("Chat", "TinNhan", new { nguoiNhanId = Model.MaNguoiDung })"
+               class="btn btn-chat">
+                💬 Nhắn tin
+            </a>
+
+            <!-- Báo cáo -->
+            @if (coTheBaoCao)
+            {
+                <button type="button" class="btn btn-outline-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalBaoCaoTaiKhoan">
+                    🚩 Báo cáo tài khoản
+                </button>
+            }
+        </div>
+    </div>
+
+    <!-- DANH SÁCH SẢN PHẨM -->
+    <h5 class="fw-semibold mb-3 mt-4">📦 Sản phẩm của @Model.TenDangNhap</h5>
+
+    @if (Model.BaiViets != null && Model.BaiViets.Any())
+    {
+        <div class="row g-3">
+            @foreach (var item in Model.BaiViets)
+            {
+                <div class="col-md-4 col-lg-3">
+                    <div class="product-card shadow-sm position-relative">
+                        <a href="@Url.Action("ChiTiet", "TinTuc", new { id = item.MaBaiViet })"
+                           class="text-decoration-none text-dark">
+
+                            @{
+                                var img = item.AnhBaiViets?.FirstOrDefault()?.DuongDan;
+                                if (string.IsNullOrEmpty(img)) img = "/images/no-image.png";
+                                else if (!img.StartsWith("/")) img = "/" + img;
+                            }
+
+                            <img src="@img" alt="@item.TieuDe" />
+
+                            @if (item.SoLuong <= 0)
+                            {
+                                <div style="
+                                                position:absolute; inset:0;
+                                                background:rgba(0,0,0,.55);
+                                                display:flex; align-items:center; justify-content:center;">
+                                    <span style="color:white;font-size:20px;font-weight:700;">HẾT HÀNG</span>
+                                </div>
+                            }
+
+                            <div class="card-body">
+                                <h6 class="fw-semibold text-truncate">@item.TieuDe</h6>
+                                <p class="fw-bold mb-1 @(item.SoLuong > 0 ? "text-success" : "text-danger")">
+                                    @((item.GiaSanPham ?? 0).ToString("N0")) đ
+                                </p>
+
+                                <span class="badge bg-@(item.LoaiBaiDang == "Bán" ? "success" : "info")">@item.LoaiBaiDang</span>
+
+                                @if (item.SoLuong <= 0)
+                                {
+                                    <span class="badge bg-danger ms-1">Hết hàng</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success ms-1">Còn @item.SoLuong</span>
+                                }
+                            </div>
+
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">Người bán chưa đăng sản phẩm nào.</p>
+    }
+
+    <div class="mt-4">
+        <a href="javascript:history.back()" class="btn btn-outline-success">
+            ← Quay lại
+        </a>
+    </div>
+</div>
+
+<!-- MODAL BÁO CÁO -->
+@if (coTheBaoCao)
+{
+    <div class="modal fade" id="modalBaoCaoTaiKhoan" tabindex="-1"
+         aria-labelledby="modalBaoCaoTaiKhoanLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <form asp-controller="User" asp-action="BaoCaoNguoiDung" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Báo cáo tài khoản @(Model.HoTen ?? Model.TenDangNhap)</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" name="nguoiBiBaoCaoId" value="@Model.MaNguoiDung" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Lý do báo cáo *</label>
+                            <textarea name="lyDo" class="form-control" rows="3" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mô tả chi tiết (không bắt buộc)</label>
+                            <textarea name="moTaChiTiet" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="alert alert-warning small mb-0">
+                            Nội dung báo cáo sẽ được gửi tới Admin để xem xét.
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-danger">Gửi báo cáo</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Bootstrap JS & Toast Trigger -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        var toastSuccess = document.getElementById("toastSuccess");
+        if (toastSuccess) new bootstrap.Toast(toastSuccess).show();
+
+        var toastError = document.getElementById("toastError");
+        if (toastError) new bootstrap.Toast(toastError).show();
+
+    });
+</script>

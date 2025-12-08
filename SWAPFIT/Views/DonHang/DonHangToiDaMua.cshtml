@@ -1,0 +1,41 @@
+﻿@model List<SWAPFIT.Models.DonHang>
+
+<h2>🛒 Đơn hàng tôi đã mua</h2>
+
+@if (!Model.Any())
+{
+    <p>Bạn chưa mua đơn hàng nào.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Mã ĐH</th>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Người bán</th>
+                <th>Sản phẩm</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dh in Model)
+            {
+                <tr>
+                    <td>@dh.MaDonHang</td>
+                    <td>@dh.NgayDat.ToString("dd/MM/yyyy")</td>
+                    <td>@dh.TongTien.ToString("N0") đ</td>
+                    <td>@dh.NguoiBan?.TenDangNhap</td>
+                    <td>
+                        @foreach (var ct in dh.ChiTietDonHangs)
+                        {
+                            <div>- @ct.BaiViet.TieuDe (SL: @ct.SoLuong)</div>
+                        }
+                    </td>
+                    <td>@dh.TrangThai</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

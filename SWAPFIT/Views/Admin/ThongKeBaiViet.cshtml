@@ -1,0 +1,104 @@
+﻿@model SWAPFIT.Models.ThongKeBaiVietNguoiDung
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Thống kê bài viết - " + (Model.HoTen ?? Model.TenDangNhap);
+}
+
+<div class="container mt-4">
+    <h3 class="mb-3 text-primary fw-bold">
+        📋 Thống kê bài viết của @(!string.IsNullOrEmpty(Model.HoTen) ? Model.HoTen : Model.TenDangNhap)
+    </h3>
+
+    <!-- THỐNG KÊ TỔNG QUAN -->
+    <div class="row mb-4 text-center">
+        <div class="col-md-3 mb-2">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Tổng bài viết</div>
+                    <div class="h4 fw-bold text-primary">@Model.TongSoBai</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-2">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Chờ duyệt</div>
+                    <div class="h4 fw-bold text-warning">@Model.ChoDuyet</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-2">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Đang hiển thị / Đã duyệt</div>
+                    <div class="h4 fw-bold text-success">@Model.DangHienThi</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-2">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Từ chối</div>
+                    <div class="h4 fw-bold text-danger">@Model.TuChoi</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DANH SÁCH BÀI VIẾT -->
+    <h5 class="mb-3">📜 Danh sách bài viết</h5>
+
+    @if (!Model.DanhSachBaiViet.Any())
+    {
+        <div class="alert alert-light border">
+            Người dùng này chưa có bài viết nào.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr class="text-center">
+                        <th>ID</th>
+                        <th class="text-start">Tiêu đề</th>
+                        <th>Danh mục</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var post in Model.DanhSachBaiViet)
+                    {
+                        <tr>
+                            <td class="text-center">@post.MaBaiViet</td>
+                            <td>@post.TieuDe</td>
+                            <td class="text-center">@post.DanhMuc?.TenDanhMuc</td>
+                            <td class="text-center">@post.NgayTao?.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center">
+                                <span class="badge
+                                            @(post.TrangThai == "Đang hiển thị" || post.TrangThai == "Đã duyệt"
+                                                                              ? "bg-success"
+                                                                              : post.TrangThai == "Chờ duyệt"
+                                                                                  ? "bg-warning text-dark"
+                                                                                  : "bg-danger")">
+                            @post.TrangThai
+                        </span>
+                    </td>
+                </tr>
+                                }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div class="mt-3 d-flex gap-2">
+        <a asp-action="ThongKeBaiVietNguoiDung" class="btn btn-outline-secondary">
+            ⬅ Quay lại xếp hạng
+        </a>
+        <a asp-action="Users" class="btn btn-outline-primary">
+            ⬅ Quay lại danh sách người dùng
+        </a>
+    </div>
+</div>
