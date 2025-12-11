@@ -1,0 +1,322 @@
+﻿@model IEnumerable<SWAPFIT.Models.BaiViet>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Cho Tặng";
+
+    var danhMucs = ViewBag.DanhMucs as List<SWAPFIT.Models.DanhMuc> ?? new();
+    var thuongHieus = ViewBag.ThuongHieus as List<SWAPFIT.Models.ThuongHieu> ?? new();
+    var sizes = new List<string> { "S", "M", "L", "XL", "XXL", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44" };
+
+    var q = HttpContextAccessor.HttpContext?.Request.Query;
+    string? currentSearch = q?["query"];
+    string? currentSort = q?["sort"];
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+<style>
+    body {
+        background-color: #f5fbf6;
+        font-size: 15px;
+    }
+
+    .filter-card {
+        position: sticky;
+        top: 80px;
+        border-radius: 16px;
+        background: #ffffff;
+        padding: 22px 18px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    .filter-section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 6px;
+        margin-top: 12px;
+    }
+
+    .filter-card .form-check-label {
+        font-size: 14px;
+    }
+
+    .size-pill .btn-check + label {
+        border-radius: 999px;
+        border: 1px solid #d1d5db;
+        padding: 5px 10px;
+        font-size: 13px;
+        cursor: pointer;
+        color: #374151;
+    }
+
+    .size-pill .btn-check:checked + label {
+        background: #22c55e;
+        border-color: #22c55e;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .btn-apply-filter {
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 15px;
+    }
+
+    /* PRODUCT CARD */
+    .product-card {
+        border-radius: 16px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+        transition: 0.2s;
+        position: relative;
+    }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 5px 18px rgba(0,0,0,0.09);
+        }
+
+        .product-card img {
+            height: 230px;
+            width: 100%;
+            object-fit: cover;
+            background: #f8f8f8;
+            display: block;
+        }
+
+    .soldout-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+    }
+
+    .soldout-text {
+        color: white;
+        font-size: 30px;
+        font-weight: 800;
+        text-shadow: 0 3px 8px rgba(0,0,0,0.7);
+        letter-spacing: 2px;
+    }
+
+    .product-title {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .product-size {
+        font-size: 14px;
+    }
+
+    .product-price {
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    /* SEARCH + SORT BAR */
+    .search-wrapper {
+        background: #e9f7ec;
+        border-radius: 999px;
+        padding: 4px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .search-wrapper input {
+            border: none;
+            background: transparent;
+            box-shadow: none;
+            font-size: 15px;
+        }
+
+            .search-wrapper input:focus {
+                outline: none;
+                box-shadow: none;
+            }
+
+        .search-wrapper i {
+            font-size: 18px;
+        }
+
+    .sort-btn {
+        font-size: 14px;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row g-4">
+
+        <!-- ========== BỘ LỌC ========== -->
+        <div class="col-lg-3">
+            <form id="filterForm" method="get" asp-action="ChoTang" asp-controller="TinTuc">
+                <input type="hidden" name="LoaiBaiDang" value="Tặng" />
+
+                <div class="filter-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="text-success fw-bold mb-0">
+                            Bộ lọc
+                        </h5>
+                    </div>
+
+                    <!-- Danh mục -->
+                    <div class="mt-2">
+                        <div class="filter-section-title">Danh mục</div>
+                        <div class="d-flex flex-column gap-1">
+                            @foreach (var dm in danhMucs)
+                            {
+                                bool selected = q?["DanhMucIds"].ToString()
+                                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                .Contains(dm.MaDanhMuc.ToString()) ?? false;
+
+                                <label class="form-check form-check-sm">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="DanhMucIds" value="@dm.MaDanhMuc"
+                                           @(selected ? "checked" : "") />
+                                    <span class="form-check-label">
+                                        @dm.TenDanhMuc
+                                    </span>
+                                </label>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Thương hiệu (dropdown) -->
+                    @{
+                        var selectedBrand = q?["ThuongHieuIds"].ToString();
+                    }
+                    <div class="mt-3">
+                        <div class="filter-section-title">Thương hiệu</div>
+                        <select name="ThuongHieuIds" class="form-select form-select-sm">
+                            <option value="">Tất cả</option>
+                            @foreach (var th in thuongHieus)
+                            {
+                                bool isSelected = selectedBrand == th.MaThuongHieu.ToString();
+                                <option value="@th.MaThuongHieu"
+                                        selected="@(isSelected ? "selected" : null)">
+                                    @th.TenThuongHieu
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+
+                    <!-- Size -->
+                    <div class="mt-3">
+                        <div class="filter-section-title">Kích cỡ</div>
+                        <div class="row gx-2 gy-2 size-pill">
+                            @foreach (var size in sizes)
+                            {
+                                bool selected = q?["Sizes"].ToString()
+                                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                .Contains(size) ?? false;
+
+                                var inputId = $"size_{size}";
+                                <div class="col-4">
+                                    <input type="checkbox"
+                                           class="btn-check"
+                                           name="Sizes"
+                                           id="@inputId"
+                                           value="@size"
+                                           @(selected ? "checked" : "") />
+                                    <label class="w-100 text-center" for="@inputId">@size</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 mt-4 btn-apply-filter">
+                        Áp dụng bộ lọc
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ========== DANH SÁCH + TÌM KIẾM ========== -->
+        <div class="col-lg-9">
+
+            <!-- Thanh search + sort -->
+            <!-- THANH TÌM KIẾM + SẮP XẾP – HOẠT ĐỘNG 100% -->
+            <div class="d-flex align-items-center mb-4 gap-3 flex-wrap">
+                <!-- Form tìm kiếm + sắp xếp (gộp chung để gửi query + sort cùng lúc) -->
+                <form method="get" asp-action="ChoTang" asp-controller="TinTuc" class="d-flex flex-grow-1 gap-3 align-items-center">
+                    <input type="hidden" name="LoaiBaiDang" value="Tặng" />
+
+                    <!-- Ô tìm kiếm -->
+                    <div class="flex-grow-1">
+                        <div class="search-wrapper">
+                            <i class="bi bi-search text-success"></i>
+                            <input type="text"
+                                   name="query"
+                                   class="form-control form-control-sm border-0 bg-transparent"
+                                   placeholder="Tìm kiếm sản phẩm..."
+                                   value="@currentSearch" />
+                        </div>
+                    </div>
+
+                    <!-- Nút sắp xếp -->
+                    
+                </form>
+            </div>
+
+            <!-- Tiêu đề -->
+            <h4 class="text-success mb-3">Danh sách Cho Tặng</h4>
+
+            <!-- Danh sách sản phẩm -->
+            <div class="row g-3">
+                @if (!Model.Any())
+                {
+                    <div class="col-12">
+                        <p class="text-muted">Không có sản phẩm phù hợp.</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        string img = item.AnhBaiViets?.FirstOrDefault()?.DuongDan;
+                        img = string.IsNullOrEmpty(img)
+                        ? "/images/no-image.png"
+                        : (img.StartsWith("/") ? img : "/" + img);
+
+                        <div class="col-md-4">
+                            <div class="product-card">
+                                <a asp-action="ChiTiet" asp-route-id="@item.MaBaiViet"
+                                   class="position-relative d-block">
+                                    <img src="@img" alt="@item.TieuDe" />
+
+                                    @if (item.SoLuong <= 0)
+                                    {
+                                        <div class="soldout-overlay">
+                                            <span class="soldout-text">HẾT HÀNG</span>
+                                        </div>
+                                    }
+                                </a>
+
+                                <div class="p-3">
+                                    <a asp-action="ChiTiet" asp-route-id="@item.MaBaiViet"
+                                       class="text-dark text-decoration-none d-block mb-1 product-title">
+                                        @item.TieuDe
+                                    </a>
+                                    <p class="text-muted mb-1 product-size">
+                                        Size: @(item.Size ?? "Không rõ")
+                                    </p>
+                                    <p class="text-success mb-0 product-price">
+                                        Miễn phí – 0đ
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+﻿@model SWAPFIT.Models.NguoiDung
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="container mt-5" style="max-width: 420px;">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4">
+            <h3 class="text-center mb-4 text-primary fw-bold">Đăng nhập</h3>
+
+            @* Hiển thị lỗi từ TempData hoặc ViewBag *@
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger text-center">@TempData["Error"]</div>
+            }
+            else if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger text-center">@ViewBag.Error</div>
+            }
+
+            <form method="post" asp-action="Login" asp-controller="Account">
+                <div class="mb-3">
+                    <label asp-for="TenDangNhap" class="form-label">Tên đăng nhập</label>
+                    <input asp-for="TenDangNhap" class="form-control" placeholder="Nhập tên đăng nhập" required />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="MatKhau" class="form-label">Mật khẩu</label>
+                    <input asp-for="MatKhau" type="password" class="form-control" placeholder="Nhập mật khẩu" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2">Đăng nhập</button>
+            </form>
+
+            <p class="text-center mt-3 mb-0">
+                Chưa có tài khoản?
+                <a asp-action="Register" asp-controller="Account" class="text-decoration-none fw-bold">Đăng ký ngay</a>
+            </p>
+        </div>
+    </div>
+</div>

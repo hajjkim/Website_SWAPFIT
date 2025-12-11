@@ -1,0 +1,30 @@
+﻿@model IEnumerable<SWAPFIT.Models.BaiViet>
+@{
+    ViewData["Title"] = "Danh sách bài viết";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">📚 Danh sách bài viết</h2>
+
+    <a asp-action="Create" class="btn btn-primary mb-3">+ Tạo bài viết mới</a>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-success">
+            <tr>
+                <th>Tiêu đề</th>
+                <th>Ngày tạo</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.TieuDe</td>
+                    <td>@item.NgayTao?.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.TrangThai</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

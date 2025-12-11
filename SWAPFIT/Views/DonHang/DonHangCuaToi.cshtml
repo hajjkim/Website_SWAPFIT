@@ -1,0 +1,49 @@
+﻿@model List<SWAPFIT.Models.DonHang>
+
+<h2>Đơn hàng của tôi</h2>
+
+@if (!Model.Any())
+{
+    <p>Không có đơn hàng nào.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Mã ĐH</th>
+                <th>Người mua</th>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Cập nhật</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dh in Model)
+            {
+                <tr>
+                    <td>@dh.MaDonHang</td>
+                    <td>@dh.MaNguoiMua</td>
+                    <td>@dh.NgayDat.ToString("dd/MM/yyyy")</td>
+                    <td>@dh.TongTien.ToString("N0") đ</td>
+                    <td>@dh.TrangThai</td>
+                    <td>
+                        <form asp-action="CapNhatTrangThai" method="post">
+                            <input type="hidden" name="id" value="@dh.MaDonHang" />
+
+                            <select name="trangThai" class="form-select">
+                                <option value="Chờ xác nhận" selected="@("Chờ xác nhận" == dh.TrangThai)">Chờ xác nhận</option>
+                                <option value="Đang giao" selected="@("Đang giao" == dh.TrangThai)">Đang giao</option>
+                                <option value="Đã hoàn thành" selected="@("Đã hoàn thành" == dh.TrangThai)">Đã hoàn thành</option>
+                                <option value="Đã hủy" selected="@("Đã hủy" == dh.TrangThai)">Đã hủy</option>
+                            </select>
+
+                            <button class="btn btn-primary btn-sm mt-1">Lưu</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

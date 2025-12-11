@@ -1,0 +1,92 @@
+﻿@model SWAPFIT.Models.BaoCaoTaiKhoan
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    string tenNguoiBaoCao = Model.NguoiBaoCao?.HoTen ?? Model.NguoiBaoCao?.TenDangNhap ?? "Không rõ";
+    string tenNguoiBiBaoCao = Model.NguoiBiBaoCao?.HoTen ?? Model.NguoiBiBaoCao?.TenDangNhap ?? "Không rõ";
+    string trangThaiClass = Model.TrangThai switch
+    {
+        "DaXuLy" => "badge bg-success",
+        "DangXuLy" => "badge bg-info",
+        _ => "badge bg-warning text-dark"
+    };
+}
+
+<div class="container py-4">
+    <div class="mb-4">
+        <h3 class="fw-bold text-primary">
+            ⚠ Chi tiết báo cáo tài khoản
+        </h3>
+        <p class="text-muted">Xem thông tin đầy đủ của báo cáo này</p>
+    </div>
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-light fw-semibold">
+            Thông tin báo cáo
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="fw-semibold text-secondary">Người báo cáo:</label>
+                <div class="fs-5">
+                    👤 @tenNguoiBaoCao
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="fw-semibold text-secondary">Người bị báo cáo:</label>
+                <div class="fs-5 text-danger">
+                    🚫 @tenNguoiBiBaoCao
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="fw-semibold text-secondary">Thời gian báo cáo:</label>
+                <div>
+                    🕒 @Model.NgayTao.ToString("HH:mm dd/MM/yyyy")
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="fw-semibold text-secondary">Trạng thái:</label>
+                <div>
+                    <span class="@trangThaiClass px-3 py-1 rounded-pill">
+                        @Model.TrangThai
+                    </span>
+                </div>
+            </div>
+            <hr />
+            <div class="mb-3">
+                <label class="fw-semibold text-secondary">Lý do báo cáo:</label>
+                <p class="mt-1 fs-5">@Model.LyDo</p>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.MoTaChiTiet))
+            {
+                <div class="mb-3">
+                    <label class="fw-semibold text-secondary">Mô tả chi tiết:</label>
+                    <div class="alert alert-light border mt-1">
+                        @Model.MoTaChiTiet
+                    </div>
+                </div>
+            }
+            <!-- Hiển thị các hình ảnh báo cáo -->
+            @if (Model.BaoCaoTaiKhoanAnhs != null && Model.BaoCaoTaiKhoanAnhs.Any())
+            {
+                <div class="mb-4">
+                    <label class="fw-semibold text-secondary fs-5">Hình ảnh làm bằng chứng:</label>
+                    <div class="row g-3 mt-2">
+                        @foreach (var anh in Model.BaoCaoTaiKhoanAnhs)
+                        {
+                            <div class="col-lg-4 col-md-6">
+                                <!-- Đảm bảo đường dẫn đúng -->
+                                <a href="@Url.Content(anh.DuongDan)" target="_blank">
+                                    <img src="@Url.Content(anh.DuongDan)" class="img-fluid rounded shadow-sm border"
+                                         style="max-height: 400px; object-fit: cover;" alt="Bằng chứng" />
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted fst-italic">Không có hình ảnh nào được tải lên.</p>
+            }
+        </div>
+    </div>
+</div>

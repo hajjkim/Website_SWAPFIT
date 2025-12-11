@@ -1,0 +1,44 @@
+﻿@model List<SWAPFIT.Model.OrderReport>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Quản lý khuyến mãi";
+}
+
+<h2 class="text-center mb-4 text-primary fw-bold">📊 Báo Cáo Đơn Hàng Theo Người Dùng</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Họ Tên</th>
+                        <th>Tổng Số Đơn</th>
+                        <th>Đang Xử Lý</th>
+                        <th>Hoàn Thành</th>
+                        <th>Đã Hủy</th>
+                        <th>Tổng Tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var report in Model)
+                    {
+                        <tr>
+                            <td>@report.TenDangNhap</td>
+                            <td>@report.HoTen</td>
+                            <td>@report.TongSoDon</td>
+                            <td>@report.DonHienTai</td>
+                            <td>@report.DonHoanThanh</td>
+                            <td>@report.DonHuy</td>
+                            <td class="fw-bold text-success">
+                                @report.TongTien.ToString("N0")đ
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

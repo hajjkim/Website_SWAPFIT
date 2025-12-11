@@ -1,0 +1,95 @@
+﻿@model SWAPFIT.Model.BaiVietDTO
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Chi tiết bài viết";
+}
+
+
+
+
+<div class="container mt-5">
+    <h3 class="fw-bold text-success mb-4 text-center">📄 Chi tiết bài viết</h3>
+
+    <div class="card shadow-sm p-4">
+        <!-- Tiêu đề bài viết -->
+        <h4 class="fw-bold text-primary">@Model.TieuDe</h4>
+
+        <!-- Ngày đăng -->
+        <p class="text-muted">Ngày đăng: @Model.NgayTao?.ToString("dd/MM/yyyy")</p>
+
+        <!-- Người đăng -->
+        <p><strong>Người đăng:</strong> @Model.HoTen</p>  <!-- Đảm bảo hiển thị đúng tên người đăng -->
+
+        <p><strong>Danh mục:</strong> @Model.TenDanhMuc</p>
+        <p><strong>Loại bài:</strong> @Model.LoaiBaiDang</p>
+        <p><strong>Giá:</strong> @((Model.GiaSanPham ?? 0).ToString("N0")) đ</p>
+        <p><strong>Số lượng:</strong> @Model.SoLuong</p>
+
+        <p><strong>Ngày tạo:</strong> @Model.NgayTao?.ToString("HH:mm dd/MM/yyyy")</p>
+
+        <p>
+            <strong>Trạng thái hiện tại:</strong>
+            <span class="badge
+                @(Model.TrangThai == "Chờ duyệt" ? "bg-warning text-dark" :
+                                                                          Model.TrangThai == "Đang hiển thị" ? "bg-success" :
+                                                                          Model.TrangThai == "Từ chối" ? "bg-danger" : "bg-secondary")">
+                @Model.TrangThai
+            </span>
+        </p>
+
+        <hr />
+
+        <p><strong>Mô tả chi tiết:</strong></p>
+        <p>@Model.NoiDung</p>
+
+        @* Ảnh *@
+        @if (Model.HinhAnhs != null && Model.HinhAnhs.Any())
+        {
+            <div class="row g-3 mt-3">
+                @foreach (var img in Model.HinhAnhs)
+                {
+                    <div class="col-md-3 col-4">
+                        @* <img src="@img" class="img-fluid rounded shadow-sm" alt="Ảnh bài viết" /> *@
+                        <img src="@(!string.IsNullOrEmpty(img) ? img : "/images/placeholder.png")" class="img-fluid rounded shadow-sm" alt="Ảnh bài viết" />
+
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted mt-3">Bài viết chưa có hình ảnh.</p>
+        }
+
+    </div>
+</div>
+
+<!-- =======================
+     Nút thao tác tùy trạng thái
+======================= -->
+<div class="d-flex gap-3 mt-4 justify-content-between">
+    @if (Model.TrangThai == "Chờ duyệt")
+    {
+        <a asp-action="Duyet"
+           asp-route-id="@Model.MaBaiViet"
+           class="btn btn-success btn-lg">
+            ✔ Duyệt bài
+        </a>
+
+        <a asp-action="TuChoi"
+           asp-route-id="@Model.MaBaiViet"
+           class="btn btn-warning btn-lg">
+            ✖ Từ chối
+        </a>
+    }
+    else
+    {
+        <span class="badge bg-info text-dark align-self-center">
+            Bài viết đã @Model.TrangThai.ToLower()
+        </span>
+    }
+
+    <a asp-action="Dashboard" class="btn btn-outline-secondary btn-lg">
+        ← Quay lại Dashboard
+    </a>
+</div>

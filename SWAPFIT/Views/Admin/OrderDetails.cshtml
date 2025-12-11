@@ -1,0 +1,102 @@
+﻿@model SWAPFIT.Models.DonHang
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Quản lý khuyến mãi";
+}
+<div class="container mt-4 mb-5">
+    <h3 class="mb-4 text-primary fw-bold">Chi tiết đơn hàng</h3>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h4 class="mb-3 text-success fw-bold">Mã đơn hàng: @Model.MaDonHang</h4>
+
+            <!-- NGƯỜI MUA – HIỂN THỊ ĐÚNG 100% DÙ TÀI KHOẢN BỊ XÓA -->
+            <p class="mb-2">
+                <strong>Người mua:</strong>
+                @{
+                    var tenHienThi = "Tài khoản đã xóa";
+                    if (Model.NguoiMua != null)
+                    {
+                        tenHienThi = !string.IsNullOrWhiteSpace(Model.NguoiMua.HoTen)
+                        ? Model.NguoiMua.HoTen
+                        : (!string.IsNullOrWhiteSpace(Model.NguoiMua.TenDangNhap)
+                        ? Model.NguoiMua.TenDangNhap
+                        : "Tài khoản đã xóa");
+                    }
+                }
+                <span class="fw-bold">@tenHienThi</span>
+            </p>
+
+            <p><strong>Người bán:</strong> @Model.NguoiBan?.HoTen</p>
+            <p><strong>Địa chỉ giao hàng:</strong> @Model.DiaChiGiaoHang</p>
+            <p><strong>Phương thức thanh toán:</strong> @Model.PhuongThucThanhToan</p>
+            <p><strong>Phương thức giao hàng:</strong> @Model.PhuongThucGiaoHang</p>
+            <span class="text-danger fw-bold">@Model.TongTien.ToString("N0") ₫</span>
+            <p><strong>Ngày đặt:</strong> @Model.NgayDat.ToString("HH:mm - dd/MM/yyyy")</p>
+
+            <p>
+                <strong>Trạng thái:</strong>
+                <span class="badge @(Model.TrangThai == "Chờ duyệt" ? "bg-warning text-dark" :
+                                                                                                                                              Model.TrangThai == "Đang xử lý" ? "bg-primary" :
+                                                                                                                                              Model.TrangThai == "Hoàn thành" ? "bg-success" :
+                                                                                                                                              Model.TrangThai == "Đã hủy" ? "bg-danger" : "bg-secondary")">
+                    @Model.TrangThai
+                </span>
+            </p>
+
+            <hr class="my-4">
+
+            <p><strong>Chi tiết đơn hàng:</strong></p>
+            <div class="border rounded p-3 bg-light mb-4">
+                @foreach (var item in Model.ChiTietDonHangs)
+                {
+                    <div class="mb-2">
+                        <strong>Sản phẩm:</strong> @item.BaiViet.TieuDe
+                    </div>
+
+                    <!-- Hiển thị hình ảnh sản phẩm -->
+                    @if (item.BaiViet.AnhBaiViets != null && item.BaiViet.AnhBaiViets.Any())
+                    {
+                        <div class="mb-3">
+                            <strong>Hình ảnh sản phẩm:</strong>
+                            <div class="row g-3">
+                                @foreach (var img in item.BaiViet.AnhBaiViets)
+                                {
+                                    <div class="col-md-4 col-6">
+                                        <a href="@img.DuongDan" target="_blank">
+                                            <img src="@img.DuongDan" class="img-fluid rounded border shadow-sm" alt="Ảnh bài viết" />
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Không có hình ảnh cho sản phẩm này.</p>
+                    }
+
+                    <div class="mb-2">
+                        <strong>Số lượng:</strong> @item.SoLuong
+                    </div>
+                    <div class="mb-2">
+                        <strong>Đơn giá:</strong> @item.Gia.ToString("N0")đ
+                    </div>
+                <div class="mb-2">
+                    <strong>Tổng tiền:</strong> @((item.SoLuong * item.Gia).ToString("N0"))đ
+                </div>
+
+
+                    <hr />
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- NÚT THAO TÁC -->
+    <div class="d-flex flex-wrap gap-3 align-items-center">
+        <a asp-action="Orders" class="btn btn-outline-secondary ms-auto">
+            ← Quay lại danh sách đơn hàng
+        </a>
+    </div>
+</div>
