@@ -7,6 +7,7 @@ namespace SWAPFIT.Models
 {
     public class BaiViet
     {
+<<<<<<< HEAD
         internal readonly string HoTen;
         internal readonly string TenDangNhap;
         internal readonly string TenDanhMuc;
@@ -21,6 +22,17 @@ namespace SWAPFIT.Models
 
         public NguoiDung? NguoiDung { get; set; }
 
+=======
+        [Key]
+        public int MaBaiViet { get; set; }
+
+        public int MaNguoiDung { get; set; }
+
+        [ForeignKey(nameof(MaNguoiDung))]
+        public NguoiDung? NguoiDung { get; set; }
+
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         public int? MaDanhMuc { get; set; }
         public int? MaThuongHieu { get; set; }
         public int? MaDiaChi { get; set; }
@@ -39,7 +51,11 @@ namespace SWAPFIT.Models
         [StringLength(100)]
         public string? TrangThai { get; set; }
 
+<<<<<<< HEAD
         public DateTime? NgayTao { get; set; }
+=======
+        public DateTime? NgayTao { get; set; } = DateTime.Now;
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
         // 🆕 Thêm trường mới
         [StringLength(20)]
@@ -49,6 +65,10 @@ namespace SWAPFIT.Models
         public int SoLuong { get; set; }
 
         public ICollection<AnhBaiViet>? AnhBaiViets { get; set; }
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         // ==================== Navigation properties ====================
         [ForeignKey(nameof(MaDanhMuc))]
         public DanhMuc? DanhMuc { get; set; }
@@ -58,11 +78,20 @@ namespace SWAPFIT.Models
 
         [ForeignKey(nameof(MaDiaChi))]
         public DiaChi? DiaChi { get; set; }
+<<<<<<< HEAD
         public string? LyDo { get; set; } // thêm dấu ? để nullable → không bắt buộc nữa
         //public string HoTen { get; internal set; }
         //public string TenDangNhap { get; internal set; }
         //public string TenDanhMuc { get; internal set; }
         //public string HinhAnh { get; internal set; }
         //public string DuongDan { get; internal set; }
+=======
+
+        [StringLength(500)]
+        public string? LyDoTuChoi { get; set; }
+        public ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; } = new List<ChiTietDonHang>();
+        public ICollection<ChiTietGioHang> ChiTietGioHangs { get; set; } = new List<ChiTietGioHang>();
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     }
 }

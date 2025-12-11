@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 ﻿
 using Microsoft.AspNetCore.Mvc;
+=======
+﻿using Microsoft.AspNetCore.Mvc;
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 using Microsoft.EntityFrameworkCore;
 using SWAPFIT.Data;
 using SWAPFIT.Models;
@@ -18,6 +22,7 @@ namespace SWAPFIT.Controllers
         // =============================
         // ⭐ TRANG PROFILE NGƯỜI DÙNG
         // =============================
+<<<<<<< HEAD
         //   public IActionResult Index()
         //   {
         //       var userId = HttpContext.Session.GetInt32("MaNguoiDung");
@@ -90,6 +95,8 @@ namespace SWAPFIT.Controllers
 
 
 
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         public IActionResult Index()
         {
             var userId = HttpContext.Session.GetInt32("MaNguoiDung");
@@ -123,6 +130,7 @@ namespace SWAPFIT.Controllers
                 .OrderByDescending(d => d.NgayDat)
                 .ToList();
 
+<<<<<<< HEAD
             //🟢⭐ TIN NHẮN GẦN ĐÂY(20 tin gần nhất)
             ViewBag.TinNhanGanDay =
             _context.TinNhans
@@ -142,6 +150,33 @@ namespace SWAPFIT.Controllers
                 })
                 .ToList();
 
+=======
+            // 🟢⭐ TIN NHẮN GẦN ĐÂY (20 tin gần nhất)
+            //ViewBag.TinNhan = _context.TinNhans
+            //    .Where(t => t.MaNguoiGui == userId || t.MaNguoiNhan == userId)
+            //    .Include(t => t.NguoiGui)
+            //    .Include(t => t.NguoiNhan)
+            //    .OrderByDescending(t => t.ThoiGianGui)
+            //    .Take(20)
+            //    .ToList();
+            ViewBag.TinNhanGanDay =
+    _context.TinNhans
+        .Where(t => t.MaNguoiGui == userId || t.MaNguoiNhan == userId)
+        .OrderByDescending(t => t.ThoiGianGui)
+        .AsEnumerable()
+        .GroupBy(t => t.MaNguoiGui == userId ? t.MaNguoiNhan : t.MaNguoiGui)
+        .Select(g =>
+        {
+            var tn = g.First(); // tin mới nhất
+            int otherId = tn.MaNguoiGui == userId ? tn.MaNguoiNhan : tn.MaNguoiGui;
+
+            tn.NguoiGui = _context.NguoiDungs.FirstOrDefault(x => x.MaNguoiDung == tn.MaNguoiGui);
+            tn.NguoiNhan = _context.NguoiDungs.FirstOrDefault(x => x.MaNguoiDung == tn.MaNguoiNhan);
+
+            return tn;
+        })
+        .ToList();
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             // 🟢 Các voucher đã lưu
             var claimedVouchers = _context.UserVouchers
                 .Where(uv => uv.UserId == userId)
@@ -153,6 +188,10 @@ namespace SWAPFIT.Controllers
             return View(user);
         }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         // =============================
         // ⭐ TRANG CÁ NHÂN CÔNG KHAI
         // =============================
@@ -184,6 +223,7 @@ namespace SWAPFIT.Controllers
             }
             return Json(new { success = true });
         }
+<<<<<<< HEAD
         //[HttpPost]
         //[ValidateAntiForgeryToken]
         //public async Task<IActionResult> BaoCaoNguoiDung(int nguoiBiBaoCaoId, string lyDo, string? moTaChiTiet, List<IFormFile> files)
@@ -289,6 +329,11 @@ namespace SWAPFIT.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> BaoCaoNguoiDung(int nguoiBiBaoCaoId, string lyDo, string? moTaChiTiet, List<IFormFile> files)
+=======
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult BaoCaoNguoiDung(int nguoiBiBaoCaoId, string lyDo, string? moTaChiTiet)
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         {
             var userId = HttpContext.Session.GetInt32("MaNguoiDung");
             if (userId == null)
@@ -308,6 +353,10 @@ namespace SWAPFIT.Controllers
             }
 
             var nguoiBaoCao = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == userId.Value);
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             // Lưu báo cáo
             var baoCao = new BaoCaoTaiKhoan
             {
@@ -319,6 +368,7 @@ namespace SWAPFIT.Controllers
                 TrangThai = "Moi"
             };
             _context.BaoCaoTaiKhoans.Add(baoCao);
+<<<<<<< HEAD
             await _context.SaveChangesAsync();
 
             // Lưu các ảnh làm bằng chứng
@@ -351,17 +401,32 @@ namespace SWAPFIT.Controllers
                 }
                 await _context.SaveChangesAsync();
             }
+=======
+            _context.SaveChanges();
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
             // Gửi thông báo cho Admin
             var admin = _context.NguoiDungs
                 .FirstOrDefault(u => u.VaiTro == "Admin" || u.VaiTro == "admin");
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             if (admin != null)
             {
                 string tenBaoCao = nguoiBaoCao?.HoTen ?? nguoiBaoCao?.TenDangNhap ?? "Người dùng";
                 string tenBiBaoCao = nguoiBiBaoCao.HoTen ?? nguoiBiBaoCao.TenDangNhap ?? "Không rõ";
+<<<<<<< HEAD
                 var noiDungThongBao = $"{tenBaoCao} đã báo cáo tài khoản {tenBiBaoCao}. Lý do: {lyDo}";
                 if (!string.IsNullOrWhiteSpace(moTaChiTiet))
                     noiDungThongBao += $" | Chi tiết: {moTaChiTiet}";
+=======
+
+                var noiDungThongBao = $"{tenBaoCao} đã báo cáo tài khoản {tenBiBaoCao}. Lý do: {lyDo}";
+                if (!string.IsNullOrWhiteSpace(moTaChiTiet))
+                    noiDungThongBao += $" | Chi tiết: {moTaChiTiet}";
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                 var tb = new ThongBao
                 {
                     MaNguoiDung = admin.MaNguoiDung,
@@ -370,8 +435,14 @@ namespace SWAPFIT.Controllers
                     DaXem = false,
                     LoaiThongBao = "BaoCao"
                 };
+<<<<<<< HEAD
                 _context.ThongBaos.Add(tb);
                 await _context.SaveChangesAsync();
+=======
+
+                _context.ThongBaos.Add(tb);
+                _context.SaveChanges();
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             }
 
             TempData["Success"] = "Báo cáo đã được gửi thành công. Cảm ơn bạn!";

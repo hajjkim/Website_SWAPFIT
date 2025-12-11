@@ -1,6 +1,10 @@
 ﻿@model List<SWAPFIT.Models.DonHang>
 
+<<<<<<< HEAD
 <h2>Lịch sử đơn hàng</h2>
+=======
+<h2 class="mb-3">Lịch sử đơn hàng</h2>
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
 @if (!Model.Any())
 {
@@ -8,6 +12,7 @@
 }
 else
 {
+<<<<<<< HEAD
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -16,22 +21,75 @@ else
                 <th>Tổng tiền</th>
                 <th>Trạng thái</th>
                 <th>Sản phẩm</th>
+=======
+    <table class="table table-bordered align-middle">
+        <thead>
+            <tr>
+                <th style="width:90px;">Mã ĐH</th>
+                <th style="width:130px;">Ngày đặt</th>
+                <th style="width:140px;">Tổng tiền</th>
+                <th style="width:140px;">Trạng thái</th>
+                <th>Sản phẩm</th>
+                <th style="width:130px;">Thao tác</th>
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             </tr>
         </thead>
         <tbody>
             @foreach (var dh in Model)
             {
+<<<<<<< HEAD
                 <tr>
                     <td>@dh.MaDonHang</td>
                     <td>@dh.NgayDat.ToString("dd/MM/yyyy")</td>
                     <td>@dh.TongTien.ToString("N0") đ</td>
                     <td>@dh.TrangThai</td>
+=======
+                // Đổi trạng thái nội bộ (HoanThanh, DaHuy, ...) sang tiếng Việt dễ đọc
+                string trangThaiHienThi = dh.TrangThai switch
+                {
+                    "HoanThanh" => "Hoàn thành",
+                    "DaHuy" => "Đã hủy",
+                    "DaGiao" => "Đã giao",
+                    _ => "Đang xử lý"
+                };
+
+                <tr>
+                    <td>#@dh.MaDonHang</td>
+                    <td>@dh.NgayDat.ToString("dd/MM/yyyy")</td>
+                    <td>@dh.TongTien.ToString("N0") đ</td>
+                    <td>@trangThaiHienThi</td>
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                     <td>
                         @foreach (var ct in dh.ChiTietDonHangs)
                         {
                             <div>- @ct.BaiViet.TieuDe (SL: @ct.SoLuong)</div>
                         }
                     </td>
+<<<<<<< HEAD
+=======
+                    <td>
+                        @* Chỉ cho người mua hủy khi đơn chưa Hoàn thành / Đã giao / Đã hủy *@
+                        @if (dh.TrangThai != "HoanThanh"
+                                        && dh.TrangThai != "DaGiao"
+                                        && dh.TrangThai != "DaHuy")
+                        {
+                            <form asp-action="HuyDonHangNguoiMua"
+                                  asp-controller="DonHang"
+                                  method="post"
+                                  class="d-inline"
+                                  onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn hàng #@dh.MaDonHang ?');">
+                                <input type="hidden" name="id" value="@dh.MaDonHang" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    Hủy đơn
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted small">Không thể hủy</span>
+                        }
+                    </td>
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                 </tr>
             }
         </tbody>

@@ -6,6 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
+<<<<<<< HEAD
 	<ItemGroup>
 		<PackageReference Include="bootstrap" Version="5.3.8" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
@@ -25,5 +26,24 @@
 		<!-- Change backslashes to forward slashes -->
 		<Folder Include="wwwroot/images/no-image.png" />
 	</ItemGroup>
+=======
+  <ItemGroup>
+    <PackageReference Include="bootstrap" Version="5.3.8" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\no-image.png\" />
+  </ItemGroup>
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
 </Project>

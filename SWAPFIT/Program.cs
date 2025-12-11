@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+<<<<<<< HEAD
 using Microsoft.Extensions.FileProviders;
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 using SWAPFIT.Data;
 using SWAPFIT.Hubs;
 
@@ -18,6 +21,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/Login";
     });
+<<<<<<< HEAD
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -38,6 +42,14 @@ builder.Services.AddSession(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+=======
+
+// DB
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
 // SignalR
 builder.Services.AddSignalR();
@@ -67,6 +79,11 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseRouting();
 app.UseRouting();
+
+app.UseSession();
+
+// ⭐ BẮT BUỘC phải gọi
+app.UseAuthentication();
 
 app.UseSession();
 

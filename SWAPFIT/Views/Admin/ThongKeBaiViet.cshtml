@@ -78,11 +78,19 @@
                             <td class="text-center">@post.NgayTao?.ToString("dd/MM/yyyy")</td>
                             <td class="text-center">
                                 <span class="badge
+<<<<<<< HEAD
                                                     @(post.TrangThai == "Đang hiển thị" || post.TrangThai == "Đã duyệt"
                                                                                                                     ? "bg-success"
                                                                                                                     : post.TrangThai == "Chờ duyệt"
                                                                                                                         ? "bg-warning text-dark"
                                                                                                                         : "bg-danger")">
+=======
+                                            @(post.TrangThai == "Đang hiển thị" || post.TrangThai == "Đã duyệt"
+                                                                              ? "bg-success"
+                                                                              : post.TrangThai == "Chờ duyệt"
+                                                                                  ? "bg-warning text-dark"
+                                                                                  : "bg-danger")">
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                             @post.TrangThai
                         </span>
                     </td>

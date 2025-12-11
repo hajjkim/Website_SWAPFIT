@@ -7,6 +7,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
+<<<<<<< HEAD
     .product-title {
         font-weight: 600;
         font-size: 1.4rem;
@@ -34,6 +35,13 @@
         .btn-cart:hover, .btn-buy:hover {
             opacity: 0.9;
         }
+=======
+    .product-title { font-weight: 600; font-size: 1.4rem; }
+    .product-price { font-size: 1.5rem; color: #28a745; font-weight: bold; }
+    .btn-cart { background-color: #cdeed3; color: #2e7d32; border: none; font-weight: 500; }
+    .btn-buy { background-color: #28a745; color: #fff; font-weight: 500; }
+    .btn-cart:hover, .btn-buy:hover { opacity: 0.9; }
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
     .info-box {
         background-color: #f5fff5;
@@ -43,10 +51,14 @@
         font-size: 0.9rem;
     }
 
+<<<<<<< HEAD
     .product-specs td {
         padding: 6px 10px;
         font-size: 0.95rem;
     }
+=======
+    .product-specs td { padding: 6px 10px; font-size: 0.95rem; }
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
     .rating-box, .comment-box {
         background-color: #fafafa;
@@ -68,16 +80,21 @@
         border-radius: 12px;
     }
 
+<<<<<<< HEAD
         .seller-box h5 {
             color: #2e7d32;
             font-weight: 600;
         }
+=======
+    .seller-box h5 { color: #2e7d32; font-weight: 600; }
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
     .related-card {
         border: none;
         transition: 0.3s;
         box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
+<<<<<<< HEAD
 
         .related-card:hover {
             transform: translateY(-5px);
@@ -90,6 +107,11 @@
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
     }
+=======
+    .related-card:hover { transform: translateY(-5px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+    .related-img { height: 200px; object-fit: cover; border-top-left-radius: 10px; border-top-right-radius: 10px; }
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
     /* Overlay HẾT HÀNG */
     .soldout-overlay {
@@ -233,8 +255,13 @@
                     <div>
                         <h5 class="mb-1 text-success fw-bold">
                             @(Model.NguoiDung?.HoTen
+<<<<<<< HEAD
                                                         ?? Model.NguoiDung?.TenDangNhap
                                                         ?? "Người bán")
+=======
+                                ?? Model.NguoiDung?.TenDangNhap
+                                ?? "Người bán")
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         </h5>
 
                         <p class="text-muted mb-1">
@@ -289,6 +316,7 @@
     <div class="rating-box mt-5">
         <h5 class="fw-semibold mb-3">Phản hồi từ khách hàng</h5>
 
+<<<<<<< HEAD
         @if (ViewBag.BinhLuans is List<SWAPFIT.Models.BinhLuanTinTuc> binhLuans && binhLuans.Any())
         {
             foreach (var bl in binhLuans)
@@ -312,10 +340,85 @@
                                 </div>
                             </div>
                             <p class="mt-2 mb-0">@bl.NoiDung</p>
+=======
+@if (ViewBag.BinhLuans is List<SWAPFIT.Models.BinhLuanTinTuc> binhLuans && binhLuans.Any())
+{
+        foreach (var bl in binhLuans)
+    {
+        var blAvatar = bl.NguoiDung?.AnhDaiDien;
+        if (string.IsNullOrEmpty(blAvatar)) blAvatar = "/images/default-avatar.png";
+        else if (!blAvatar.StartsWith("/")) blAvatar = "/" + blAvatar;
+
+        string tenHienThi = bl.NguoiDung?.HoTen
+                            ?? bl.NguoiDung?.TenDangNhap
+                            ?? "Khách";
+
+        <div class="comment-item mb-4 p-3 border rounded bg-white shadow-sm">
+            <div class="d-flex gap-3">
+                <img src="@blAvatar" class="rounded-circle" width="48" height="48" style="object-fit:cover;" />
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong class="text-success">@tenHienThi</strong>
+                            <small class="text-muted ms-2">@bl.NgayBinhLuan?.ToString("HH:mm - dd/MM/yyyy")</small>
+                        </div>
+                    </div>
+                    <p class="mt-2 mb-0">@bl.NoiDung</p>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p class="text-muted">Chưa có bình luận nào. Hãy là người đầu tiên!</p>
+}
+
+<form asp-action="ThemBinhLuan" method="post" class="mt-4">
+    <input type="hidden" name="baiVietId" value="@Model.MaBaiViet" />
+    <div class="input-group">
+        <input type="text" name="noiDung" class="form-control" placeholder="Viết bình luận..." required />
+        <button class="btn btn-success" type="submit">Gửi</button>
+    </div>
+</form>
+</div>
+
+<!-- QUAY LẠI -->
+<div class="mt-4">
+    <a href="javascript:history.back()" class="btn btn-outline-success">← Quay lại danh sách</a>
+</div>
+
+<!-- SẢN PHẨM LIÊN QUAN -->
+@if (ViewBag.SanPhamLienQuan is List<SWAPFIT.Models.BaiViet> related && related.Any())
+{
+    <div class="mt-5">
+        <h4 class="fw-semibold text-success mb-4">
+            <i class="bi bi-stars"></i> Sản phẩm liên quan
+        </h4>
+
+        <div class="row g-4">
+            @foreach (var sp in related)
+            {
+                var anh = sp.AnhBaiViets?.FirstOrDefault()?.DuongDan;
+                if (string.IsNullOrEmpty(anh)) anh = "/images/no-image.png";
+                else if (!anh.StartsWith("/")) anh = "/" + anh;
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="card related-card h-100">
+                        <img src="@anh" class="related-img" alt="@sp.TieuDe">
+                        <div class="card-body">
+                            <h6 class="card-title text-truncate">@sp.TieuDe</h6>
+                            <p class="text-success fw-bold mb-2">@((sp.GiaSanPham ?? 0).ToString("N0")) đ</p>
+                            <a href="@Url.Action("ChiTiet", "TinTuc", new { id = sp.MaBaiViet })"
+                               class="btn btn-outline-success btn-sm w-100">
+                                Xem chi tiết
+                            </a>
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         </div>
                     </div>
                 </div>
             }
+<<<<<<< HEAD
         }
         else
         {
@@ -368,6 +471,11 @@
             </div>
         </div>
     }
+=======
+        </div>
+    </div>
+}
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 </div>
 <script>
     function changeMainImg(src) {

@@ -26,6 +26,7 @@ namespace SWAPFIT.Controllers
 
         // ==========================================
         // HIỂN THỊ FORM ĐĂNG BÀI
+<<<<<<< HEAD
         public IActionResult Create()
         {
             ViewBag.DanhMucs = new SelectList(_context.DanhMucs, "MaDanhMuc", "TenDanhMuc");
@@ -37,6 +38,21 @@ namespace SWAPFIT.Controllers
             };
 
             return View(baiViet);
+=======
+        // ==========================================
+        [HttpGet]
+        public IActionResult Create()
+        {
+            var userId = HttpContext.Session.GetInt32("MaNguoiDung");
+            if (userId == null)
+            {
+                TempData["Error"] = "⚠️ Bạn cần đăng nhập trước khi đăng bài.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            LoadDropdownData();
+            return View();
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         }
 
         // ==========================================
@@ -100,7 +116,12 @@ namespace SWAPFIT.Controllers
         //    TempData["Message"] = "🎉 Bài viết của bạn đã được gửi và đang chờ xét duyệt.";
         //    return RedirectToAction("ThongBaoChoDuyet");
         //}
+<<<<<<< HEAD
 
+=======
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         //public async Task<IActionResult> Create(BaiViet model, List<IFormFile> AnhSanPham)
         //{
         //    // Lấy id người dùng đăng bài
@@ -216,6 +237,7 @@ namespace SWAPFIT.Controllers
 
 
 
+<<<<<<< HEAD
         //[HttpPost]
         //[ValidateAntiForgeryToken]
         //public async Task<IActionResult> Create(BaiViet model, List<IFormFile> AnhSanPham)
@@ -303,11 +325,49 @@ namespace SWAPFIT.Controllers
                 {
                     var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Upload", "AnhBaiViet");
                     Directory.CreateDirectory(uploadFolder); // tạo thư mục nếu chưa có
+=======
+      
+        public async Task<IActionResult> Create(BaiViet model, List<IFormFile> AnhSanPham)
+        {
+            var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
+            if (maNguoiDung == null)
+                return RedirectToAction("Login", "Account");
+
+            if (!ModelState.IsValid)
+            {
+                LoadDropdownData();
+                return View(model);
+            }
+
+            // CHỈ CẦN GÁN MaNguoiDung là đủ – EF sẽ tự hiểu!
+            model.MaNguoiDung = maNguoiDung.Value;
+            model.NgayTao = DateTime.Now;
+            model.TrangThai = "Chờ duyệt";
+
+            if (model.LoaiBaiDang == "Tặng")
+                model.GiaSanPham = 0;
+
+            try
+            {
+                // Nếu bạn KHÔNG có trigger chặn update MaNguoiDung thì KHÔNG CẦN disable trigger
+                // Nếu có trigger thì để lại 2 dòng dưới, còn không thì xóa luôn cho nhẹ
+                // await _context.Database.ExecuteSqlRawAsync("DISABLE TRIGGER ALL ON BaiViets");
+
+                _context.BaiViets.Add(model);
+                await _context.SaveChangesAsync(); // lúc này model.MaBaiViet đã có giá trị
+
+                // === LƯU ẢNH (bắt buộc phải có) ===
+                if (AnhSanPham != null && AnhSanPham.Count > 0)
+                {
+                    var uploadFolder = Path.Combine(_env.WebRootPath, "images", "posts");
+                    Directory.CreateDirectory(uploadFolder);
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
                     foreach (var file in AnhSanPham)
                     {
                         if (file.Length > 0)
                         {
+<<<<<<< HEAD
                             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                             var filePath = Path.Combine(uploadFolder, fileName);
 
@@ -322,6 +382,19 @@ namespace SWAPFIT.Controllers
                                 DuongDan = "/Upload/AnhBaiViet/" + fileName
                             };
                             _context.AnhBaiViets.Add(anh);
+=======
+                            var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                            var filePath = Path.Combine(uploadFolder, fileName);
+
+                            using var stream = new FileStream(filePath, FileMode.Create);
+                            await file.CopyToAsync(stream);
+
+                            _context.AnhBaiViets.Add(new AnhBaiViet
+                            {
+                                MaBaiViet = model.MaBaiViet,
+                                DuongDan = "/images/posts/" + fileName
+                            });
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         }
                     }
                     await _context.SaveChangesAsync();
@@ -330,6 +403,7 @@ namespace SWAPFIT.Controllers
                 TempData["Success"] = "Đăng bài thành công! Đang chờ duyệt...";
                 return RedirectToAction("ThongBaoChoDuyet");
             }
+<<<<<<< HEAD
 
             // Nếu có lỗi validate → load lại dropdown
             ViewBag.DanhMucs = new SelectList(_context.DanhMucs, "MaDanhMuc", "TenDanhMuc");
@@ -449,6 +523,16 @@ namespace SWAPFIT.Controllers
 
 
 
+=======
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Có lỗi khi đăng bài: " + ex.Message;
+                LoadDropdownData();
+                return View(model);
+            }
+        }
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
 
         public IActionResult ThongBaoChoDuyet()
@@ -487,6 +571,7 @@ namespace SWAPFIT.Controllers
         // ==========================================
         // CHO TẶNG
         // ==========================================
+<<<<<<< HEAD
         //    public IActionResult ChoTang(
         //int[] DanhMucIds = null,
         //int[] ThuongHieuIds = null,
@@ -541,6 +626,62 @@ namespace SWAPFIT.Controllers
 
         //        return View(baiViets);
         //    }
+=======
+    //    public IActionResult ChoTang(
+    //int[] DanhMucIds = null,
+    //int[] ThuongHieuIds = null,
+    //string[] Sizes = null)
+    //    {
+    //        ViewBag.DanhMucs = _context.DanhMucs.ToList();
+    //        ViewBag.ThuongHieus = _context.ThuongHieus.ToList();
+
+    //        // Luôn KHỞI TẠO ViewBag.Sizes để tránh null
+    //        ViewBag.Sizes = new List<string>
+    //{
+    //    "S","M","L","XL","XXL","35","36","37","38","39","40","41","42","43","44"
+    //};
+
+    //        var query = _context.BaiViets
+    //            .Include(b => b.AnhBaiViets)
+    //            .Where(b => b.TrangThai == "Đang hiển thị" && b.LoaiBaiDang == "Tặng");
+
+    //        if (DanhMucIds?.Any() == true)
+    //            query = query.Where(b => DanhMucIds.Contains(b.MaDanhMuc ?? 0));
+
+    //        if (ThuongHieuIds?.Any() == true)
+    //            query = query.Where(b => ThuongHieuIds.Contains(b.MaThuongHieu ?? 0));
+
+    //        if (Sizes?.Any() == true)
+    //            query = query.Where(b => Sizes.Contains(b.Size));
+
+    //        return View(query.OrderByDescending(b => b.NgayTao).ToList());
+    //    }
+
+
+
+    //    // ==========================================
+    //    // THANH LÝ
+    //    // ==========================================
+    //    public IActionResult ThanhLy()
+    //    {
+    //        ViewBag.DanhMucs = _context.DanhMucs.ToList();
+    //        ViewBag.ThuongHieus = _context.ThuongHieus.ToList();
+
+    //        // THÊM DÒNG NÀY — bắt buộc!
+    //        ViewBag.Sizes = new List<string> { "S", "M", "L", "XL", "XXL", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44" };
+
+    //        var baiViets = _context.BaiViets
+    //            .Include(b => b.AnhBaiViets)
+    //            .Include(b => b.DanhMuc)
+    //            .Include(b => b.ThuongHieu)
+    //            .Include(b => b.NguoiDung)
+    //            .Where(b => b.TrangThai == "Đang hiển thị" && b.LoaiBaiDang == "Bán")
+    //            .OrderByDescending(b => b.NgayTao)
+    //            .ToList();
+
+    //        return View(baiViets);
+    //    }
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
 
 

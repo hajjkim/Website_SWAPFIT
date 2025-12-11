@@ -23,6 +23,7 @@ namespace SWAPFIT.Controllers
         // ================================
         // 🟢 DANH SÁCH "CHO TẶNG"
         // ================================
+<<<<<<< HEAD
         public async Task<IActionResult> ChoTang(
     string? query,                    // TÌM KIẾM
     string? sort,                     // SẮP XẾP
@@ -33,10 +34,19 @@ namespace SWAPFIT.Controllers
         {
             // Bắt đầu query
             var baiViets = _context.BaiViets
+=======
+        // ================================
+        // 🟢 DANH SÁCH "CHO TẶNG"
+        // ================================
+        public IActionResult ChoTang(List<int>? DanhMucIds, List<int>? ThuongHieuIds, List<string>? Sizes, string? Tinh, string? query)
+        {
+            var querySearch = _context.BaiViets
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                 .Include(x => x.DanhMuc)
                 .Include(x => x.ThuongHieu)
                 .Include(x => x.AnhBaiViets)
                 .Include(x => x.DiaChi)
+<<<<<<< HEAD
                 .Where(x => x.LoaiBaiDang == "Tặng" && x.TrangThai == "Đang hiển thị");
 
             // TÌM KIẾM THEO TÊN HOẶC MÔ TẢ
@@ -112,10 +122,63 @@ namespace SWAPFIT.Controllers
         {
             // Bắt đầu query: chỉ lấy bài viết "Bán" + đang hiển thị
             var baiViets = _context.BaiViets
+=======
+                .Where(x => x.LoaiBaiDang == "Tặng"
+                         && x.TrangThai != "Ẩn"      // Không lấy bài đã ẩn
+                         && x.TrangThai != "Đã xóa"); // Loại bỏ bài đã xóa
+
+            // Kiểm tra nếu có query tìm kiếm theo tên sản phẩm (Tiêu Đề)
+            if (!string.IsNullOrEmpty(query))
+            {
+                querySearch = querySearch.Where(x => x.TieuDe.Contains(query)); // Tìm kiếm theo Tiêu Đề
+            }
+
+            // Các bộ lọc khác
+            if (DanhMucIds != null && DanhMucIds.Any())
+                querySearch = querySearch.Where(x => x.MaDanhMuc.HasValue && DanhMucIds.Contains(x.MaDanhMuc.Value));
+
+            if (ThuongHieuIds != null && ThuongHieuIds.Any())
+                querySearch = querySearch.Where(x => x.MaThuongHieu.HasValue && ThuongHieuIds.Contains(x.MaThuongHieu.Value));
+
+            if (Sizes != null && Sizes.Any())
+                querySearch = querySearch.Where(x => Sizes.Contains(x.Size));
+
+            if (!string.IsNullOrEmpty(Tinh))
+                querySearch = querySearch.Where(x => x.DiaChi != null && x.DiaChi.Tinh == Tinh);
+
+            ViewBag.DanhMucs = _context.DanhMucs.ToList();
+            ViewBag.ThuongHieus = _context.ThuongHieus.ToList();
+
+            var tinhs = _context.DiaChis
+                .Where(d => d.Tinh != null)
+                .Select(d => d.Tinh)
+                .Distinct()
+                .OrderBy(t => t)
+                .ToList();
+
+            if (!tinhs.Any())
+            {
+                tinhs = GetDanhSachTinhMacDinh();
+            }
+
+            ViewBag.Tinhs = tinhs;
+
+            return View(querySearch.OrderByDescending(x => x.NgayTao).ToList());
+        }
+
+
+        // ================================
+        // 🟢 DANH SÁCH "THANH LÝ"
+        // ================================
+        public IActionResult ThanhLy(List<int>? DanhMucIds, List<int>? ThuongHieuIds, List<string>? Sizes, string? Tinh, string? query)
+        {
+            var querySearch = _context.BaiViets
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                 .Include(x => x.DanhMuc)
                 .Include(x => x.ThuongHieu)
                 .Include(x => x.AnhBaiViets)
                 .Include(x => x.DiaChi)
+<<<<<<< HEAD
                 .Where(x => x.TrangThai == "Đang hiển thị" && x.LoaiBaiDang == "Bán");
 
             // TÌM KIẾM THEO TIÊU ĐỀ HOẶC MÔ TẢ
@@ -179,6 +242,41 @@ namespace SWAPFIT.Controllers
         }
 
 
+=======
+                .Where(x => x.LoaiBaiDang == "Bán"
+                          && x.TrangThai != "Ẩn"      // Không lấy bài đã ẩn
+                          && x.TrangThai != "Đã xóa"); // Loại bỏ bài đã xóa
+
+            // Kiểm tra nếu có query tìm kiếm theo tên sản phẩm (Tiêu Đề)
+            if (!string.IsNullOrEmpty(query))
+            {
+                querySearch = querySearch.Where(x => x.TieuDe.Contains(query)); // Tìm kiếm theo Tiêu Đề
+            }
+
+            // Các bộ lọc khác
+            if (DanhMucIds != null && DanhMucIds.Any())
+                querySearch = querySearch.Where(x => DanhMucIds.Contains(x.MaDanhMuc ?? 0)); // default value 0 or any fallback
+
+            if (ThuongHieuIds != null && ThuongHieuIds.Any())
+                querySearch = querySearch.Where(x => x.MaThuongHieu.HasValue && ThuongHieuIds.Contains(x.MaThuongHieu.Value));
+
+            if (Sizes != null && Sizes.Any())
+                querySearch = querySearch.Where(x => Sizes.Contains(x.Size));
+
+            if (!string.IsNullOrEmpty(Tinh))
+                querySearch = querySearch.Where(x => x.DiaChi != null && x.DiaChi.Tinh == Tinh);
+
+            ViewBag.DanhMucs = _context.DanhMucs.ToList();
+            ViewBag.ThuongHieus = _context.ThuongHieus.ToList();
+
+            return View(querySearch.OrderByDescending(x => x.NgayTao).ToList());
+        }
+
+
+
+
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         // ================================
         // 🟢 CHI TIẾT BÀI VIẾT / SẢN PHẨM
         // ================================
@@ -218,6 +316,12 @@ namespace SWAPFIT.Controllers
         }
 
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         // ================================
         // 🟢 THÊM BÌNH LUẬN
         // ================================

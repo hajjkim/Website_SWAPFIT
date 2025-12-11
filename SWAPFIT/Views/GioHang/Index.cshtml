@@ -118,14 +118,43 @@
 
     @if (Model == null || Model.ChiTietGioHangs == null || !Model.ChiTietGioHangs.Any())
     {
+<<<<<<< HEAD
         <div class="empty-cart">
             <img src="https://cdn-icons-png.flaticon.com/512/102/102661.png" width="90" alt="empty-cart" class="mb-3" />
+=======
+        if (TempData["DaDatHang"] != null)
+        {
+            <div class="empty-cart">
+                <img src="https://cdn-icons-png.flaticon.com/512/845/845646.png" width="90" class="mb-3" />
+                <h4 class="text-success">🎉 Đặt hàng thành công!</h4>
+                <p>Đơn hàng của bạn đang chờ người bán xác nhận.</p>
+
+                <a href="/DonHang/LichSuDonHang" class="btn btn-success">📦 Xem đơn hàng</a>
+                <br /><br />
+                <a href="/TinTuc/ChoTang" class="btn btn-outline-success">🛍 Tiếp tục mua sắm</a>
+            </div>
+
+            return;
+        }
+
+        <!-- GIỎ HÀNG TRỐNG BÌNH THƯỜNG -->
+        <div class="empty-cart">
+            <img src="https://cdn-icons-png.flaticon.com/512/102/102661.png" width="90" class="mb-3" />
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             <p>Giỏ hàng của bạn đang trống.</p>
             <a asp-controller="TinTuc" asp-action="ChoTang" class="btn btn-outline-success btn-sm">
                 <i class="bi bi-arrow-left"></i> Tiếp tục mua sắm
             </a>
         </div>
+<<<<<<< HEAD
     }
+=======
+
+        return;
+    }
+
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     else
     {
         <table class="table table-hover align-middle text-center">
@@ -139,6 +168,7 @@
                 </tr>
             </thead>
             <tbody>
+<<<<<<< HEAD
             @foreach (var item in Model.ChiTietGioHangs)
 {
     if (item.BaiViet == null)
@@ -191,6 +221,60 @@
     </tr>
 }
 
+=======
+                @foreach (var item in Model.ChiTietGioHangs)
+                {
+                    if (item.BaiViet == null)
+                    {
+                        <tr><td colspan="5" class="text-danger">⚠️ Sản phẩm này không còn tồn tại!</td></tr>
+                        continue;
+                    }
+
+                    var thanhTien = (item.BaiViet.GiaSanPham ?? 0) * item.SoLuong;
+                    tongTien += thanhTien;
+
+                    <tr>
+                        <td class="text-start d-flex align-items-center gap-3">
+                            @{
+                                var anh = item.BaiViet.AnhBaiViets?.FirstOrDefault()?.DuongDan;
+                                var anhHienThi = string.IsNullOrEmpty(anh)
+                                ? "https://cdn-icons-png.flaticon.com/512/679/679720.png"
+                                : (anh.StartsWith("/") ? anh : "/" + anh);
+                            }
+
+                            <img src="@anhHienThi" alt="Ảnh sản phẩm" class="product-img" />
+
+                            <span class="fw-semibold">@item.BaiViet.TieuDe</span>
+                        </td>
+
+                        <td>
+                            <form asp-action="CapNhatSoLuong" method="post" class="d-flex justify-content-center align-items-center">
+                                <input type="hidden" name="maChiTiet" value="@item.MaChiTiet" />
+                                <input type="number"
+                                       name="soLuongMoi"
+                                       value="@item.SoLuong"
+                                       min="1"
+                                       max="@item.BaiViet.SoLuong"
+                                       class="form-control text-center"
+                                       style="width: 80px;"
+                                       onchange="this.form.submit()" />
+                            </form>
+                        </td>
+
+                        <td>@((item.BaiViet.GiaSanPham ?? 0).ToString("N0")) đ</td>
+                        <td class="text-success fw-bold">@thanhTien.ToString("N0") đ</td>
+
+                        <td>
+                            <form asp-action="XoaSanPham" method="post">
+                                <input type="hidden" name="maChiTiet" value="@item.MaChiTiet" />
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="bi bi-trash"></i> Xóa
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             </tbody>
         </table>
 

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿@model SWAPFIT.Models.GioHangViewModel
 
 <style>
@@ -66,10 +67,115 @@
         .table th, .table td {
             padding: 8px;
         }
+=======
+﻿@model SWAPFIT.Models.GioHang
+@using SWAPFIT.Model
+
+@{
+    ViewData["Title"] = "Xác nhận thanh toán";
+    decimal tongTien = 0;
+
+    var userVouchers = ViewBag.UserVouchers as List<UserVoucher>;
+}
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #f7fdf8;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .checkout-container {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+    }
+
+    .checkout-header {
+        border-bottom: 2px solid #e6f5e9;
+        margin-bottom: 25px;
+        padding-bottom: 10px;
+    }
+
+        .checkout-header h2 {
+            color: #2e7d32;
+            font-weight: 700;
+        }
+
+    .table th {
+        background-color: #a5d6a7 !important;
+        color: #1b5e20;
+        font-weight: 600;
+    }
+
+    .product-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        margin-right: 10px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2e7d32;
+    }
+
+    .radio-box {
+        background-color: #f1f8f2;
+        border: 1px solid #d0e9d2;
+        border-radius: 10px;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        transition: 0.3s;
+    }
+
+        .radio-box:hover {
+            border-color: #81c784;
+            background-color: #e8f5e9;
+        }
+
+    .total-box {
+        background-color: #e8f5e9;
+        border-radius: 10px;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 25px;
+    }
+
+    .btn-success {
+        background-color: #43a047;
+        border: none;
+        transition: 0.3s;
+    }
+
+        .btn-success:hover {
+            background-color: #2e7d32;
+        }
+
+    .alert-fee {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeeba;
+        padding: 10px 15px;
+        border-radius: 8px;
+        display: none;
+        margin-top: 10px;
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     }
 </style>
 
 <div class="checkout-container">
+<<<<<<< HEAD
     <div class="checkout-header d-flex justify-content-between align-items-center mb-4">
         <h2>Xác nhận thanh toán</h2>
         <a asp-controller="GioHang" asp-action="Index" class="btn btn-outline-success btn-sm">
@@ -82,10 +188,32 @@
         <div class="mb-4">
             <label class="form-label">Địa chỉ giao hàng</label>
             <input type="text" name="diaChiGiaoHang" class="form-control" placeholder="Nhập địa chỉ nhận hàng của bạn..." required />
+=======
+    <div class="checkout-header d-flex justify-content-between align-items-center">
+        <h2>💳 Xác nhận thanh toán</h2>
+        <a asp-controller="GioHang" asp-action="Index" class="btn btn-outline-success btn-sm">
+            <i class="bi bi-arrow-left"></i> Quay lại giỏ hàng
+        </a>
+    </div>
+
+    <!-- Form đặt hàng -->
+    <form asp-action="DatHang" asp-controller="GioHang" method="post">
+        @Html.AntiForgeryToken()
+
+        <!-- Địa chỉ giao hàng -->
+        <div class="mb-4">
+            <label class="form-label">📍 Địa chỉ giao hàng</label>
+            <input type="text"
+                   name="diaChiGiaoHang"
+                   class="form-control"
+                   placeholder="Nhập địa chỉ nhận hàng của bạn..."
+                   required />
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         </div>
 
         <!-- Phương thức thanh toán -->
         <div class="mb-4">
+<<<<<<< HEAD
             <label class="form-label">Phương thức thanh toán</label>
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="phuongThucThanhToan" value="COD" checked />
@@ -114,12 +242,90 @@
             </div>
             <div id="phiShipAlert" class="alert alert-info mt-2" style="display: none;">
                 Đã cộng 50.000đ phí giao hỏa tốc vào tổng tiền.
+=======
+            <label class="form-label">💰 Phương thức thanh toán</label>
+            <div class="radio-box">
+                <input class="form-check-input me-2"
+                       type="radio"
+                       name="phuongThucThanhToan"
+                       value="COD"
+                       checked />
+                <label class="form-check-label">Thanh toán khi nhận hàng (COD)</label>
+            </div>
+            <div class="radio-box">
+                <input class="form-check-input me-2"
+                       type="radio"
+                       name="phuongThucThanhToan"
+                       value="ChuyenKhoan" />
+                <label class="form-check-label">Chuyển khoản ngân hàng</label>
+            </div>
+        </div>
+        <!-- Chọn khuyến mãi đã lưu -->
+        <div class="mb-4">
+            <label class="form-label">🎁 Chọn khuyến mãi đã lưu</label>
+            <select class="form-select" id="voucherId" name="voucherId">
+                <option value="">-- Không sử dụng khuyến mãi --</option>
+
+                @if (userVouchers != null && userVouchers.Any())
+                {
+                    foreach (var uv in userVouchers)
+                    {
+                        var v = uv.Voucher;
+                        <option value="@uv.VoucherId"
+                                data-loai="@v.LoaiUuDai"
+                                data-giatri="@v.GiaTri">
+                            @v.TenUuDai
+                            (@(v.LoaiUuDai == "PhanTram"
+                                                ? $"Giảm {v.GiaTri}%"
+                                                : $"Giảm {v.GiaTri:N0} đ"))
+                    - HSD: @v.NgayKetThuc.ToString("dd/MM/yyyy")
+                </option>
+                                }
+                }
+            </select>
+        </div>
+
+        <!-- Phương thức giao hàng -->
+        <div class="mb-4">
+            <label class="form-label">🚚 Phương thức giao hàng</label>
+            <div class="radio-box">
+                <input class="form-check-input me-2"
+                       type="radio"
+                       name="phuongThucGiaoHang"
+                       value="GiaoTanNoi"
+                       checked />
+                <label class="form-check-label">Giao tận nơi (2–4 ngày)</label>
+            </div>
+            <div class="radio-box">
+                <input class="form-check-input me-2"
+                       type="radio"
+                       name="phuongThucGiaoHang"
+                       value="NhanTaiDiem" />
+                <label class="form-check-label">Nhận tại điểm giao (miễn phí ship)</label>
+            </div>
+            <div class="radio-box">
+                <input id="radioGiaoNhanh"
+                       class="form-check-input me-2"
+                       type="radio"
+                       name="phuongThucGiaoHang"
+                       value="GiaoNhanh" />
+                <label class="form-check-label">Giao hỏa tốc (nội thành trong 4 giờ)</label>
+            </div>
+
+            <div id="phiShipAlert" class="alert-fee">
+                🚀 Đã cộng 50.000đ phí giao hỏa tốc vào tổng tiền.
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             </div>
         </div>
 
         <!-- Danh sách sản phẩm -->
+<<<<<<< HEAD
         <table class="table table-hover align-middle text-center table-striped">
             <thead class="table-light">
+=======
+        <table class="table table-hover align-middle text-center">
+            <thead>
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                 <tr>
                     <th style="width: 300px;">Sản phẩm</th>
                     <th>Số lượng</th>
@@ -128,6 +334,7 @@
                 </tr>
             </thead>
             <tbody>
+<<<<<<< HEAD
                 @if (Model.GioHang != null && Model.GioHang.ChiTietGioHangs.Any())
                 {
                     foreach (var item in Model.GioHang.ChiTietGioHangs)
@@ -163,10 +370,42 @@
                             <td class="text-success fw-bold">@thanhTien.ToString("N0") đ</td>
                         </tr>
                     }
+=======
+                @foreach (var item in Model.ChiTietGioHangs)
+                {
+                    var thanhTien = (item.BaiViet.GiaSanPham ?? 0) * item.SoLuong;
+                    tongTien += thanhTien;
+
+                    // lấy ảnh an toàn
+                    string anh = null;
+                    if (item.BaiViet?.AnhBaiViets != null && item.BaiViet.AnhBaiViets.Any())
+                    {
+                        anh = item.BaiViet.AnhBaiViets.First().DuongDan;
+                    }
+                    var anhHienThi = !string.IsNullOrEmpty(anh)
+                    ? (anh.StartsWith("/") ? anh : "/" + anh)
+                    : Url.Content("~/images/no-image.png");
+
+                    <tr>
+                        <td class="text-start d-flex align-items-center">
+                            <img src="@anhHienThi" alt="Ảnh sản phẩm" class="product-img" />
+                            <div class="ms-2 text-start">
+                                <span class="fw-semibold d-block">@item.BaiViet.TieuDe</span>
+                                <small class="text-muted">
+                                    Người bán: @item.BaiViet.NguoiDung?.TenDangNhap
+                                </small>
+                            </div>
+                        </td>
+                        <td>@item.SoLuong</td>
+                        <td>@((item.BaiViet.GiaSanPham ?? 0).ToString("N0")) đ</td>
+                        <td class="text-success fw-bold">@thanhTien.ToString("N0") đ</td>
+                    </tr>
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                 }
             </tbody>
         </table>
 
+<<<<<<< HEAD
         <!-- VOUCHER -->
         <div class="my-4">
             <label class="form-label fw-bold">Chọn Voucher</label>
@@ -200,16 +439,33 @@
                 @tongHienThi.ToString("N0") đ
             </h4>
             <input type="hidden" id="tongTienInput" name="tongTien" value="@tongHienThi" />
+=======
+        <!-- Tổng tiền -->
+        <div class="total-box">
+            <h5 class="mb-0">Tổng cộng:</h5>
+            <h4 id="tongTienHienThi" class="text-success fw-bold mb-0">
+                @tongTien.ToString("N0") đ
+            </h4>
+            <input type="hidden"
+                   id="tongTienInput"
+                   name="tongTien"
+                   value="@tongTien" />
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         </div>
 
         <div class="text-end mt-4">
             <button type="submit" class="btn btn-success px-4 py-2">
+<<<<<<< HEAD
                 Xác nhận đặt hàng
+=======
+                <i class="bi bi-cash-stack"></i> Xác nhận đặt hàng
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             </button>
         </div>
     </form>
 </div>
 
+<<<<<<< HEAD
 <!-- SCRIPT HOÀN HẢO – GIẢM % + CỘNG PHÍ SHIP REALTIME -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -273,4 +529,67 @@
             radio.addEventListener("change", capNhatTongTien);  // Lắng nghe sự kiện thay đổi phương thức giao hàng
         });
     });
+=======
+<script>
+    const radioNhanh = document.getElementById("radioGiaoNhanh");
+    const phiShipAlert = document.getElementById("phiShipAlert");
+    const tongTienHienThi = document.getElementById("tongTienHienThi");
+    const tongTienInput = document.getElementById("tongTienInput");
+    const selectVoucher = document.getElementById("voucherId");
+
+    // Tổng tiền gốc của sản phẩm (chưa ship, chưa giảm)
+    const tongTienGoc = parseFloat("@tongTien");
+
+    function capNhatTongTien() {
+        let tongTienMoi = tongTienGoc;
+
+        // 1. Tính phí ship nếu giao nhanh
+        let phiShip = 0;
+        if (radioNhanh && radioNhanh.checked) {
+            phiShip = 50000;
+            phiShipAlert.style.display = "block";
+        } else {
+            phiShipAlert.style.display = "none";
+        }
+        tongTienMoi += phiShip;
+
+        // 2. Tính số tiền giảm từ voucher
+        let giamGia = 0;
+        if (selectVoucher && selectVoucher.value) {
+            const opt = selectVoucher.options[selectVoucher.selectedIndex];
+            const loai = opt.getAttribute("data-loai");          // PhanTram / TienMat
+            const giaTri = parseFloat(opt.getAttribute("data-giatri") || "0");
+
+            if (!isNaN(giaTri) && giaTri > 0) {
+                if (loai === "PhanTram") {
+                    // Giảm theo %
+                    giamGia = tongTienGoc * giaTri / 100;
+                } else {
+                    // Giảm số tiền cố định
+                    giamGia = giaTri;
+                }
+            }
+        }
+
+        tongTienMoi -= giamGia;
+        if (tongTienMoi < 0) tongTienMoi = 0;
+
+        // 3. Cập nhật UI + hidden input
+        tongTienHienThi.textContent = tongTienMoi.toLocaleString('vi-VN') + " đ";
+        tongTienInput.value = tongTienMoi;
+    }
+
+    // Khi đổi phương thức giao hàng
+    document.querySelectorAll('input[name="phuongThucGiaoHang"]').forEach(radio => {
+        radio.addEventListener("change", capNhatTongTien);
+    });
+
+    // Khi chọn / đổi voucher
+    if (selectVoucher) {
+        selectVoucher.addEventListener("change", capNhatTongTien);
+    }
+
+    // Gọi 1 lần khi load trang để set đúng ngay từ đầu
+    capNhatTongTien();
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 </script>

@@ -162,9 +162,15 @@
                             @if (item.SoLuong <= 0)
                             {
                                 <div style="
+<<<<<<< HEAD
                                                             position:absolute; inset:0;
                                                             background:rgba(0,0,0,.55);
                                                             display:flex; align-items:center; justify-content:center;">
+=======
+                                                position:absolute; inset:0;
+                                                background:rgba(0,0,0,.55);
+                                                display:flex; align-items:center; justify-content:center;">
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                                     <span style="color:white;font-size:20px;font-weight:700;">HẾT HÀNG</span>
                                 </div>
                             }
@@ -208,10 +214,19 @@
 <!-- MODAL BÁO CÁO -->
 @if (coTheBaoCao)
 {
+<<<<<<< HEAD
     <div class="modal fade" id="modalBaoCaoTaiKhoan" tabindex="-1" aria-labelledby="modalBaoCaoTaiKhoanLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <form asp-controller="User" asp-action="BaoCaoNguoiDung" method="post" enctype="multipart/form-data">
+=======
+    <div class="modal fade" id="modalBaoCaoTaiKhoan" tabindex="-1"
+         aria-labelledby="modalBaoCaoTaiKhoanLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <form asp-controller="User" asp-action="BaoCaoNguoiDung" method="post">
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                     @Html.AntiForgeryToken()
 
                     <div class="modal-header">
@@ -232,11 +247,14 @@
                             <textarea name="moTaChiTiet" class="form-control" rows="3"></textarea>
                         </div>
 
+<<<<<<< HEAD
                         <div class="mb-3">
                             <label class="form-label">Tải lên ảnh làm bằng chứng (không bắt buộc)</label>
                             <input type="file" name="files" class="form-control" accept="image/*" multiple />
                         </div>
 
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         <div class="alert alert-warning small mb-0">
                             Nội dung báo cáo sẽ được gửi tới Admin để xem xét.
                         </div>
@@ -246,14 +264,23 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         <button type="submit" class="btn btn-danger">Gửi báo cáo</button>
                     </div>
+<<<<<<< HEAD
                 </form>
+=======
+
+                </form>
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             </div>
         </div>
     </div>
 }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 <!-- Bootstrap JS & Toast Trigger -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

@@ -14,6 +14,7 @@
     }
 
     <!-- Bộ lọc -->
+<<<<<<< HEAD
     <form method="get" class="row g-3 mb-4">
         <div class="col-md-6">
             <div class="input-group">
@@ -35,6 +36,37 @@
     </form>
 
 
+=======
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-3">
+            <select name="trangThai" class="form-select">
+                @{
+                    string currentStatus = ViewBag.TrangThai as string ?? "ALL";
+                }
+                <option value="ALL" selected="@(currentStatus == "ALL")">Tất cả trạng thái</option>
+                <option value="ChoXuLy" selected="@(currentStatus == "ChoXuLy")">Chờ xử lý</option>
+                <option value="DangChuanBi" selected="@(currentStatus == "DangChuanBi")">Đang chuẩn bị</option>
+                <option value="DangGiao" selected="@(currentStatus == "DangGiao")">Đang giao</option>
+                <option value="HoanThanh" selected="@(currentStatus == "HoanThanh")">Hoàn thành</option>
+                <option value="DaHuy" selected="@(currentStatus == "DaHuy")">Đã hủy</option>
+
+            </select>
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="tuKhoa"
+                   value="@(ViewBag.TuKhoa as string)"
+                   class="form-control"
+                   placeholder="Tìm theo mã đơn / tên khách...">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Lọc</button>
+        </div>
+        <div class="col-md-2">
+            <a asp-action="Orders" class="btn btn-outline-secondary w-100">Xoá lọc</a>
+        </div>
+    </form>
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     <!-- Bảng đơn hàng -->
     <div class="card shadow-sm">
         <div class="card-body p-3">
@@ -66,6 +98,7 @@
                                     </td>
                                     <td>
                                         <span class="badge
+<<<<<<< HEAD
                                                     @(d.TrangThai == "HoanThanh" ? "bg-success" :
                                                                                             d.TrangThai == "DaHuy" ? "bg-danger" :
                                                                                             "bg-warning text-dark")">
@@ -81,6 +114,23 @@
                             </td>
                         </tr>
                                                 }
+=======
+                                            @(d.TrangThai == "HoanThanh" ? "bg-success" :
+                                              d.TrangThai == "DaHuy" ? "bg-danger" :
+                                              "bg-warning text-dark")">
+                                            @d.TrangThai
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a asp-action="OrderDetails"
+                                           asp-route-id="@d.MaDonHang"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Chi tiết
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         }
                         else
                         {

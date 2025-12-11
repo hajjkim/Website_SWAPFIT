@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -5,6 +6,13 @@ using SWAPFIT.Data;
 using SWAPFIT.Model;
 using SWAPFIT.Models;
 using System.Diagnostics;
+=======
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using SWAPFIT.Models;
+using SWAPFIT.Data;
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 using System.IO;
 using System.Linq;
 
@@ -41,8 +49,32 @@ namespace SWAPFIT.Controllers
             ViewBag.TotalPosts = _context.BaiViets.Count();
             ViewBag.TotalCategories = _context.DanhMucs.Count();
             ViewBag.TotalBrands = _context.ThuongHieus.Count();
+<<<<<<< HEAD
 
             // --- Bài viết chờ duyệt ---
+=======
+            ViewBag.TotalVouchers = _context.UuDais.Count();
+
+            // 🔹 TOP NGƯỜI DÙNG ĐĂNG NHIỀU BÀI NHẤT (an toàn, không dính null)
+            var topNguoiDung = _context.NguoiDungs
+                .Select(u => new
+                {
+                    MaNguoiDung = u.MaNguoiDung,
+                    TenNguoiDung = u.HoTen ?? u.TenDangNhap,
+                    SoBaiViet = _context.BaiViets.Count(b =>
+                        b.MaNguoiDung == u.MaNguoiDung &&
+                        b.TrangThai != "Đã xóa")
+                })
+                .Where(x => x.SoBaiViet > 0)
+                .OrderByDescending(x => x.SoBaiViet)
+                .Take(5)
+                .ToList();
+
+            ViewBag.TopNguoiDungBaiViet = topNguoiDung;
+
+            // --- Bài viết chờ duyệt ---
+            // --- Bài viết chờ duyệt (phiên bản hoàn hảo) ---
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             var pendingPosts = _context.BaiViets
                 .Where(b => b.TrangThai == "Chờ duyệt")
                 .OrderByDescending(b => b.NgayTao)
@@ -54,7 +86,15 @@ namespace SWAPFIT.Controllers
                     b.TrangThai,
                     TenNguoiDang = _context.NguoiDungs
                         .Where(u => u.MaNguoiDung == b.MaNguoiDung)
+<<<<<<< HEAD
                         .Select(u => u.HoTen ?? u.TenDangNhap ?? "Người dùng đã xóa")
+=======
+                        .Select(u =>
+                            !string.IsNullOrWhiteSpace(u.HoTen) ? u.HoTen :
+                            !string.IsNullOrWhiteSpace(u.TenDangNhap) ? u.TenDangNhap :
+                            "Người dùng đã xóa"
+                        )
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         .FirstOrDefault() ?? "Không xác định"
                 })
                 .AsEnumerable()
@@ -67,6 +107,7 @@ namespace SWAPFIT.Controllers
                     NguoiDung = new NguoiDung { HoTen = x.TenNguoiDang }
                 })
                 .ToList();
+<<<<<<< HEAD
             // Lấy danh sách báo cáo tài khoản chờ xử lý
             var pendingReports = _context.BaoCaoTaiKhoans
      .Include(r => r.NguoiBaoCao)
@@ -77,10 +118,21 @@ namespace SWAPFIT.Controllers
      .ToList();
 
             ViewBag.PendingReports = pendingReports;
+=======
+            var baoCaoTaiKhoans = _context.BaoCaoTaiKhoans
+       .Include(b => b.NguoiBiBaoCao)
+       .Include(b => b.NguoiBaoCao)
+       .OrderByDescending(b => b.NgayTao)
+       .Take(10) // lấy 10 báo cáo mới nhất
+       .ToList();
+
+            ViewBag.BaoCaoTaiKhoan = baoCaoTaiKhoans;
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             return View(pendingPosts);
         }
 
 
+<<<<<<< HEAD
         // ====================================================
         // 📝 DANH SÁCH TẤT CẢ BÀI VIẾT
         // ====================================================
@@ -160,11 +212,18 @@ namespace SWAPFIT.Controllers
         //    return View(posts);
         //}
 
+=======
+
+        // ====================================================
+        // 📝 DANH SÁCH TẤT CẢ BÀI VIẾT
+        // ====================================================
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         public IActionResult Posts()
         {
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+<<<<<<< HEAD
             //  var posts = _context.BaiViets
             //.FromSqlRaw(
             //    "SELECT b.MaBaiViet, b.TieuDe, b.MaNguoiDung, n.HoTen, b.GiaSanPham, b.LoaiBaiDang, n.TenDangNhap, b.NgayTao, b.TrangThai, " +
@@ -233,6 +292,72 @@ namespace SWAPFIT.Controllers
 
 
             return View(posts);  // Trả về view với dữ liệu bài viết
+=======
+            //var posts = _context.BaiViets
+            //    .Include(p => p.NguoiDung)  // Đảm bảo bao gồm NguoiDung
+            //    .OrderByDescending(p => p.NgayTao)
+            //    .AsEnumerable() // Chuyển đổi sang LINQ to Objects (Client-side)
+            //    .Select(p => new BaiViet
+            //    {
+            //        MaBaiViet = p.MaBaiViet,
+            //        TieuDe = p.TieuDe,
+            //        LoaiBaiDang = p.LoaiBaiDang,
+            //        NgayTao = p.NgayTao,
+            //        TrangThai = p.TrangThai,
+            //        GiaSanPham = p.GiaSanPham,
+            //        SoLuong = p.SoLuong,
+            //        NoiDung = p.NoiDung,
+            //        NguoiDung = p.NguoiDung != null
+            //            ? new NguoiDung
+            //            {
+            //                MaNguoiDung = p.NguoiDung.MaNguoiDung,
+            //                HoTen = p.NguoiDung.HoTen ?? p.NguoiDung.TenDangNhap ?? "Tài khoản đã xóa"
+            //            }
+            //            : new NguoiDung { HoTen = "Người dùng không xác định" }  // Nếu không có người đăng
+            //    })
+            //    .ToList();
+            //foreach (var post in posts)
+            //{
+            //    Console.WriteLine($"Post ID: {post.MaBaiViet}, Title: {post.TieuDe}, Người đăng: {post.NguoiDung.HoTen}, Status: {post.TrangThai}");
+            //}
+
+            var posts = _context.BaiViets
+     .Include(p => p.NguoiDung)  // Đảm bảo bao gồm NguoiDung
+     .OrderByDescending(p => p.NgayTao)
+     .AsEnumerable() // Chuyển đổi sang LINQ to Objects (Client-side)
+     .Select(p => new BaiViet
+     {
+         MaBaiViet = p.MaBaiViet,
+         TieuDe = p.TieuDe,
+         LoaiBaiDang = p.LoaiBaiDang,
+         NgayTao = p.NgayTao,
+         TrangThai = p.TrangThai,
+         GiaSanPham = p.GiaSanPham,
+         SoLuong = p.SoLuong,
+         NoiDung = p.NoiDung,
+         NguoiDung = p.NguoiDung != null ? new NguoiDung
+         {
+             MaNguoiDung = p.NguoiDung.MaNguoiDung,
+             HoTen = !string.IsNullOrWhiteSpace(p.NguoiDung.HoTen)
+                     ? p.NguoiDung.HoTen
+                     : !string.IsNullOrWhiteSpace(p.NguoiDung.TenDangNhap)
+                         ? p.NguoiDung.TenDangNhap
+                         : "Người dùng không xác định"
+         }
+         : new NguoiDung { HoTen = "Người dùng không xác định" }
+     })
+     .ToList();
+
+            foreach (var post in posts)
+            {
+                Console.WriteLine($"Post ID: {post.MaBaiViet}, Title: {post.TieuDe}, Người đăng: {post.NguoiDung?.HoTen ?? "Không có thông tin"}");
+                // Kiểm tra thêm chi tiết trong post để đảm bảo rằng 'NguoiDung' được liên kết chính xác
+                Console.WriteLine($"NguoiDung - MaNguoiDung: {post.NguoiDung?.MaNguoiDung}, HoTen: {post.NguoiDung?.HoTen}, TenDangNhap: {post.NguoiDung?.TenDangNhap}");
+            }
+
+
+            return View(posts);
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         }
 
 
@@ -242,6 +367,7 @@ namespace SWAPFIT.Controllers
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+<<<<<<< HEAD
             //        var post = _context.BaiViets
             //.FromSqlRaw(
             //    "SELECT TOP(1) b.MaBaiViet, b.TieuDe, b.MaNguoiDung, b.MaDanhMuc, b.MaThuongHieu, b.GiaSanPham, b.LoaiBaiDang, b.NgayTao, b.TrangThai, b.SoLuong, b.NoiDung, " +
@@ -322,6 +448,22 @@ namespace SWAPFIT.Controllers
 
 
 
+=======
+            var post = _context.BaiViets
+                .Include(x => x.NguoiDung)
+                .Include(x => x.AnhBaiViets)
+                .Include(x => x.DanhMuc)
+                .FirstOrDefault(x => x.MaBaiViet == id);
+
+            if (post == null)
+                return NotFound();
+            Console.WriteLine($"Post ID: {post.MaBaiViet}, Title: {post.TieuDe}, Người đăng: {post.NguoiDung?.HoTen ?? "Không có người đăng"}");
+
+            return View(post);   // 👉 mặc định sẽ tìm Views/Admin/PostDetails.cshtml
+        }
+
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         // ====================================================
         // 🟢 DUYỆT BÀI
         // ====================================================
@@ -330,6 +472,7 @@ namespace SWAPFIT.Controllers
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+<<<<<<< HEAD
             // Prepare the SQL command to update the "TrangThai" field in the BaiViets table
             string sql = "UPDATE BaiViets SET TrangThai = N'Đang hiển thị' WHERE MaBaiViet = {0}";
 
@@ -351,6 +494,36 @@ namespace SWAPFIT.Controllers
         }
 
         // GET: Hiển thị form từ chối
+=======
+            var post = _context.BaiViets.FirstOrDefault(x => x.MaBaiViet == id);
+            if (post == null) return NotFound();
+
+            post.TrangThai = "Đang hiển thị";
+
+            // 🔔 Thêm thông báo cho chủ bài viết
+            var tb = new ThongBao
+            {
+                MaNguoiDung = post.MaNguoiDung,                   // người đăng bài
+                NoiDung = $"Bài viết \"{post.TieuDe}\" đã được admin duyệt và đang hiển thị.",
+                LienKet = Url.Action("Details", "BaiViet",        // tuỳ bạn có action nào
+                                     new { id = post.MaBaiViet },
+                                     Request.Scheme),
+                DaXem = false,
+                NgayTao = DateTime.Now
+            };
+            _context.ThongBaos.Add(tb);
+
+            _context.SaveChanges();
+
+            TempData["Success"] = "Bài viết đã được duyệt!";
+            return RedirectToAction(nameof(Dashboard));
+        }
+
+
+        // ====================================================
+        // ❌ TỪ CHỐI BÀI – HIỂN THỊ FORM NHẬP LÝ DO
+        // ====================================================
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         [HttpGet]
         public IActionResult TuChoi(int id)
         {
@@ -366,6 +539,7 @@ namespace SWAPFIT.Controllers
                 TieuDe = post.TieuDe
             };
 
+<<<<<<< HEAD
             return View(vm);
         }
 
@@ -406,10 +580,21 @@ namespace SWAPFIT.Controllers
         //}
 
       public IActionResult TuChoi(TuChoiBaiVietViewModel vm)  // Nhận cả ViewModel luôn
+=======
+            return View(vm);   // Views/Admin/TuChoi.cshtml
+        }
+        // ====================================================
+        // ❌ TỪ CHỐI BÀI – LƯU LÝ DO
+        // ====================================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult TuChoi(int id, string lyDoTuChoi)
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         {
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+<<<<<<< HEAD
             if (!ModelState.IsValid)
             {
                 return View(vm); // Trả lại form nếu validate lỗi
@@ -435,10 +620,30 @@ namespace SWAPFIT.Controllers
                 MaNguoiDung = post.MaNguoiDung,  // Get MaNguoiDung from the post
                 NoiDung = $"Bài viết \"{post.TieuDe}\" đã bị từ chối. Lý do: {vm.LyDoTuChoi}",
                 LienKet = Url.Action("Details", "BaiViet", new { id = post.MaBaiViet }, Request.Scheme),
+=======
+            var post = _context.BaiViets.FirstOrDefault(b => b.MaBaiViet == id);
+            if (post == null) return NotFound();
+
+            post.TrangThai = "Từ chối";
+            post.LyDoTuChoi = lyDoTuChoi;   // nếu bạn có field này
+
+            // 🔔 Thông báo cho người đăng
+            var tb = new ThongBao
+            {
+                MaNguoiDung = post.MaNguoiDung,
+                NoiDung = $"Bài viết \"{post.TieuDe}\" đã bị từ chối. Lý do: {lyDoTuChoi}",
+                LienKet = Url.Action("Details", "BaiViet",
+                                     new { id = post.MaBaiViet },
+                                     Request.Scheme),
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                 DaXem = false,
                 NgayTao = DateTime.Now
             };
             _context.ThongBaos.Add(tb);
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             _context.SaveChanges();
 
             TempData["Error"] = "Bài viết đã bị từ chối!";
@@ -447,11 +652,15 @@ namespace SWAPFIT.Controllers
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         // ====================================================
         // 🗑️ XÓA BÀI (SOFT DELETE)
         // ====================================================
         [HttpPost]
+<<<<<<< HEAD
         //public IActionResult DeletePostAdmin(int id)
         //{
         //    if (!IsAdmin())
@@ -471,11 +680,16 @@ namespace SWAPFIT.Controllers
         //}
 
 
+=======
+        // 🗑️ XÓA BÀI (SOFT DELETE)
+        [HttpPost]
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         public IActionResult DeletePostAdmin(int id)
         {
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+<<<<<<< HEAD
             // Prepare SQL query to update the 'TrangThai' column to "Đã xóa"
             string sqlUpdate = "UPDATE BaiViets SET TrangThai = N'Đã xóa' WHERE MaBaiViet = {0}";
 
@@ -487,6 +701,20 @@ namespace SWAPFIT.Controllers
 
             TempData["Success"] = "Bài viết đã được chuyển sang trạng thái Đã xóa.";
             return RedirectToAction(nameof(Posts));  // Redirect to Posts after successful deletion
+=======
+            var post = _context.BaiViets
+                .Include(p => p.AnhBaiViets)
+                .FirstOrDefault(p => p.MaBaiViet == id);
+
+            if (post == null) return NotFound();
+
+            // Thay đổi trạng thái thành "Đã xóa"
+            post.TrangThai = "Đã xóa";
+            _context.SaveChanges();
+
+            TempData["Success"] = "Bài viết đã được chuyển sang trạng thái Đã xóa.";
+            return RedirectToAction(nameof(Posts));  // Quay lại danh sách bài viết
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         }
 
 
@@ -502,9 +730,33 @@ namespace SWAPFIT.Controllers
                 .OrderBy(u => u.VaiTro)
                 .ToList();
 
+<<<<<<< HEAD
             return View(users);
         }
 
+=======
+            // 🔹 Top 3 người đăng bài nhiều nhất
+            var top3NguoiDung = _context.NguoiDungs
+                .Select(u => new
+                {
+                    MaNguoiDung = u.MaNguoiDung,
+                    TenDangNhap = u.TenDangNhap,
+                    HoTen = u.HoTen,
+                    SoBaiViet = _context.BaiViets.Count(b =>
+                        b.MaNguoiDung == u.MaNguoiDung && b.TrangThai != "Đã xóa")
+                })
+                .Where(x => x.SoBaiViet > 0)                 // chỉ lấy user có bài
+                .OrderByDescending(x => x.SoBaiViet)
+                .Take(3)
+                .ToList();
+
+            ViewBag.Top3NguoiDung = top3NguoiDung;
+
+            return View(users);
+        }
+
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         [HttpPost]
         public IActionResult ToggleBlockUser(int id)
         {
@@ -529,6 +781,7 @@ namespace SWAPFIT.Controllers
             var data = _context.ThuongHieus.OrderBy(t => t.TenThuongHieu).ToList();
             return View("~/Views/Brands/Index.cshtml", data);
         }
+<<<<<<< HEAD
         // This method renders the form to create a new brand
         // XÓA HAI ACTION NÀY ĐI (hoặc comment lại)
         public IActionResult CreateBrand()
@@ -549,6 +802,8 @@ namespace SWAPFIT.Controllers
             }
             return View(brand);
         }
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
 
         [HttpPost]
@@ -567,12 +822,20 @@ namespace SWAPFIT.Controllers
             TempData["Success"] = "Đã xóa thương hiệu.";
             return RedirectToAction(nameof(Brands));
         }
+<<<<<<< HEAD
         //
         public IActionResult BaoCaoTaiKhoan()
+=======
+        // ====================================================
+        // 🏷️ QUẢN LÝ VOUCHER
+        // ====================================================
+        public IActionResult ManageVouchers()
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         {
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+<<<<<<< HEAD
             // Lấy các báo cáo tài khoản từ cơ sở dữ liệu
             var baoCaoTaiKhoans = _context.BaoCaoTaiKhoans
                 .Where(b => b.TrangThai != "Đã xử lý")  // Lọc ra các báo cáo chưa xử lý
@@ -607,10 +870,54 @@ namespace SWAPFIT.Controllers
 
         // Duyệt báo cáo
         public IActionResult DuyetBaoCao(int id)
+=======
+            var vouchers = _context.UuDais.OrderByDescending(u => u.NgayBatDau).ToList();
+            return View(vouchers);
+        }
+
+        [HttpPost]
+        public IActionResult CreateVoucher(string tenUuDai, string moTa, string loaiUuDai,
+                                   decimal giaTri, DateTime ngayBatDau,
+                                   DateTime ngayKetThuc, int? gioiHanSoLuong)
+        {
+            if (loaiUuDai != "PhanTram")
+            {
+                TempData["Error"] = "Chỉ có thể tạo voucher với loại giảm giá là phần trăm.";
+                return RedirectToAction("ManageVouchers");
+            }
+
+            var uuDai = new UuDai
+            {
+                TenUuDai = tenUuDai,
+                MoTa = moTa,
+                LoaiUuDai = loaiUuDai,
+                GiaTri = giaTri,
+                NgayBatDau = ngayBatDau,
+                NgayKetThuc = ngayKetThuc,
+                TrangThai = "HoatDong",
+                AnhBia = "/images/vouchers/default-voucher.png",
+                GioiHanSoLuong = gioiHanSoLuong  // 🔹 lưu giới hạn
+            };
+
+            _context.UuDais.Add(uuDai);
+            _context.SaveChanges();
+
+            TempData["Success"] = "Voucher đã được tạo thành công!";
+            return RedirectToAction("ManageVouchers");
+        }
+
+
+
+
+        // Xóa Voucher
+        [HttpPost]
+        public IActionResult DeleteVoucher(int id)
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         {
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+<<<<<<< HEAD
             var baoCao = _context.BaoCaoTaiKhoans.Find(id);
             if (baoCao == null)
                 return NotFound();
@@ -684,6 +991,18 @@ namespace SWAPFIT.Controllers
             return View(report);
         }
 
+=======
+            var voucher = _context.UuDais.Find(id);
+            if (voucher != null)
+            {
+                _context.UuDais.Remove(voucher);
+                _context.SaveChanges();
+                TempData["Success"] = "Voucher đã được xóa thành công!";
+            }
+
+            return RedirectToAction("ManageVouchers");
+        }
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         // ====================================================
         // 📊 XẾP HẠNG BÀI VIẾT THEO NGƯỜI DÙNG
         // ====================================================
@@ -748,6 +1067,7 @@ namespace SWAPFIT.Controllers
         // ====================================================
         // 📊 THỐNG KÊ DANH MỤC: NHIỀU BÀI ĐĂNG & ĐƯỢC MUA NHIỀU NHẤT
         // ====================================================
+<<<<<<< HEAD
         public IActionResult ThongKeDanhMuc()
         {
             var thongKe = _context.DanhMucs
@@ -802,10 +1122,51 @@ namespace SWAPFIT.Controllers
         //}
 
         public IActionResult Orders(string trangThai = "ALL", string tuKhoa = "")
+=======
+       public IActionResult ThongKeDanhMuc()
+{
+    if (!IsAdmin())
+        return RedirectToAction("Index", "Home");
+
+    var thongKe = _context.DanhMucs
+        .Select(dm => new ThongKeDanhMucTongHop
+        {
+            MaDanhMuc = dm.MaDanhMuc,
+            TenDanhMuc = dm.TenDanhMuc,
+
+            // Tổng số bài đăng thuộc danh mục (loại trừ bài đã xóa)
+            TongSoBai = _context.BaiViets.Count(b =>
+                b.MaDanhMuc == dm.MaDanhMuc &&
+                b.TrangThai != "Đã xóa"),
+
+            // 🔹 Tổng số lượt mua theo danh mục
+            // Giả định:
+            //   ChiTietDonHang: MaDonHang, MaBaiViet
+            //   DonHang       : MaDonHang, TrangThai
+            TongSoLuotMua = (
+                from ctdh in _context.ChiTietDonHangs
+                join dh in _context.DonHangs on ctdh.MaDonHang equals dh.MaDonHang
+                join bv in _context.BaiViets on ctdh.MaBaiViet equals bv.MaBaiViet
+                where bv.MaDanhMuc == dm.MaDanhMuc
+                      && dh.TrangThai == "HoanThanh"   // 👉 sửa đúng tên trạng thái hoàn tất của bạn
+                select ctdh
+            ).Count()
+        })
+        .OrderByDescending(x => x.TongSoBai)
+        .ToList();
+
+    return View(thongKe);
+}
+        // ====================================================
+        // 📦 QUẢN LÝ ĐƠN HÀNG - ADMIN CHỈ XEM / LỌC
+        // ====================================================
+        public IActionResult Orders(string trangThai, string tuKhoa)
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         {
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+<<<<<<< HEAD
             // Lấy danh sách đơn hàng với thông tin cơ bản
             var query = _context.DonHangs
                 // Bao gồm thông tin người mua và người bán (navigation properties)
@@ -841,11 +1202,54 @@ namespace SWAPFIT.Controllers
         }
 
 
+=======
+            // DonHang: MaDonHang, NgayDat, TrangThai, TongTien, ...
+            // Giả sử có navigation NguoiMua (kiểu NguoiDung)
+            var query = _context.DonHangs
+                .Include(d => d.NguoiMua) // nếu không có thì bỏ dòng này
+                .AsQueryable();
+
+            // Lọc theo trạng thái nếu có chọn
+            if (!string.IsNullOrEmpty(trangThai) && trangThai != "ALL")
+            {
+                query = query.Where(d => d.TrangThai == trangThai);
+            }
+
+            // Tìm kiếm theo mã đơn hoặc tên / tên đăng nhập khách
+            if (!string.IsNullOrEmpty(tuKhoa))
+            {
+                tuKhoa = tuKhoa.Trim().ToLower();
+
+                query = query.Where(d =>
+                    d.MaDonHang.ToString().Contains(tuKhoa) ||
+                    (d.NguoiMua != null &&
+                     (
+                        d.NguoiMua.HoTen.ToLower().Contains(tuKhoa) ||
+                        d.NguoiMua.TenDangNhap.ToLower().Contains(tuKhoa)
+                     )
+                    )
+                );
+            }
+
+            var model = query
+                .OrderByDescending(d => d.NgayDat) // đổi lại tên thuộc tính thời gian nếu khác
+                .ToList();
+
+            ViewBag.TrangThai = trangThai;
+            ViewBag.TuKhoa = tuKhoa;
+
+            return View(model); // Views/Admin/Orders.cshtml
+        }
+        // ====================================================
+        // 📄 CHI TIẾT ĐƠN HÀNG - ADMIN XEM
+        // ====================================================
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         public IActionResult OrderDetails(int id)
         {
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+<<<<<<< HEAD
             // Lấy thông tin chi tiết của đơn hàng
             var order = _context.DonHangs
                 .Include(o => o.NguoiMua)  // Bao gồm thông tin người mua
@@ -881,19 +1285,40 @@ namespace SWAPFIT.Controllers
 
             TempData["Success"] = "Trạng thái đơn hàng đã được cập nhật!";
             return RedirectToAction(nameof(Orders));  // Quay lại trang danh sách đơn hàng
+=======
+            var donHang = _context.DonHangs
+                .Include(d => d.NguoiMua)
+                .Include(d => d.NguoiBan) // ✅ thêm dòng này
+                .Include(d => d.ChiTietDonHangs)
+                    .ThenInclude(ct => ct.BaiViet)
+                        .ThenInclude(bv => bv.NguoiDung)
+                .FirstOrDefault(d => d.MaDonHang == id);
+
+            if (donHang == null)
+                return NotFound();
+
+            return View(donHang);
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         }
 
 
 
+<<<<<<< HEAD
 
         // Xóa đơn hàng (Soft delete)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteOrder(int id)
+=======
+        // ⚠️ ADMIN FORCE HỦY ĐƠN (tuỳ chọn)
+        [HttpPost]
+        public IActionResult AdminHuyDonHang(int id)
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         {
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+<<<<<<< HEAD
             var order = _context.DonHangs
                 .Include(o => o.ChiTietDonHangs)  // Bao gồm các chi tiết đơn hàng
                 .FirstOrDefault(o => o.MaDonHang == id);
@@ -912,10 +1337,25 @@ namespace SWAPFIT.Controllers
 
         // Xem báo cáo đơn hàng theo người dùng
         public IActionResult OrderReportByUser()
+=======
+            var donHang = _context.DonHangs.FirstOrDefault(d => d.MaDonHang == id);
+            if (donHang == null) return NotFound();
+
+            donHang.TrangThai = "DaHuy";   // hoặc "Đã hủy" theo quy ước của bạn
+            _context.SaveChanges();
+
+            TempData["Success"] = "Đơn hàng đã được admin hủy (can thiệp khẩn cấp).";
+
+            return RedirectToAction("OrderDetails", new { id });
+        }
+
+        public IActionResult BaoCaoTaiKhoanList()
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         {
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+<<<<<<< HEAD
             var report = _context.NguoiDungs
                 .Select(u => new OrderReport
                 {
@@ -937,10 +1377,23 @@ namespace SWAPFIT.Controllers
 
         // Thống kê đơn hàng theo trạng thái
         public IActionResult OrderReportByStatus()
+=======
+            var list = _context.BaoCaoTaiKhoans
+                .Include(b => b.NguoiBaoCao)
+                .Include(b => b.NguoiBiBaoCao)
+                .OrderByDescending(b => b.NgayTao)
+                .ToList();
+
+            return View(list); // Views/Admin/BaoCaoTaiKhoanList.cshtml
+        }
+
+        public IActionResult ChiTietBaoCaoTaiKhoan(int id)
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         {
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+<<<<<<< HEAD
             var report = _context.DonHangs
                 .GroupBy(d => d.TrangThai)
                 .Select(g => new OrderStatusReport
@@ -975,16 +1428,66 @@ namespace SWAPFIT.Controllers
         // ===== TẠO VOUCHER =====
         [HttpGet]
         public IActionResult CreateVoucher()
+=======
+            var bc = _context.BaoCaoTaiKhoans
+                .Include(b => b.NguoiBaoCao)
+                .Include(b => b.NguoiBiBaoCao)
+                .FirstOrDefault(b => b.Id == id);
+
+            if (bc == null) return NotFound();
+
+            return View(bc);
+        }
+
+        [HttpPost]
+        public IActionResult CapNhatTrangThaiBaoCao(int id, string trangThai)
         {
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
+            var bc = _context.BaoCaoTaiKhoans.FirstOrDefault(b => b.Id == id);
+            if (bc == null) return NotFound();
+
+            bc.TrangThai = trangThai; // "DangXuLy" / "DaXuLy" ...
+            _context.SaveChanges();
+
+            TempData["Success"] = "Đã cập nhật trạng thái báo cáo.";
+            return RedirectToAction("ChiTietBaoCaoTaiKhoan", new { id });
+        }
+        // ====================================================
+        // 🏷️ TẠO THƯƠNG HIỆU MỚI
+        // ====================================================
+
+        
+
+        // ==========================
+        // 🏷️ TẠO THƯƠNG HIỆU MỚI (Không Logo)
+
+
+        // ====================================================
+        // 🏷️ TẠO THƯƠNG HIỆU MỚI (KHÔNG LOGO)
+        // ====================================================
+
+        [HttpGet]
+        public IActionResult CreateBrand()
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
+        {
+            if (!IsAdmin())
+                return RedirectToAction("Index", "Home");
+
+<<<<<<< HEAD
             // View dùng model UuDai
             return View();
+=======
+            // dùng view đã có: Views/Brands/Create.cshtml
+            var model = new ThuongHieu();
+            return View("~/Views/Brands/Create.cshtml", model);
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+<<<<<<< HEAD
         public IActionResult CreateVoucher(
     string tenUuDai,
     string moTa,
@@ -1036,11 +1539,15 @@ namespace SWAPFIT.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult EditVoucher(UuDai model)
+=======
+        public IActionResult CreateBrand(ThuongHieu model)
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         {
             if (!IsAdmin())
                 return RedirectToAction("Index", "Home");
 
             if (!ModelState.IsValid)
+<<<<<<< HEAD
                 return View(model);
 
             var voucher = _context.UuDais.FirstOrDefault(v => v.MaUuDai == model.MaUuDai);
@@ -1118,3 +1625,23 @@ namespace SWAPFIT.Controllers
         }
     }
     }
+=======
+            {
+                TempData["Error"] = "Dữ liệu không hợp lệ.";
+                // trả lại đúng view trong thư mục Brands
+                return View("~/Views/Brands/Create.cshtml", model);
+            }
+
+            _context.ThuongHieus.Add(model);
+            _context.SaveChanges();
+
+            TempData["Success"] = "Đã thêm thương hiệu mới thành công!";
+            return RedirectToAction(nameof(Brands));   // quay lại trang danh sách brand
+        }
+
+
+
+
+    }
+}
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff

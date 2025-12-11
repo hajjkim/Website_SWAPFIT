@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿@model IEnumerable<SWAPFIT.Model.BaiVietDTO>
+=======
+﻿@model IEnumerable<SWAPFIT.Models.BaiViet>
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     ViewData["Title"] = "Quản lý bài viết";
@@ -34,6 +38,7 @@
                     <!-- HIỂN THỊ TÊN NGƯỜI ĐĂNG ĐÚNG & AN TOÀN -->
                     <td class="text-center">
                         @{
+<<<<<<< HEAD
                             var tenNguoiDang = post.HoTen;
 
                             // Kiểm tra nếu không có tên đầy đủ, lấy tên đăng nhập
@@ -43,6 +48,15 @@
                             }
 
                             // Nếu vẫn không có tên, gán "Không tìm thấy"
+=======
+                            var tenNguoiDang = post.NguoiDung?.HoTen;
+
+                            if (string.IsNullOrWhiteSpace(tenNguoiDang))
+                            {
+                                tenNguoiDang = post.NguoiDung?.TenDangNhap;
+                            }
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                             if (string.IsNullOrWhiteSpace(tenNguoiDang))
                             {
                                 tenNguoiDang = "Không tìm thấy";
@@ -51,13 +65,23 @@
                         @tenNguoiDang
                     </td>
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                     <td class="text-center">@post.LoaiBaiDang</td>
                     <td class="text-center">@post.NgayTao?.ToString("dd/MM/yyyy")</td>
 
                     <td class="text-center">
                         <span class="badge @(post.TrangThai == "Đã duyệt" ? "bg-success" :
+<<<<<<< HEAD
                                                                 post.TrangThai == "Từ chối" ? "bg-danger" :
                                                                 "bg-warning text-dark")">
+=======
+                                                                          post.TrangThai == "Từ chối" ? "bg-danger" :
+                                                                          "bg-warning text-dark")">
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         @post.TrangThai
                     </span>
                 </td>
@@ -75,8 +99,12 @@
                     </td>
                 </tr>
                         }
+<<<<<<< HEAD
 
             <!-- ĐÓNG foreach ĐÚNG CHỖ -->
+=======
+ <!-- ĐÓNG foreach ĐÚNG CHỖ -->
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         </tbody>
     </table>
 </div>

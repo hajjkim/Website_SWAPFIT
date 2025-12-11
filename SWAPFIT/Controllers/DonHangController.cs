@@ -34,6 +34,7 @@ namespace SWAPFIT.Controllers
         }
 
         // ===============================
+<<<<<<< HEAD
         // 🧾 Chi tiết đơn hàng
         // ===============================
         //public IActionResult ChiTietDonHang(int id)
@@ -77,6 +78,32 @@ namespace SWAPFIT.Controllers
 
         // ===============================
         // 🛍️ Người bán: Danh sách đơn hàng của tôi
+=======
+        // 🧾 Chi tiết đơn hàng (người bán xem)
+        // ===============================
+        public IActionResult ChiTietDonHang(int id)
+        {
+            var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
+            if (maNguoiDung == null) return RedirectToAction("Login", "Account");
+
+            var donHang = _context.DonHangs
+                .Where(d => d.MaDonHang == id && d.MaNguoiBan == maNguoiDung)
+                .Include(d => d.ChiTietDonHangs)
+                    .ThenInclude(ct => ct.BaiViet)
+                    .ThenInclude(bv => bv.AnhBaiViets)
+                .Include(d => d.NguoiMua)
+                .FirstOrDefault();
+
+            if (donHang == null) return NotFound();
+
+            return View(donHang);  // Ensure you're passing DonHang model
+        }
+
+
+
+        // ===============================
+        // 🛍️ Người mua: Đơn tôi đã mua
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         // ===============================
         public IActionResult DonHangToiDaMua()
         {
@@ -94,6 +121,12 @@ namespace SWAPFIT.Controllers
             return View(donHangs);
         }
 
+<<<<<<< HEAD
+=======
+        // ===============================
+        // 🛍️ Người bán: Đơn người khác mua từ tôi
+        // ===============================
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         public IActionResult DonHangNguoiKhacMuaTuToi()
         {
             var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
@@ -128,7 +161,78 @@ namespace SWAPFIT.Controllers
             _context.SaveChanges();
 
             TempData["Success"] = "Cập nhật trạng thái thành công!";
+<<<<<<< HEAD
             return RedirectToAction("ChiTietDonHang", new { id = id });
         }
+=======
+            return RedirectToAction("ChiTietDonHang", new { id });
+        }
+       
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult HuyDonHangNguoiMua(int id, string? lyDoHuy)
+        {
+            var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
+            if (maNguoiDung == null)
+                return RedirectToAction("Login", "Account");
+
+            // Tìm đơn của chính người mua
+            var donHang = _context.DonHangs
+                .Include(d => d.ChiTietDonHangs).ThenInclude(ct => ct.BaiViet)
+                .Include(d => d.NguoiBan)
+                .FirstOrDefault(d => d.MaDonHang == id && d.MaNguoiMua == maNguoiDung);
+
+            if (donHang == null)
+            {
+                TempData["Error"] = "Không tìm thấy đơn hàng.";
+                return RedirectToAction("LichSuDonHang");
+            }
+
+            // Không cho hủy nếu đã hoàn thành / đã giao
+            if (donHang.TrangThai == "HoanThanh" || donHang.TrangThai == "DaGiao")
+            {
+                TempData["Error"] = "Đơn hàng đã được xác nhận giao hoặc hoàn thành, không thể hủy.";
+                return RedirectToAction("LichSuDonHang");
+            }
+
+            // Nếu đã hủy rồi thì thôi
+            if (donHang.TrangThai == "DaHuy")
+            {
+                TempData["Error"] = "Đơn hàng đã được hủy trước đó.";
+                return RedirectToAction("LichSuDonHang");
+            }
+
+            // Cập nhật trạng thái + lý do
+            donHang.TrangThai = "DaHuy";
+            donHang.LyDoHuy = lyDoHuy;
+
+            // Gửi thông báo cho người bán
+            var baiVietDauTien = donHang.ChiTietDonHangs.FirstOrDefault()?.BaiViet;
+            var maNguoiBan = baiVietDauTien?.MaNguoiDung ?? donHang.MaNguoiBan;
+
+            if (maNguoiBan != null)
+            {
+                var tb = new ThongBao
+                {
+                    MaNguoiDung = maNguoiBan.Value,
+                    NoiDung = $"Đơn hàng #{donHang.MaDonHang} đã bị người mua hủy. Lý do: {lyDoHuy}",
+                    LienKet = Url.Action("ChiTietDonHang", "DonHang",
+                                         new { id = donHang.MaDonHang }, Request.Scheme),
+                    DaXem = false,
+                    NgayTao = DateTime.Now
+                };
+                _context.ThongBaos.Add(tb);
+            }
+
+            _context.SaveChanges();
+
+            TempData["Success"] = "Bạn đã hủy đơn hàng thành công.";
+            return RedirectToAction("LichSuDonHang");
+        }
+        
+
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     }
 }

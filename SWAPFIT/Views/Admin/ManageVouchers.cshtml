@@ -1,5 +1,8 @@
 ﻿@model IEnumerable<SWAPFIT.Models.UuDai>
+<<<<<<< HEAD
 
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     ViewData["Title"] = "Quản lý khuyến mãi";
@@ -26,6 +29,7 @@
                 </tr>
             </thead>
             <tbody>
+<<<<<<< HEAD
                 @if (Model != null)
                 {
                     foreach (var voucher in Model)
@@ -67,6 +71,43 @@
                         </tr>
                                 }
                 }
+=======
+                @foreach (var voucher in Model)
+                {
+                    <tr>
+                        <td>@voucher.TenUuDai</td>
+                        <td>@voucher.MoTa</td>
+                        <td>@voucher.LoaiUuDai</td>
+                        <td>@voucher.GiaTri.ToString("0")%</td>
+                        <td>@voucher.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                        <td>@voucher.NgayKetThuc.ToString("dd/MM/yyyy")</td>
+
+                        <td>
+                            @(voucher.GioiHanSoLuong.HasValue
+                                                    ? voucher.GioiHanSoLuong.Value.ToString()
+                                                    : "Không giới hạn")
+                    </td>
+
+                        <td>
+                            <span class="badge @(voucher.TrangThai == "HoatDong" ? "bg-success" : "bg-danger")">
+                                @voucher.TrangThai
+                            </span>
+                        </td>
+
+                        <td class="text-center">
+                            <form action="@Url.Action("DeleteVoucher", "Admin")"
+                                  method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@voucher.MaUuDai" />
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Bạn chắc chắn muốn xóa voucher này?');">
+                                    🗑️ Xóa
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                                }
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             </tbody>
         </table>
     </div>
@@ -75,6 +116,7 @@
     <div class="card mt-4 shadow-sm">
         <div class="card-body">
             <h3 class="text-center text-success mb-4">Thêm Voucher Mới</h3>
+<<<<<<< HEAD
 
             <form asp-action="CreateVoucher"
                   asp-controller="Admin"
@@ -99,10 +141,27 @@
                                       id="MoTa"
                                       class="form-control"
                                       required></textarea>
+=======
+            <form action="@Url.Action("CreateVoucher", "Admin")" method="post">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="TenUuDai">Tên Voucher</label>
+                            <input type="text" name="tenUuDai" id="TenUuDai"
+                                   class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="MoTa">Mô Tả</label>
+                            <textarea name="moTa" id="MoTa"
+                                      class="form-control" required></textarea>
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         </div>
                     </div>
                 </div>
 
+<<<<<<< HEAD
                 <div class="row mt-1">
                     <div class="col-md-6">
                         <div class="form-group mb-3">
@@ -112,10 +171,19 @@
                                     class="form-control">
                                 <option value="PhanTram">Phần trăm</option>
                                 @* nếu sau này có loại khác thì thêm ở đây *@
+=======
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="LoaiUuDai">Loại Ưu Đãi</label>
+                            <select name="loaiUuDai" id="LoaiUuDai" class="form-control">
+                                <option value="PhanTram">Phần trăm</option>
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                             </select>
                         </div>
                     </div>
                     <div class="col-md-6">
+<<<<<<< HEAD
                         <div class="form-group mb-3">
                             <label for="GiaTri">Giá Trị (%)</label>
                             <input type="number"
@@ -125,10 +193,17 @@
                                    min="1"
                                    max="100"
                                    required />
+=======
+                        <div class="form-group">
+                            <label for="GiaTri">Giá Trị (%)</label>
+                            <input type="number" name="giaTri" id="GiaTri"
+                                   class="form-control" min="1" max="100" required />
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         </div>
                     </div>
                 </div>
 
+<<<<<<< HEAD
                 <div class="row mt-1">
                     <div class="col-md-4">
                         <div class="form-group mb-3">
@@ -158,6 +233,28 @@
                                    id="GioiHanSoLuong"
                                    class="form-control"
                                    min="1"
+=======
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="NgayBatDau">Ngày Bắt Đầu</label>
+                            <input type="date" name="ngayBatDau" id="NgayBatDau"
+                                   class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="NgayKetThuc">Ngày Kết Thúc</label>
+                            <input type="date" name="ngayKetThuc" id="NgayKetThuc"
+                                   class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="GioiHanSoLuong">Giới hạn số lượng</label>
+                            <input type="number" name="gioiHanSoLuong" id="GioiHanSoLuong"
+                                   class="form-control" min="1"
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                                    placeholder="Để trống nếu không giới hạn" />
                         </div>
                     </div>

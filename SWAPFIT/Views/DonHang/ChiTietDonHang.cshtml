@@ -22,8 +22,13 @@
 
             <span class="badge
                 @(Model.TrangThai == "Chờ xác nhận" ? "bg-warning text-dark" :
+<<<<<<< HEAD
                                                       Model.TrangThai == "Đang giao" ? "bg-info" :
                                                       Model.TrangThai == "Đã hoàn thành" ? "bg-success" : "bg-danger")
+=======
+                                    Model.TrangThai == "Đang giao" ? "bg-info" :
+                                    Model.TrangThai == "Đã hoàn thành" ? "bg-success" : "bg-danger")
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                 px-3 py-2 fs-6">
                 @Model.TrangThai
             </span>
@@ -47,6 +52,7 @@
                     </tr>
                 </thead>
                 <tbody>
+<<<<<<< HEAD
                     @foreach (var ct in Model.ChiTietDonHangs)
                     {
                         var anhSanPham = "/images/no-image.png"; // Ảnh mặc định
@@ -79,6 +85,74 @@
                     }
 
                 </tbody>
+=======
+@foreach (var ct in Model.ChiTietDonHangs)
+{
+    // Lấy ảnh
+    var anh = ct.BaiViet?.AnhBaiViets?.FirstOrDefault()?.DuongDan;
+    if (string.IsNullOrWhiteSpace(anh))
+    {
+        anh = "/images/no-image.png";
+    }
+    else
+    {
+        anh = "/" + anh.TrimStart('~', '/');
+    }
+
+    // Xác định bài tặng hay bán
+    bool laBaiTang = string.Equals(
+        ct.BaiViet?.LoaiBaiDang?.Trim(),
+        "Tặng",
+        StringComparison.OrdinalIgnoreCase
+    );
+
+    decimal donGia = laBaiTang ? 0m : (ct.BaiViet?.GiaSanPham ?? 0m);
+    decimal thanhTien = donGia * ct.SoLuong;
+
+    <tr>
+        <!-- ẢNH -->
+        <td class="text-center align-middle" style="width:80px;">
+            <img src="@Url.Content(anh)"
+                 alt="@ct.BaiViet?.TieuDe"
+                 class="img-thumbnail rounded"
+                 style="width:60px;height:60px;object-fit:cover;" />
+        </td>
+
+        <!-- SẢN PHẨM -->
+        <td class="align-middle">@ct.BaiViet?.TieuDe</td>
+
+        <!-- SỐ LƯỢNG -->
+        <td class="text-center align-middle">@ct.SoLuong</td>
+
+        <!-- GIÁ -->
+        <td class="text-end align-middle">
+            @if (laBaiTang)
+            {
+                <span class="text-success fw-semibold">0 đ</span>
+            }
+            else
+            {
+                @donGia.ToString("N0") @: đ
+            }
+        </td>
+
+        <!-- THÀNH TIỀN -->
+        <td class="text-end align-middle fw-bold">
+            @if (laBaiTang)
+            {
+                <span class="text-success">0 đ</span>
+            }
+            else
+            {
+                @thanhTien.ToString("N0") @: đ
+            }
+        </td>
+    </tr>
+}
+</tbody>
+
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             </table>
 
         </div>
@@ -109,6 +183,7 @@
         </div>
     }
 </div>
+<<<<<<< HEAD
 
 
 
@@ -204,3 +279,5 @@
         </div>
     </div>
 </div> *@
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff

@@ -10,12 +10,19 @@ namespace SWAPFIT.Models
         [Key]
         public int MaDonHang { get; set; }
 
+<<<<<<< HEAD
         public int? MaNguoiDung { get; set; }
 
         public string? TaiKhoan { get; set; }
 
         public int? MaNguoiMua { get; set; }
 
+=======
+        // Cột này có thể bị thừa, nếu muốn liên kết với người dùng (người mua) thông qua MaNguoiMua và MaNguoiBan thì không cần phải có cột MaNguoiDung nữa.
+        // public int? MaNguoiDung { get; set; }  // Không cần thiết nếu đã có MaNguoiMua và MaNguoiBan
+
+        public int? MaNguoiMua { get; set; }
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         public int? MaNguoiBan { get; set; }
 
         [ForeignKey("MaNguoiMua")]
@@ -44,6 +51,13 @@ namespace SWAPFIT.Models
         [StringLength(50)]
         public string? PhuongThucGiaoHang { get; set; }
 
+<<<<<<< HEAD
         public List<ChiTietDonHang> ChiTietDonHangs { get; set; } = new();
+=======
+        // Quan hệ với bảng ChiTietDonHang (một đơn hàng có nhiều chi tiết)
+        public List<ChiTietDonHang> ChiTietDonHangs { get; set; } = new();
+
+        public string? LyDoHuy { get; set; }
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     }
 }

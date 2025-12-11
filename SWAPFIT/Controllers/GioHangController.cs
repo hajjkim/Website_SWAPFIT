@@ -27,9 +27,12 @@ namespace SWAPFIT.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+<<<<<<< HEAD
             // Clear temporary cart (GioHangTam) from session when accessing the main cart page
             HttpContext.Session.Remove("GioHangTam");
 
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             var gioHang = _context.GioHangs
                 .Include(g => g.ChiTietGioHangs)
                 .ThenInclude(c => c.BaiViet)
@@ -204,8 +207,11 @@ namespace SWAPFIT.Controllers
             model.NgayDat = DateTime.Now;
             model.TrangThai = "Đang xử lý";
 
+<<<<<<< HEAD
             Console.WriteLine($"Đặt hàng: MaNguoiBan={model.MaNguoiBan}, TongTien={model.TongTien}");
 
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             _context.DonHangs.Add(model);
             await _context.SaveChangesAsync();
 
@@ -234,6 +240,10 @@ namespace SWAPFIT.Controllers
         {
             return View();
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     }
 
 }

@@ -7,6 +7,10 @@ a.navbar-brand {
   word-break: break-all;
 }
 
+
+
+
+
 a {
   color: #0077cc;
 }
@@ -46,6 +50,7 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+<<<<<<< HEAD
 /* Thêm khoảng cách cho header */
 header {
     padding-top: 20px; /* Bạn có thể điều chỉnh giá trị này để có khoảng cách vừa ý */
@@ -54,4 +59,14 @@ header {
 /* Thêm margin-top cho phần nội dung chính */
 .main-content {
     margin-top: 30px; /* Khoảng cách giữa nội dung và header */
+=======
+
+
+/* Hiển thị dropdown khi hover */
+.nav-item.dropdown:hover .dropdown-menu{
+    display: block;
+}
+.navbar .dropdown-menu{
+    z-index: 1060; /* Đảm bảo menu dropdown ở trên cùng */
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 }

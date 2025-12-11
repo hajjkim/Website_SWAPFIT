@@ -1,9 +1,23 @@
 ﻿@model SWAPFIT.Models.BaoCaoTaiKhoan
+<<<<<<< HEAD
 
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     string tenNguoiBaoCao = Model.NguoiBaoCao?.HoTen ?? Model.NguoiBaoCao?.TenDangNhap ?? "Không rõ";
     string tenNguoiBiBaoCao = Model.NguoiBiBaoCao?.HoTen ?? Model.NguoiBiBaoCao?.TenDangNhap ?? "Không rõ";
+=======
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    string tenNguoiBaoCao = Model.NguoiBaoCao?.HoTen
+                            ?? Model.NguoiBaoCao?.TenDangNhap
+                            ?? "Không rõ";
+
+    string tenNguoiBiBaoCao = Model.NguoiBiBaoCao?.HoTen
+                              ?? Model.NguoiBiBaoCao?.TenDangNhap
+                              ?? "Không rõ";
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     string trangThaiClass = Model.TrangThai switch
     {
         "DaXuLy" => "badge bg-success",
@@ -13,35 +27,61 @@
 }
 
 <div class="container py-4">
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     <div class="mb-4">
         <h3 class="fw-bold text-primary">
             ⚠ Chi tiết báo cáo tài khoản
         </h3>
         <p class="text-muted">Xem thông tin đầy đủ của báo cáo này</p>
     </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-header bg-light fw-semibold">
             Thông tin báo cáo
         </div>
+<<<<<<< HEAD
         <div class="card-body">
+=======
+
+        <div class="card-body">
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             <div class="mb-3">
                 <label class="fw-semibold text-secondary">Người báo cáo:</label>
                 <div class="fs-5">
                     👤 @tenNguoiBaoCao
                 </div>
             </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             <div class="mb-3">
                 <label class="fw-semibold text-secondary">Người bị báo cáo:</label>
                 <div class="fs-5 text-danger">
                     🚫 @tenNguoiBiBaoCao
                 </div>
             </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             <div class="mb-3">
                 <label class="fw-semibold text-secondary">Thời gian báo cáo:</label>
                 <div>
                     🕒 @Model.NgayTao.ToString("HH:mm dd/MM/yyyy")
                 </div>
             </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             <div class="mb-3">
                 <label class="fw-semibold text-secondary">Trạng thái:</label>
                 <div>
@@ -50,11 +90,21 @@
                     </span>
                 </div>
             </div>
+<<<<<<< HEAD
             <hr />
+=======
+
+            <hr />
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             <div class="mb-3">
                 <label class="fw-semibold text-secondary">Lý do báo cáo:</label>
                 <p class="mt-1 fs-5">@Model.LyDo</p>
             </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             @if (!string.IsNullOrWhiteSpace(Model.MoTaChiTiet))
             {
                 <div class="mb-3">
@@ -64,6 +114,7 @@
                     </div>
                 </div>
             }
+<<<<<<< HEAD
             <!-- Hiển thị các hình ảnh báo cáo -->
             @if (Model.BaoCaoTaiKhoanAnhs != null && Model.BaoCaoTaiKhoanAnhs.Any())
             {
@@ -89,4 +140,16 @@
             }
         </div>
     </div>
+=======
+
+        </div>
+
+        @* <div class="card-footer bg-white text-end">
+            <a asp-action="BaoCaoTaiKhoan" class="btn btn-secondary">
+                ← Quay lại danh sách
+            </a>
+        </div> *@
+    </div>
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 </div>

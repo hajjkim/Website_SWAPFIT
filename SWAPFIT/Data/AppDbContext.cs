@@ -40,6 +40,7 @@ namespace SWAPFIT.Data
         public DbSet<AnhBaiViet> AnhBaiViets { get; set; }
         public DbSet<DonHang> DonHangs { get; set; }
         public DbSet<GioHang> GioHangs { get; set; }
+<<<<<<< HEAD
         public DbSet<ChiTietGioHang> ChiTietGioHangs { get; set; }
         public DbSet<ChiTietDonHang> ChiTietDonHangs { get; set; }
         public DbSet<BaoCaoTaiKhoan> BaoCaoTaiKhoans { get; set; }
@@ -50,6 +51,17 @@ namespace SWAPFIT.Data
         public object BaiVietDTO { get; internal set; }
         // Trong ApplicationDbContext.cs → thêm 1 dòng này (bắt buộc!)
         public DbSet<ThongKeDanhMucTongHop> ThongKeDanhMucTongHops { get; set; } = null!;
+=======
+        public DbSet<ChiTietDonHang> ChiTietDonHangs { get; set; }
+        public DbSet<ChiTietGioHang> ChiTietGioHangs { get; set; }
+
+        public DbSet<UuDai> UuDais { get; set; }
+        public DbSet<UuDaiSanPham> UuDaiSanPhams { get; set; }
+        public DbSet<UserVoucher> UserVouchers { get; set; }
+        public DbSet<BaoCaoTaiKhoan> BaoCaoTaiKhoans { get; set; }
+
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         // ===========================================================
         // 🔹 Cấu hình mối quan hệ và ràng buộc
         // ===========================================================
@@ -103,6 +115,7 @@ namespace SWAPFIT.Data
                 .HasForeignKey(d => d.MaNguoiDung)
                 .OnDelete(DeleteBehavior.Cascade);
 
+<<<<<<< HEAD
             // 🔸 Bảng BaiViet liên kết với người đăng
             //modelBuilder.Entity<BaiViet>()
             //    .HasOne<NguoiDung>()
@@ -114,6 +127,25 @@ namespace SWAPFIT.Data
     .WithMany(n => n.BaiViets)
     .HasForeignKey(b => b.MaNguoiDung)
        .OnDelete(DeleteBehavior.Cascade);
+=======
+            modelBuilder.Entity<BaiViet>()
+                  .HasOne(b => b.NguoiDung)
+                  .WithMany(n => n.BaiViets)
+                  .HasForeignKey(b => b.MaNguoiDung);
+
+            // Mối quan hệ giữa DonHang và NguoiDung (Người mua và người bán)
+            modelBuilder.Entity<DonHang>()
+                .HasOne(d => d.NguoiMua)
+                .WithMany(n => n.DonMua)
+                .HasForeignKey(d => d.MaNguoiMua);
+
+            modelBuilder.Entity<DonHang>()
+                .HasOne(d => d.NguoiBan)
+                .WithMany(n => n.DonBan)
+                .HasForeignKey(d => d.MaNguoiBan);
+
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
             // ======================================================
             // 🧺 Cấu hình quan hệ cho Giỏ hàng và Chi tiết giỏ hàng
@@ -155,6 +187,7 @@ namespace SWAPFIT.Data
                 .WithMany()
                 .HasForeignKey(d => d.MaNguoiBan)
                 .OnDelete(DeleteBehavior.Restrict);
+<<<<<<< HEAD
             modelBuilder.Entity<BaoCaoTaiKhoan>()
                 .HasOne(b => b.NguoiBaoCao)
                 .WithMany()
@@ -166,6 +199,9 @@ namespace SWAPFIT.Data
                 .WithMany()
                 .HasForeignKey(b => b.MaNguoiBiBaoCao)
                 .OnDelete(DeleteBehavior.NoAction);
+=======
+            // Adding foreign key relationships for UuDaiSanPham
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             modelBuilder.Entity<UuDaiSanPham>()
                 .HasOne(udp => udp.UuDai)
                 .WithMany()
@@ -178,11 +214,53 @@ namespace SWAPFIT.Data
                 .HasForeignKey(udp => udp.MaDoCu)
                 .OnDelete(DeleteBehavior.Restrict);  // Similarly, ensuring no cascading delete here
 
+<<<<<<< HEAD
             modelBuilder.Entity<BaoCaoTaiKhoanAnh>()
        .HasOne(b => b.BaoCaoTaiKhoan)
        .WithMany(b => b.BaoCaoTaiKhoanAnhs)  // Đảm bảo rằng BaoCaoTaiKhoan có thuộc tính điều hướng để lấy các hình ảnh
        .HasForeignKey(b => b.BaoCaoTaiKhoanId)
         .OnDelete(DeleteBehavior.Restrict);
         }
+=======
+            modelBuilder.Entity<DoCu>()
+               .HasOne(d => d.BaiViet)  // DoCu has one BaiViet
+               .WithMany() // BaiViet has many DoCu (this is one-to-many)
+               .HasForeignKey(d => d.MaBaiViet)  // Foreign Key in DoCu
+               .OnDelete(DeleteBehavior.Restrict); // Optional: Define cascading behavior
+            modelBuilder.Entity<BaoCaoTaiKhoan>()
+                .HasOne(b => b.NguoiBaoCao)
+                .WithMany()
+                .HasForeignKey(b => b.MaNguoiBaoCao)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BaoCaoTaiKhoan>()
+                .HasOne(b => b.NguoiBiBaoCao)
+                .WithMany()
+                .HasForeignKey(b => b.MaNguoiBiBaoCao)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ChiTietDonHang>()
+     .HasOne(c => c.DonHang)
+     .WithMany(d => d.ChiTietDonHangs)
+     .HasForeignKey(c => c.MaDonHang);
+
+            modelBuilder.Entity<ChiTietDonHang>()
+                .HasOne(c => c.BaiViet)
+                .WithMany(b => b.ChiTietDonHangs)
+                .HasForeignKey(c => c.MaBaiViet);
+
+            modelBuilder.Entity<ChiTietGioHang>()
+                .HasOne(c => c.GioHang)
+                .WithMany(g => g.ChiTietGioHangs)
+                .HasForeignKey(c => c.MaGioHang);
+
+            modelBuilder.Entity<ChiTietGioHang>()
+                .HasOne(c => c.BaiViet)
+                .WithMany(b => b.ChiTietGioHangs)
+                .HasForeignKey(c => c.MaBaiViet);
+
+
+        }
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     }
 }

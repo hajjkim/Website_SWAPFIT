@@ -59,6 +59,7 @@ namespace SWAPFIT.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+<<<<<<< HEAD
         // GET: Hiển thị form thêm thương hiệu
         public IActionResult Create()
         {
@@ -81,5 +82,7 @@ namespace SWAPFIT.Controllers
             // Nếu có lỗi → trả lại form với dữ liệu đã nhập
             return View("~/Views/Brands/Create.cshtml", model);
         }
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     }
 }

@@ -243,6 +243,7 @@
         <div class="col-lg-9">
 
             <!-- Thanh search + sort -->
+<<<<<<< HEAD
             <!-- THANH TÌM KIẾM + SẮP XẾP – HOẠT ĐỘNG 100% -->
             <div class="d-flex align-items-center mb-4 gap-3 flex-wrap">
                 <!-- Form tìm kiếm + sắp xếp (gộp chung để gửi query + sort cùng lúc) -->
@@ -264,6 +265,52 @@
                     <!-- Nút sắp xếp -->
                     
                 </form>
+=======
+            <div class="d-flex align-items-center mb-4 gap-3 flex-wrap">
+                <div class="flex-grow-1">
+                    <div class="search-wrapper">
+                        <i class="bi bi-search text-success"></i>
+                        <input type="text"
+                               name="query"
+                               form="filterForm"
+                               class="form-control form-control-sm"
+                               placeholder="Tìm kiếm sản phẩm..."
+                               value="@currentSearch" />
+                    </div>
+                </div>
+
+                <div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle sort-btn"
+                                type="button"
+                                id="sortDropdown"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            Sắp xếp: @(string.IsNullOrEmpty(currentSort) ? "Mới nhất" :
+                                                        currentSort == "price_asc" ? "Giá thấp đến cao" :
+                                                        currentSort == "price_desc" ? "Giá cao đến thấp" :
+                                                        "Mới nhất")
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                            <li>
+                                <button class="dropdown-item" type="submit" form="filterForm" name="sort" value="">
+                                    Mới nhất
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" type="submit" form="filterForm" name="sort" value="price_asc">
+                                    Giá thấp đến cao
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" type="submit" form="filterForm" name="sort" value="price_desc">
+                                    Giá cao đến thấp
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             </div>
 
             <!-- Tiêu đề -->

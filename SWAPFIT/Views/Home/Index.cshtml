@@ -240,8 +240,11 @@
                 <p class="text-muted fs-4">Hiện chưa có voucher nào đang hoạt động</p>
             </div>
         }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     </div>
 </section>
 
@@ -332,6 +335,7 @@
     $(document).ready(function () {
         $('.save-voucher-btn').on('click', function () {
             var btn = $(this);
+<<<<<<< HEAD
             var id = btn.data('voucher-id');
 
             if (btn.prop('disabled')) return;
@@ -344,15 +348,35 @@
                     if (res.success) {
                         btn.removeClass('btn-warning').addClass('btn-success')
                            .html('Đã lưu ✓').prop('disabled', true);
+=======
+            var voucherId = btn.data('voucher-id');
+
+            // Ngăn bấm liên tục
+            if (btn.prop('disabled')) return;
+
+            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Đang lưu...');
+
+            $.post('/UuDai/SaveVoucher', { voucherId: voucherId })
+                .done(function (res) {
+                    if (res.success) {
+                        btn.removeClass('btn-warning').addClass('btn-success')
+                           .html('Đã lưu').prop('disabled', true);
+                        // Tùy chọn: hiện toast đẹp
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         alert(res.message);
                     } else {
                         alert(res.message);
                         btn.prop('disabled', false).html('Lưu voucher');
                     }
                 })
+<<<<<<< HEAD
                 .fail(function (xhr) {
                     console.log(xhr.responseText);
                     alert('Lỗi hệ thống! Vui lòng thử lại hoặc đăng nhập lại.');
+=======
+                .fail(function () {
+                    alert('Lỗi kết nối, vui lòng thử lại!');
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                     btn.prop('disabled', false).html('Lưu voucher');
                 });
         });

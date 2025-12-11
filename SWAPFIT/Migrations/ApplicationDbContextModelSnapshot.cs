@@ -86,8 +86,14 @@ namespace SWAPFIT.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+<<<<<<< HEAD
                     b.Property<string>("LyDo")
                         .HasColumnType("nvarchar(max)");
+=======
+                    b.Property<string>("LyDoTuChoi")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
                     b.Property<int?>("MaDanhMuc")
                         .HasColumnType("int");
@@ -104,8 +110,12 @@ namespace SWAPFIT.Migrations
                     b.Property<DateTime?>("NgayTao")
                         .HasColumnType("datetime2");
 
+<<<<<<< HEAD
                     b.Property<int?>("NguoiDungMaNguoiDung")
                         .HasColumnType("int");
+=======
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
                     b.Property<string>("NoiDung")
                         .HasColumnType("nvarchar(max)");
@@ -211,6 +221,7 @@ namespace SWAPFIT.Migrations
                     b.ToTable("BaoCaoTaiKhoans");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("SWAPFIT.Models.BaoCaoTaiKhoanAnh", b =>
                 {
                     b.Property<int>("Id")
@@ -238,6 +249,8 @@ namespace SWAPFIT.Migrations
                     b.ToTable("BaoCaoTaiKhoanAnhs");
                 });
 
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             modelBuilder.Entity("SWAPFIT.Models.BinhLuanTinTuc", b =>
                 {
                     b.Property<int>("MaBinhLuan")
@@ -434,6 +447,12 @@ namespace SWAPFIT.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+<<<<<<< HEAD
+=======
+                    b.Property<int?>("MaBaiViet")
+                        .HasColumnType("int");
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                     b.Property<int?>("MaDanhMuc")
                         .HasColumnType("int");
 
@@ -456,10 +475,13 @@ namespace SWAPFIT.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+<<<<<<< HEAD
                     b.Property<string>("Size")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                     b.Property<string>("TenSanPham")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -473,6 +495,11 @@ namespace SWAPFIT.Migrations
 
                     b.HasKey("MaDoCu");
 
+<<<<<<< HEAD
+=======
+                    b.HasIndex("MaBaiViet");
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                     b.HasIndex("MaDanhMuc");
 
                     b.HasIndex("MaNguoiDung");
@@ -495,6 +522,12 @@ namespace SWAPFIT.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+<<<<<<< HEAD
+=======
+                    b.Property<string>("LyDoHuy")
+                        .HasColumnType("nvarchar(max)");
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                     b.Property<int?>("MaNguoiBan")
                         .HasColumnType("int");
 
@@ -809,7 +842,11 @@ namespace SWAPFIT.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaThongBao"));
 
+<<<<<<< HEAD
                     b.Property<bool>("DaXem")
+=======
+                    b.Property<bool?>("DaXem")
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         .HasColumnType("bit");
 
                     b.Property<string>("LienKet")
@@ -821,7 +858,11 @@ namespace SWAPFIT.Migrations
                     b.Property<int>("MaNguoiDung")
                         .HasColumnType("int");
 
+<<<<<<< HEAD
                     b.Property<DateTime>("NgayTao")
+=======
+                    b.Property<DateTime?>("NgayTao")
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NoiDung")
@@ -1151,13 +1192,21 @@ namespace SWAPFIT.Migrations
                     b.HasOne("SWAPFIT.Models.NguoiDung", "NguoiBaoCao")
                         .WithMany()
                         .HasForeignKey("MaNguoiBaoCao")
+<<<<<<< HEAD
                         .OnDelete(DeleteBehavior.NoAction)
+=======
+                        .OnDelete(DeleteBehavior.Cascade)
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         .IsRequired();
 
                     b.HasOne("SWAPFIT.Models.NguoiDung", "NguoiBiBaoCao")
                         .WithMany()
                         .HasForeignKey("MaNguoiBiBaoCao")
+<<<<<<< HEAD
                         .OnDelete(DeleteBehavior.NoAction)
+=======
+                        .OnDelete(DeleteBehavior.Cascade)
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         .IsRequired();
 
                     b.Navigation("NguoiBaoCao");
@@ -1165,6 +1214,7 @@ namespace SWAPFIT.Migrations
                     b.Navigation("NguoiBiBaoCao");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("SWAPFIT.Models.BaoCaoTaiKhoanAnh", b =>
                 {
                     b.HasOne("SWAPFIT.Models.BaoCaoTaiKhoan", "BaoCaoTaiKhoan")
@@ -1180,6 +1230,8 @@ namespace SWAPFIT.Migrations
                     b.Navigation("BaoCaoTaiKhoan");
                 });
 
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             modelBuilder.Entity("SWAPFIT.Models.BinhLuanTinTuc", b =>
                 {
                     b.HasOne("SWAPFIT.Models.NguoiDung", "NguoiDung")
@@ -1246,6 +1298,14 @@ namespace SWAPFIT.Migrations
 
             modelBuilder.Entity("SWAPFIT.Models.DoCu", b =>
                 {
+<<<<<<< HEAD
+=======
+                    b.HasOne("SWAPFIT.Models.BaiViet", "BaiViet")
+                        .WithMany()
+                        .HasForeignKey("MaBaiViet")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                     b.HasOne("SWAPFIT.Models.DanhMuc", null)
                         .WithMany()
                         .HasForeignKey("MaDanhMuc")
@@ -1261,6 +1321,11 @@ namespace SWAPFIT.Migrations
                         .WithMany()
                         .HasForeignKey("MaThuongHieu")
                         .OnDelete(DeleteBehavior.Restrict);
+<<<<<<< HEAD
+=======
+
+                    b.Navigation("BaiViet");
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                 });
 
             modelBuilder.Entity("SWAPFIT.Models.DonHang", b =>
@@ -1369,11 +1434,14 @@ namespace SWAPFIT.Migrations
                     b.Navigation("AnhBaiViets");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("SWAPFIT.Models.BaoCaoTaiKhoan", b =>
                 {
                     b.Navigation("BaoCaoTaiKhoanAnhs");
                 });
 
+=======
+>>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             modelBuilder.Entity("SWAPFIT.Models.BinhLuanTinTuc", b =>
                 {
                     b.Navigation("Replies");
