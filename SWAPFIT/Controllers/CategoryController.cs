@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWAPFIT.Models;
-using SWAPFIT.Data;// hoặc namespace chứa ApplicationDbContext
+using SWAPFIT.Data;
 using System.Linq;
 
 namespace SWAPFIT.Controllers
@@ -14,17 +14,16 @@ namespace SWAPFIT.Controllers
             _context = context;
         }
 
-        // ✅ Hiển thị danh sách danh mục
+       
         public IActionResult Index()
         {
-            // Lấy toàn bộ danh mục từ DB
+           
             var danhMucs = _context.DanhMucs.ToList();
 
-            // Truyền danh sách này sang View
             return View(danhMucs);
         }
 
-        // ✅ Tạo danh mục mới
+       
         [HttpGet]
         public IActionResult Create()
         {
@@ -44,7 +43,7 @@ namespace SWAPFIT.Controllers
         }
 
 
-        // ✅ Sửa danh mục
+        
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -65,7 +64,7 @@ namespace SWAPFIT.Controllers
             return View(model);
         }
 
-        // ✅ Xóa danh mục
+        
         public IActionResult Delete(int id)
         {
             var danhMuc = _context.DanhMucs.Find(id);

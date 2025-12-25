@@ -1,24 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-<<<<<<< HEAD
 using Newtonsoft.Json;
 using SWAPFIT.Data;
 using SWAPFIT.Model;
 using SWAPFIT.Models;
 using System.Diagnostics;
 using System.Text;
-=======
-using SWAPFIT.Data;
-using SWAPFIT.Model;
-using SWAPFIT.Models;
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
 namespace SWAPFIT.Controllers
 {
     public class ThanhToanController : Controller
     {
         private readonly ApplicationDbContext _context;
-<<<<<<< HEAD
         private readonly ILogger<ThanhToanController> _logger;
 
         public ThanhToanController(ApplicationDbContext context, ILogger<ThanhToanController> logger)
@@ -26,86 +19,6 @@ namespace SWAPFIT.Controllers
             _context = context;
             _logger = logger;
         }
-
-        // ===============================
-        // Trang xác nhận thanh toán (giỏ hàng bình thường)
-        // ===============================
-        //public IActionResult Index()
-        //{
-        //    var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-        //    if (!maNguoiDung.HasValue)
-        //        return RedirectToAction("Login", "Account");
-
-        //    var gioHang = _context.GioHangs
-        //        .Include(g => g.ChiTietGioHangs)
-        //            .ThenInclude(ct => ct.BaiViet)
-        //                .ThenInclude(b => b.AnhBaiViets)
-        //        .Include(g => g.ChiTietGioHangs)
-        //            .ThenInclude(ct => ct.BaiViet)
-        //                .ThenInclude(b => b.NguoiDung)
-        //        .FirstOrDefault(g => g.MaNguoiDung == maNguoiDung.Value);
-
-        //    var viewModel = new GioHangViewModel();
-
-        //    if (gioHang == null || !gioHang.ChiTietGioHangs.Any())
-        //    {
-        //        var gioHangTamJson = HttpContext.Session.GetString("GioHangTam");
-        //        if (string.IsNullOrEmpty(gioHangTamJson))
-        //        {
-        //            TempData["Error"] = "Giỏ hàng của bạn đang trống!";
-        //            return RedirectToAction("Index", "GioHang");
-        //        }
-
-        //        // Deserialize giỏ hàng tạm
-        //        var gioHangTam = JsonConvert.DeserializeObject<List<GioHangTamModel>>(gioHangTamJson);
-        //        viewModel.GioHangTam = gioHangTam;
-        //    }
-        //    else
-        //    {
-        //        viewModel.GioHang = gioHang;
-        //    }
-
-        //    return View(viewModel);
-        //}
-        //-----------------------------------------------------------------------------
-        //public IActionResult Index()
-        //{
-        //    var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-        //    if (!maNguoiDung.HasValue)
-        //        return RedirectToAction("Login", "Account");
-
-        //    int userId = maNguoiDung.Value;
-        //    var gioHang = _context.GioHangs
-        //        .Include(g => g.ChiTietGioHangs)
-        //            .ThenInclude(ct => ct.BaiViet)
-        //                .ThenInclude(b => b.AnhBaiViets)
-        //        .FirstOrDefault(g => g.MaNguoiDung == userId);
-
-        //    var viewModel = new GioHangViewModel();
-        //    decimal tongTien = 0m;
-
-        //    if (gioHang != null && gioHang.ChiTietGioHangs.Any())
-        //    {
-        //        var gioHangTamJson = HttpContext.Session.GetString("GioHangTam");
-        //        if (string.IsNullOrEmpty(gioHangTamJson))
-        //        {
-        //            TempData["Error"] = "Giỏ hàng trống!";
-        //            return RedirectToAction("Index", "GioHang");
-        //        }
-        //        var gioHangTam = JsonConvert.DeserializeObject<List<GioHangTamModel>>(gioHangTamJson);
-        //        viewModel.GioHangTam = gioHangTam;
-        //        tongTien = gioHangTam.Sum(x => x.GiaSanPham * x.SoLuong);
-        //    }
-        //    else
-        //    {
-        //        viewModel.GioHang = gioHang;
-        //        tongTien = gioHang.ChiTietGioHangs.Sum(ct => (ct.BaiViet.GiaSanPham ?? 0m) * ct.SoLuong);
-
-
-        //    }
-
-
-
         public IActionResult Index()
         {
             var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
@@ -113,33 +26,22 @@ namespace SWAPFIT.Controllers
                 return RedirectToAction("Login", "Account");
 
             int userId = maNguoiDung.Value;
-=======
-
-        public ThanhToanController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        // ===============================
-        // 🟢 Trang xác nhận thanh toán
-        // ===============================
-        public IActionResult Index()
-        {
-            var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-            if (maNguoiDung == null) return RedirectToAction("Login", "Account");
-
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
+            var maDonHangTam = HttpContext.Session.GetString("MaDonHangTam");
+            if (string.IsNullOrEmpty(maDonHangTam))
+            {
+                maDonHangTam = $"SWF-{DateTime.Now:yyyyMMddHHmmss}-{userId}";
+                HttpContext.Session.SetString("MaDonHangTam", maDonHangTam);
+            }
+            ViewBag.MaDonHangTam = maDonHangTam;
             var gioHang = _context.GioHangs
                 .Include(g => g.ChiTietGioHangs)
                     .ThenInclude(ct => ct.BaiViet)
                         .ThenInclude(b => b.AnhBaiViets)
-<<<<<<< HEAD
                 .FirstOrDefault(g => g.MaNguoiDung == userId);
 
             var viewModel = new GioHangViewModel();
             decimal tongTien = 0m;
 
-            // Kiểm tra nếu giỏ hàng tạm có dữ liệu, lấy từ session
             var gioHangTamJson = HttpContext.Session.GetString("GioHangTam");
             if (!string.IsNullOrEmpty(gioHangTamJson))
             {
@@ -150,27 +52,11 @@ namespace SWAPFIT.Controllers
             else if (gioHang != null && gioHang.ChiTietGioHangs.Any())
             {
                 viewModel.GioHang = gioHang;
-                tongTien = gioHang.ChiTietGioHangs.Sum(ct => (ct.BaiViet.GiaSanPham ?? 0m) * ct.SoLuong);
+                tongTien = gioHang.ChiTietGioHangs.Sum(ct =>
+                    (ct.BaiViet.GiaSanPham ?? 0m) * ct.SoLuong);
             }
 
-            // ĐẨY TỔNG TIỀN RA VIEW
             ViewBag.TongTien = tongTien;
-
-            // LẤY VOUCHER ĐÃ LƯU CỦA USER
-            //var userVouchers = _context.UserVouchers
-            //    .Where(uv => uv.UserId == userId)
-            //    .Include(uv => uv.Voucher)
-            //    .Where(uv => uv.Voucher != null &&
-            //                 uv.Voucher.TrangThai == "HoatDong" &&
-            //                 uv.Voucher.NgayBatDau <= DateTime.Now &&
-            //                 uv.Voucher.NgayKetThuc >= DateTime.Now)
-            //    .Select(uv => uv.Voucher)
-            //    .ToList();
-
-            //ViewBag.UserVouchers = userVouchers;
-            // LẤY VOUCHER ĐÃ LƯU + CÒN HỢP LỆ (ngày + trạng thái)
-            var now = DateTime.Now;
-            // TEST: HIỆN TẤT CẢ VOUCHER ĐÃ LƯU (BỎ QUA ĐIỀU KIỆN NGÀY)
             var userVouchers = _context.UserVouchers
                 .Where(uv => uv.UserId == userId)
                 .Include(uv => uv.Voucher)
@@ -180,452 +66,68 @@ namespace SWAPFIT.Controllers
                 .ToList();
 
             ViewBag.UserVouchers = userVouchers;
-            return View(viewModel);
-=======
-                .Include(g => g.ChiTietGioHangs)
-                    .ThenInclude(ct => ct.BaiViet)
-                        .ThenInclude(b => b.NguoiDung)
-                .FirstOrDefault(g => g.MaNguoiDung == maNguoiDung);
+            List<int> sellerIds = new();
 
-            if (gioHang == null || !gioHang.ChiTietGioHangs.Any())
+            if (viewModel.GioHangTam != null && viewModel.GioHangTam.Any())
             {
-                TempData["Error"] = "Giỏ hàng của bạn đang trống!";
-                return RedirectToAction("Index", "GioHang");
+                sellerIds = viewModel.GioHangTam
+                    .Select(x => x.MaNguoiBan)
+                    .Distinct()
+                    .ToList();
+            }
+            else if (viewModel.GioHang != null && viewModel.GioHang.ChiTietGioHangs.Any())
+            {
+                sellerIds = viewModel.GioHang.ChiTietGioHangs
+                    .Select(ct => ct.BaiViet.MaNguoiDung)
+                    .Distinct()
+                    .ToList();
             }
 
-            // 🔹 Bơm danh sách voucher đã lưu
-            ViewBag.UserVouchers = LayVoucherDaLuu(maNguoiDung.Value);
+            var bankInfos = _context.TaiKhoanNganHang
+                .Where(b => sellerIds.Contains(b.MaNguoiDung))
+                .ToList();
 
-            return View(gioHang);
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
+            ViewBag.SellerIds = sellerIds;
+            ViewBag.BankInfos = bankInfos;
+
+            return View(viewModel);
         }
-
-
-
-<<<<<<< HEAD
-        //    // ĐẨY TỔNG TIỀN RA VIEW
-        //    ViewBag.TongTien = tongTien;
-
-        //    // LẤY VOUCHER ĐÃ LƯU CỦA USER
-        //    var userVouchers = _context.UserVouchers
-        //        .Where(uv => uv.UserId == userId)
-        //        .Include(uv => uv.Voucher)
-        //        .Where(uv => uv.Voucher != null &&
-        //                     uv.Voucher.TrangThai == "HoatDong" &&
-        //                     uv.Voucher.NgayBatDau <= DateTime.Now &&
-        //                     uv.Voucher.NgayKetThuc >= DateTime.Now)
-        //        .Select(uv => uv.Voucher)
-        //        .ToList();
-
-        //    ViewBag.UserVouchers = userVouchers;
-
-        //    return View(viewModel);
-        //}
-
-
-        // ===============================
-        // XÁC NHẬN THANH TOÁN – TẠO ĐƠN HÀNG + HIỆN THÔNG BÁO ĐẸP
-        // ===============================
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult XacNhanThanhToan(string diaChiGiaoHang, string phuongThucThanhToan, string phuongThucGiaoHang)
-        //{
-        //    var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-        //    if (!maNguoiDung.HasValue)
-        //        return RedirectToAction("Login", "Account");
-
-        //    int userId = maNguoiDung.Value;
-
-        //    // Kiểm tra giỏ hàng tạm trong session
-        //    List<GioHangTamModel> gioHangTam = null;
-
-        //    if (HttpContext.Session.TryGetValue("GioHangTam", out var gioHangTamJson))
-        //    {
-        //        // Deserialize giỏ hàng tạm
-        //        gioHangTam = JsonConvert.DeserializeObject<List<GioHangTamModel>>(Encoding.UTF8.GetString(gioHangTamJson));
-        //    }
-
-        //    if (gioHangTam == null || !gioHangTam.Any())
-        //    {
-        //        TempData["Error"] = "Giỏ hàng của bạn đang trống!";
-        //        return RedirectToAction("Index", "GioHang");
-        //    }
-
-        //    try
-        //    {
-        //        // Tính tổng tiền của giỏ hàng tạm
-        //        decimal tongTienNhom = gioHangTam.Sum(ct => ct.GiaSanPham * ct.SoLuong);
-
-        //        // Tạo đơn hàng cho mỗi người bán
-        //        foreach (var nhom in gioHangTam.GroupBy(item => item.MaNguoiBan))
-        //        {
-        //            var donHang = new DonHang
-        //            {
-        //                MaNguoiMua = userId,
-        //                MaNguoiBan = nhom.Key,  // Lấy MaNguoiBan từ nhóm sản phẩm
-        //                DiaChiGiaoHang = diaChiGiaoHang,
-        //                PhuongThucThanhToan = phuongThucThanhToan,
-        //                PhuongThucGiaoHang = phuongThucGiaoHang,
-        //                TrangThai = "Chờ xác nhận",
-        //                NgayDat = DateTime.Now,
-        //                TongTien = nhom.Sum(item => item.GiaSanPham * item.SoLuong)
-        //            };
-
-        //            // Lưu đơn hàng vào cơ sở dữ liệu
-        //            _context.DonHangs.Add(donHang);
-        //            _context.SaveChanges();
-
-        //            // Tạo chi tiết đơn hàng
-        //            foreach (var item in nhom)
-        //            {
-        //                var chiTiet = new ChiTietDonHang
-        //                {
-        //                    MaDonHang = donHang.MaDonHang,
-        //                    MaBaiViet = item.MaBaiViet,
-        //                    SoLuong = item.SoLuong,
-        //                    Gia = item.GiaSanPham
-        //                };
-
-        //                _context.ChiTietDonHangs.Add(chiTiet);
-
-        //            }
-
-        //            _context.SaveChanges();
-        //        }
-
-        //        // Xóa giỏ hàng tạm khỏi session sau khi thanh toán
-        //        HttpContext.Session.Remove("GioHangTam");
-
-        //        TempData["Success"] = "Đặt hàng thành công! Đơn hàng đang chờ người bán xác nhận.";
-        //        return View("ThongBao");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Có lỗi xảy ra khi đặt hàng.");
-        //        TempData["Error"] = "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!";
-        //        return RedirectToAction("Index");
-        //    }
-        //}
-        //----------------------------------------------------------------------------------------------------------
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult XacNhanThanhToan(string diaChiGiaoHang, string phuongThucThanhToan, string phuongThucGiaoHang)
-        //{
-        //    var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-        //    if (!maNguoiDung.HasValue)
-        //        return RedirectToAction("Login", "Account");
-
-        //    int userId = maNguoiDung.Value;
-
-        //    // Kiểm tra giỏ hàng tạm trong session
-        //    List<GioHangTamModel> gioHangTam = null;
-
-        //    if (HttpContext.Session.TryGetValue("GioHangTam", out var gioHangTamJson))
-        //    {
-        //        // Deserialize giỏ hàng tạm
-        //        gioHangTam = JsonConvert.DeserializeObject<List<GioHangTamModel>>(Encoding.UTF8.GetString(gioHangTamJson));
-        //    }
-
-        //    if (gioHangTam == null || !gioHangTam.Any())
-        //    {
-        //        TempData["Error"] = "Giỏ hàng của bạn đang trống!";
-        //        return RedirectToAction("Index", "GioHang");
-        //    }
-
-        //    try
-        //    {
-        //        // Tính tổng tiền của giỏ hàng tạm
-        //        decimal tongTienNhom = gioHangTam.Sum(ct => ct.GiaSanPham * ct.SoLuong);
-
-        //        // Tạo đơn hàng cho mỗi người bán
-        //        foreach (var nhom in gioHangTam.GroupBy(item => item.MaNguoiBan))
-        //        {
-        //            var donHang = new DonHang
-        //            {
-        //                MaNguoiMua = userId,
-        //                MaNguoiBan = nhom.Key,  // Lấy MaNguoiBan từ nhóm sản phẩm
-        //                DiaChiGiaoHang = diaChiGiaoHang,
-        //                PhuongThucThanhToan = phuongThucThanhToan,
-        //                PhuongThucGiaoHang = phuongThucGiaoHang,
-        //                TrangThai = "Chờ xác nhận",
-        //                NgayDat = DateTime.Now,
-        //                TongTien = nhom.Sum(item => item.GiaSanPham * item.SoLuong)
-        //            };
-
-        //            // Lưu đơn hàng vào cơ sở dữ liệu
-        //            _context.DonHangs.Add(donHang);
-        //            _context.SaveChanges();
-
-        //            // Tạo chi tiết đơn hàng và giảm số lượng sản phẩm
-        //            foreach (var item in nhom)
-        //            {
-        //                var chiTiet = new ChiTietDonHang
-        //                {
-        //                    MaDonHang = donHang.MaDonHang,
-        //                    MaBaiViet = item.MaBaiViet,
-        //                    SoLuong = item.SoLuong,
-        //                    Gia = item.GiaSanPham
-        //                };
-
-        //                _context.ChiTietDonHangs.Add(chiTiet);
-
-        //                // Cập nhật số lượng sản phẩm trong bảng BaiViet
-        //                var sanPham = _context.BaiViets.Find(item.MaBaiViet);
-        //                if (sanPham != null)
-        //                {
-        //                    // Giảm số lượng sản phẩm theo số lượng trong giỏ hàng
-        //                    sanPham.SoLuong -= item.SoLuong;
-        //                    _context.BaiViets.Update(sanPham); // Cập nhật lại số lượng
-        //                }
-        //            }
-
-        //            _context.SaveChanges(); // Lưu thay đổi vào cơ sở dữ liệu
-        //        }
-
-        //        // Xóa giỏ hàng tạm khỏi session sau khi thanh toán
-        //        HttpContext.Session.Remove("GioHangTam");
-
-        //        TempData["Success"] = "Đặt hàng thành công! Đơn hàng đang chờ người bán xác nhận.";
-        //        return View("ThongBao");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Có lỗi xảy ra khi đặt hàng.");
-        //        TempData["Error"] = "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!";
-        //        return RedirectToAction("Index");
-        //    }
-        //}
-        //------------------------------------------------------------root
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult XacNhanThanhToan(string diaChiGiaoHang, string phuongThucThanhToan, string phuongThucGiaoHang, decimal tongTien)
-        //{
-        //    var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-        //    if (!maNguoiDung.HasValue)
-        //        return RedirectToAction("Login", "Account");
-
-        //    int userId = maNguoiDung.Value;
-
-        //    // Kiểm tra giỏ hàng tạm trong session
-        //    List<GioHangTamModel> gioHangTam = null;
-
-        //    if (HttpContext.Session.TryGetValue("GioHangTam", out var gioHangTamJson))
-        //    {
-        //        // Deserialize giỏ hàng tạm
-        //        gioHangTam = JsonConvert.DeserializeObject<List<GioHangTamModel>>(Encoding.UTF8.GetString(gioHangTamJson));
-        //    }
-
-        //    if (gioHangTam == null || !gioHangTam.Any())
-        //    {
-        //        TempData["Error"] = "Giỏ hàng của bạn đang trống!";
-        //        return RedirectToAction("Index", "GioHang");
-        //    }
-
-        //    // Lấy voucher đã lưu của người dùng
-        //    var voucherId = HttpContext.Request.Form["voucherId"]; // Lấy voucherId từ form
-        //    decimal discount = 0;
-
-        //    if (!string.IsNullOrEmpty(voucherId))
-        //    {
-        //        var voucher = _context.UuDais
-        //            .FirstOrDefault(v => v.MaUuDai == int.Parse(voucherId) && v.TrangThai == "HoatDong" && v.NgayBatDau <= DateTime.Now && v.NgayKetThuc >= DateTime.Now);
-
-        //        if (voucher != null)
-        //        {
-        //            if (voucher.LoaiUuDai == "PhanTram")
-        //            {
-        //                discount = (tongTien * voucher.GiaTri) / 100; // Áp dụng giảm giá phần trăm
-        //            }
-        //            else if (voucher.LoaiUuDai == "TienMat")
-        //            {
-        //                discount = voucher.GiaTri; // Áp dụng giảm giá tiền mặt
-        //            }
-        //        }
-        //    }
-
-        //    // Tính tổng tiền sau khi áp dụng voucher
-        //    decimal tongTienSauKhiApDung = tongTien - discount;
-
-        //    // Tạo đơn hàng cho mỗi người bán
-        //    foreach (var nhom in gioHangTam.GroupBy(item => item.MaNguoiBan))
-        //    {
-        //        var donHang = new DonHang
-        //        {
-        //            MaNguoiMua = userId,
-        //            MaNguoiBan = nhom.Key,
-        //            DiaChiGiaoHang = diaChiGiaoHang,
-        //            PhuongThucThanhToan = phuongThucThanhToan,
-        //            PhuongThucGiaoHang = phuongThucGiaoHang,
-        //            TrangThai = "Chờ xác nhận",
-        //            NgayDat = DateTime.Now,
-        //            TongTien = nhom.Sum(item => item.GiaSanPham * item.SoLuong) - discount // Áp dụng discount vào tổng tiền
-        //        };
-
-        //        _context.DonHangs.Add(donHang);
-        //        _context.SaveChanges();
-
-        //        // Tạo chi tiết đơn hàng
-        //        foreach (var item in nhom)
-        //        {
-        //            var chiTiet = new ChiTietDonHang
-        //            {
-        //                MaDonHang = donHang.MaDonHang,
-        //                MaBaiViet = item.MaBaiViet,
-        //                SoLuong = item.SoLuong,
-        //                Gia = item.GiaSanPham
-        //            };
-
-        //            _context.ChiTietDonHangs.Add(chiTiet);
-        //        }
-
-        //        _context.SaveChanges();
-        //    }
-
-        //    // Xóa giỏ hàng tạm khỏi session sau khi thanh toán
-        //    HttpContext.Session.Remove("GioHangTam");
-
-        //    TempData["Success"] = "Đặt hàng thành công! Đơn hàng đang chờ người bán xác nhận.";
-        //    return View("ThongBao");
-        //}
-
-        //---------------------------test
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public IActionResult XacNhanThanhToan(string diaChiGiaoHang, string phuongThucThanhToan, string phuongThucGiaoHang, decimal tongTien, string voucherId)
-        //{
-        //    var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-        //    if (!maNguoiDung.HasValue)
-        //        return RedirectToAction("Login", "Account"); // ĐÃ SỬA: thêm dấu ", đóng ngoặc đúng
+            public IActionResult XacNhanThanhToan(
+                    string diaChiGiaoHang,
+                    string phuongThucThanhToan,
+                    string phuongThucGiaoHang,
+                    decimal tongTien,
+                    string voucherId,
+                    string maDonHangTam,
+                    string noiDungChuyenKhoan )
 
-        //    int userId = maNguoiDung.Value;
-
-        //    var gioHangTamJson = HttpContext.Session.GetString("GioHangTam");
-        //    var gioHangTam = JsonConvert.DeserializeObject<List<GioHangTamModel>>(gioHangTamJson);
-        //    if (string.IsNullOrEmpty(gioHangTamJson))
-        //    {
-        //        TempData["Error"] = "Giỏ hàng trống!";
-        //        return RedirectToAction("Index", "GioHang");
-        //    }
-        //    else
-        //     {
-
-        //        if (gioHangTam == null || !gioHangTam.Any())
-        //        {
-        //            TempData["Error"] = "Giỏ hàng trống!";
-        //            return RedirectToAction("Index", "GioHang");
-        //        }
-
-        //    }
-
-
-
-
-        //    decimal discount = 0;
-        //    int? selectedVoucherId = null;
-
-        //    // LẤY VOUCHER TỪ FORM (string → parse thành int)
-        //    if (!string.IsNullOrEmpty(voucherId) && int.TryParse(voucherId, out int vid))
-        //    {
-        //        selectedVoucherId = vid;
-        //        //var voucher = _context.UuDais.FirstOrDefault(v => v.MaUuDai == vid);
-        //        //if (voucher != null)
-        //        //{
-        //        //    if (voucher.LoaiUuDai == "PhanTram")
-        //        //        discount = tongTien * voucher.GiaTri / 100;
-        //        //    else if (voucher.LoaiUuDai == "TienMat")
-        //        //        discount = voucher.GiaTri;
-        //        //}
-        //    }
-
-        //    try
-        //    {
-        //        foreach (var nhom in gioHangTam.GroupBy(item => item.MaNguoiBan))
-        //        {
-        //            var donHang = new DonHang
-        //            {
-        //                MaNguoiMua = userId,
-        //                MaNguoiBan = nhom.Key,
-        //                DiaChiGiaoHang = diaChiGiaoHang,
-        //                PhuongThucThanhToan = phuongThucThanhToan,
-        //                PhuongThucGiaoHang = phuongThucGiaoHang,
-        //                TrangThai = "Chờ xác nhận",
-        //                NgayDat = DateTime.Now,
-        //                TongTien = nhom.Sum(x => x.GiaSanPham * x.SoLuong)// - discount
-        //            };
-
-        //            _context.DonHangs.Add(donHang);
-        //            _context.SaveChanges();
-
-        //            foreach (var item in nhom)
-        //            {
-        //                _context.ChiTietDonHangs.Add(new ChiTietDonHang
-        //                {
-        //                    MaDonHang = donHang.MaDonHang,
-        //                    MaBaiViet = item.MaBaiViet,
-        //                    SoLuong = item.SoLuong,
-        //                    Gia = item.GiaSanPham
-        //                });
-        //            }
-        //            _context.SaveChanges();
-        //            // TRỪ SỐ LƯỢNG SẢN PHẨM TRONG BẢI VIẾT
-        //            foreach (var item in nhom)
-        //            {
-        //                var sanPham = _context.BaiViets.FirstOrDefault(b => b.MaBaiViet == item.MaBaiViet);
-        //                if (sanPham != null && sanPham.SoLuong >= item.SoLuong)
-        //                {
-        //                    sanPham.SoLuong -= item.SoLuong;
-        //                }
-        //            }
-        //            _context.SaveChanges();
-        //        }
-
-        //       // XÓA VOUCHER ĐÃ DÙNG(CHỈ DÙNG 1 LẦN)
-        //        if (selectedVoucherId.HasValue)
-        //        {
-        //            var usedVoucher = _context.UserVouchers
-        //                .FirstOrDefault(uv => uv.UserId == userId && uv.VoucherId == selectedVoucherId.Value);
-
-        //            if (usedVoucher != null)
-        //            {
-        //                _context.UserVouchers.Remove(usedVoucher);
-        //                _context.SaveChanges();
-        //            }
-        //        }
-
-        //        HttpContext.Session.Remove("GioHangTam");
-        //        TempData["Success"] = "Đặt hàng thành công! Voucher đã được sử dụng và xóa khỏi ví.";
-        //        return View("ThongBao");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Lỗi khi đặt hàng");
-        //        TempData["Error"] = "Có lỗi xảy ra khi đặt hàng! Vui lòng thử lại.";
-        //        return RedirectToAction("Index");
-        //    }
-        //}
-
-
-      
-        public IActionResult XacNhanThanhToan(string diaChiGiaoHang, string phuongThucThanhToan, string phuongThucGiaoHang, decimal tongTien, string voucherId)
         {
+
+
             var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
             if (!maNguoiDung.HasValue)
                 return RedirectToAction("Login", "Account");
 
             int userId = maNguoiDung.Value;
 
+            var nguoiMua = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == userId);
+            string tenNguoiMua = nguoiMua?.HoTen ?? nguoiMua?.TenDangNhap ?? $"Người dùng {userId}";
+
             var gioHangTamJson = HttpContext.Session.GetString("GioHangTam");
             var gioHangTam = string.IsNullOrEmpty(gioHangTamJson)
                 ? null
                 : JsonConvert.DeserializeObject<List<GioHangTamModel>>(gioHangTamJson);
 
-            // If gioHangTam is empty, retrieve products from gioHangs table
-            bool isFromGioHang = false; // Flag to check if the order is from the main cart or session cart
+            bool isFromGioHang = false;
+
             if (gioHangTam == null || !gioHangTam.Any())
             {
                 var gioHang = _context.GioHangs
                     .Include(g => g.ChiTietGioHangs)
                         .ThenInclude(ct => ct.BaiViet)
+                            .ThenInclude(b => b.AnhBaiViets)
                     .FirstOrDefault(g => g.MaNguoiDung == userId);
 
                 if (gioHang == null || !gioHang.ChiTietGioHangs.Any())
@@ -633,10 +135,8 @@ namespace SWAPFIT.Controllers
                     TempData["Error"] = "Giỏ hàng của bạn đang trống!";
                     return RedirectToAction("Index", "GioHang");
                 }
-                if (gioHang != null)
-                {
-                    isFromGioHang = true;
-                }
+
+                isFromGioHang = true;
 
                 gioHangTam = gioHang.ChiTietGioHangs.Select(ct => new GioHangTamModel
                 {
@@ -650,24 +150,76 @@ namespace SWAPFIT.Controllers
                 }).ToList();
             }
 
-            //decimal discount = 0;
+            var tongTienServer = gioHangTam.Sum(x => x.GiaSanPham * x.SoLuong);
+
+            var now = DateTime.Now;
+            decimal discount = 0m;
             int? selectedVoucherId = null;
 
-            // Validate and apply voucher
-            if (!string.IsNullOrEmpty(voucherId) && int.TryParse(voucherId, out int vid))
+            if (!string.IsNullOrWhiteSpace(voucherId) && int.TryParse(voucherId, out int vid))
             {
-                selectedVoucherId = vid;
-               
+                var voucher = _context.UuDais.FirstOrDefault(v =>
+                    v.MaUuDai == vid &&
+                    v.TrangThai.Trim() == "HoatDong" &&
+                    v.NgayBatDau <= now &&
+                    v.NgayKetThuc >= now
+                );
+
+                if (voucher == null)
+                {
+                    TempData["Error"] = "Voucher không hợp lệ hoặc đã hết hạn.";
+                    return RedirectToAction("Index", "ThanhToan");
+                }
+
+                var userHasVoucher = _context.UserVouchers
+                    .Any(uv => uv.UserId == userId && uv.VoucherId == voucher.MaUuDai);
+
+                if (!userHasVoucher)
+                {
+                    TempData["Error"] = "Bạn không sở hữu voucher này.";
+                    return RedirectToAction("Index", "ThanhToan");
+                }
+
+                if (voucher.GioiHanSoLuong.HasValue)
+                {
+                    var claimed = _context.UserVouchers.Count(uv => uv.VoucherId == voucher.MaUuDai);
+                    if (claimed >= voucher.GioiHanSoLuong.Value)
+                    {
+                        TempData["Error"] = "Voucher đã hết lượt sử dụng.";
+                        return RedirectToAction("Index", "ThanhToan");
+                    }
+                }
+
+                selectedVoucherId = voucher.MaUuDai;
+
+                if (voucher.LoaiUuDai == "PhanTram")
+                    discount = tongTienServer * voucher.GiaTri / 100m;
+                else if (voucher.LoaiUuDai == "TienMat")
+                    discount = voucher.GiaTri;
+
+                if (discount > tongTienServer) discount = tongTienServer;
             }
-            Debug.WriteLine($"Tổng tiền sau khi giảm giá: {tongTien}");
 
             try
             {
-               
+                var groups = gioHangTam.GroupBy(x => x.MaNguoiBan).ToList();
 
-                // Create the order for each seller
-                foreach (var nhom in gioHangTam.GroupBy(item => item.MaNguoiBan))
+                var groupTotals = groups.ToDictionary(
+                    g => g.Key,
+                    g => g.Sum(x => x.GiaSanPham * x.SoLuong)
+                );
+
+                foreach (var nhom in groups)
                 {
+                    var tongNhom = groupTotals[nhom.Key];
+
+                    decimal discountNhom = 0m;
+                    if (discount > 0 && tongTienServer > 0)
+                    {
+                        discountNhom = Math.Round(discount * (tongNhom / tongTienServer), 0); 
+                        if (discountNhom > tongNhom) discountNhom = tongNhom;
+                    }
+
                     var donHang = new DonHang
                     {
                         MaNguoiMua = userId,
@@ -677,13 +229,22 @@ namespace SWAPFIT.Controllers
                         PhuongThucGiaoHang = phuongThucGiaoHang,
                         TrangThai = "Chờ xác nhận",
                         NgayDat = DateTime.Now,
-                        TongTien = tongTien// - discount // Apply discount
+                        TongTien = tongNhom - discountNhom
                     };
 
                     _context.DonHangs.Add(donHang);
-                    _context.SaveChanges(); // Save the order
+                    _context.SaveChanges(); 
 
-                    // Create order details for each item in the cart
+                    _context.ThongBaos.Add(new ThongBao
+                    {
+                        MaNguoiDung = nhom.Key,
+                        NoiDung = $"Bạn có đơn hàng mới #{donHang.MaDonHang} từ {tenNguoiMua}.",
+                        LienKet = Url.Action("OrderDetails", "Admin", new { id = donHang.MaDonHang }),
+                        DaXem = false,
+                        NgayTao = DateTime.Now
+                    });
+                    _context.SaveChanges();
+
                     foreach (var item in nhom)
                     {
                         _context.ChiTietDonHangs.Add(new ChiTietDonHang
@@ -694,17 +255,15 @@ namespace SWAPFIT.Controllers
                             Gia = item.GiaSanPham
                         });
                     }
+                    _context.SaveChanges();
 
-                    _context.SaveChanges(); // Save the order details
-
-                    // Update product stock after order is placed
                     foreach (var item in nhom)
                     {
                         var sanPham = _context.BaiViets.FirstOrDefault(b => b.MaBaiViet == item.MaBaiViet);
                         if (sanPham != null && sanPham.SoLuong >= item.SoLuong)
                         {
-                            sanPham.SoLuong -= item.SoLuong; // Decrease stock by the quantity ordered
-                            _context.BaiViets.Update(sanPham); // Save stock update
+                            sanPham.SoLuong -= item.SoLuong;
+                            _context.BaiViets.Update(sanPham);
                         }
                         else
                         {
@@ -712,10 +271,9 @@ namespace SWAPFIT.Controllers
                             return RedirectToAction("Index", "GioHang");
                         }
                     }
-                    _context.SaveChanges(); // Final save for all stock updates
+                    _context.SaveChanges();
                 }
 
-                // Remove used voucher from the user's voucher list
                 if (selectedVoucherId.HasValue)
                 {
                     var usedVoucher = _context.UserVouchers
@@ -727,22 +285,19 @@ namespace SWAPFIT.Controllers
                         _context.SaveChanges();
                     }
                 }
-
-                // Clear the session after successful order placement
                 HttpContext.Session.Remove("GioHangTam");
 
-                // Delete the GioHang from the database **only if the order is created from the main cart (gioHang)**
                 if (isFromGioHang)
                 {
                     var gioHang = _context.GioHangs.FirstOrDefault(g => g.MaNguoiDung == userId);
                     if (gioHang != null)
                     {
                         _context.GioHangs.Remove(gioHang);
-                        _context.SaveChanges(); // Commit the removal of the main cart
+                        _context.SaveChanges();
                     }
                 }
 
-                TempData["Success"] = "Đặt hàng thành công! Voucher đã được sử dụng và xóa khỏi ví.";
+                TempData["Success"] = "Đặt hàng thành công! Đơn hàng đang chờ người bán xác nhận.";
                 return View("ThongBao");
             }
             catch (Exception ex)
@@ -751,77 +306,33 @@ namespace SWAPFIT.Controllers
                 TempData["Error"] = "Có lỗi xảy ra khi đặt hàng! Vui lòng thử lại.";
                 return RedirectToAction("Index");
             }
-=======
-
-        // ===========================================================
-        // 🟢 Xác nhận ĐẶT HÀNG cho MUA NGAY
-        // ===========================================================
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> XacNhanMuaNgay(int id, string diaChiGiaoHang,
-     string phuongThucThanhToan, string phuongThucGiaoHang)
-        {
-            // Lấy mã người dùng từ session
-            var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-            if (maNguoiDung == null) return RedirectToAction("Login", "Account");
-
-            // Lấy thông tin sản phẩm từ database
-            var sanPham = await _context.BaiViets
-                .Include(b => b.NguoiDung)
-                .FirstOrDefaultAsync(b => b.MaBaiViet == id);
-
-            // Nếu không tìm thấy sản phẩm, chuyển hướng về trang ChoTang
-            if (sanPham == null) return RedirectToAction("ChoTang", "TinTuc");
-
-            // Tạo đơn hàng mới
-            var donHang = new DonHang
-            {
-                MaNguoiMua = maNguoiDung.Value, // Gán mã người mua từ session
-                MaNguoiBan = sanPham.MaNguoiDung, // Gán mã người bán từ sản phẩm
-                DiaChiGiaoHang = diaChiGiaoHang,
-                PhuongThucThanhToan = phuongThucThanhToan,
-                PhuongThucGiaoHang = phuongThucGiaoHang,
-                TrangThai = "Chờ xác nhận", // Đơn hàng đang chờ xử lý
-                NgayDat = DateTime.Now,
-                TongTien = sanPham.GiaSanPham ?? 0
-            };
-
-            // Thêm đơn hàng vào cơ sở dữ liệu
-            _context.DonHangs.Add(donHang);
-            await _context.SaveChangesAsync(); // Lưu để có MaDonHang
-
-            // Lưu chi tiết đơn hàng
-            _context.ChiTietDonHangs.Add(new ChiTietDonHang
-            {
-                MaDonHang = donHang.MaDonHang, // Gán mã đơn hàng
-                MaBaiViet = sanPham.MaBaiViet, // Gán mã sản phẩm
-                SoLuong = 1, // Số lượng sản phẩm trong đơn
-                Gia = sanPham.GiaSanPham ?? 0 // Gán giá sản phẩm
-            });
-
-            // Trừ số lượng sản phẩm trong kho
-            sanPham.SoLuong -= 1;
-
-            if (sanPham.SoLuong <= 0)
-            {
-                sanPham.TrangThai = "Hết hàng"; // Đặt trạng thái sản phẩm là "Hết hàng"
-            }
-
-            // Lưu thay đổi
-            await _context.SaveChangesAsync();
-
-            // Thông báo thành công
-            TempData["DaDatHang"] = true;
-            TempData["Success"] = "Đặt hàng thành công!";
-            TempData["ThongBao"] = "Đơn hàng của bạn đã được đặt thành công và đang chờ người bán xác nhận!";
-
-            return RedirectToAction("ThongBao"); // Chuyển hướng tới trang thông báo
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         }
 
 
 
-<<<<<<< HEAD
+        [HttpGet]
+        public IActionResult LayThongTinChuyenKhoan()
+        {
+            var gioHangTamJson = HttpContext.Session.GetString("GioHangTam");
+            if (string.IsNullOrEmpty(gioHangTamJson))
+                return PartialView("_ThongTinChuyenKhoan", new List<TaiKhoanNganHang>());
+
+            var gioHangTam = JsonConvert.DeserializeObject<List<GioHangTamModel>>(gioHangTamJson);
+
+           
+            var sellerIds = gioHangTam
+                .Select(x => x.MaNguoiBan)
+                .Distinct()
+                .ToList();
+
+            
+            var banks = _context.TaiKhoanNganHang
+                .Where(b => sellerIds.Contains(b.MaNguoiDung))
+                .ToList();
+
+            return PartialView("_ThongTinChuyenKhoan", banks);
+        }
+
 
 
 
@@ -830,20 +341,10 @@ namespace SWAPFIT.Controllers
             var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
             if (!maNguoiDung.HasValue)
                 return RedirectToAction("Login", "Account");
-=======
-        // ===========================================================
-        // 🟢 MUA NGAY
-        // ===========================================================
-        public IActionResult MuaNgay(int id)
-        {
-            var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-            if (maNguoiDung == null) return RedirectToAction("Login", "Account");
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
             var sanPham = _context.BaiViets
                 .Include(b => b.AnhBaiViets)
                 .Include(b => b.NguoiDung)
-<<<<<<< HEAD
                 .FirstOrDefault(b => b.MaBaiViet == id && b.SoLuong > 0);
 
             if (sanPham == null)
@@ -852,7 +353,7 @@ namespace SWAPFIT.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // Tạo giỏ hàng tạm với sản phẩm được chọn
+            
             var gioHangTam = new List<GioHangTamModel>
     {
         new GioHangTamModel
@@ -869,11 +370,10 @@ namespace SWAPFIT.Controllers
         }
     };
 
-            // Lưu giỏ hàng tạm vào session dưới dạng JSON
+            
             HttpContext.Session.SetString("GioHangTam", JsonConvert.SerializeObject(gioHangTam));
                     
 
-            // Kiểm tra lại dữ liệu trong session
             var gioHangTamJson = HttpContext.Session.GetString("GioHangTam");
             if (string.IsNullOrEmpty(gioHangTamJson))
             {
@@ -881,66 +381,16 @@ namespace SWAPFIT.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // Chuyển người dùng đến trang thanh toán với giỏ hàng tạm
             return RedirectToAction("Index", "ThanhToan");
 
 
-            // Chuyển người dùng đến trang thanh toán với giỏ hàng tạm
             return RedirectToAction("Index", "ThanhToan");
         }
 
 
-        // Action cho trang thông báo sau khi thanh toán
         public IActionResult ThongBao()
         {
             return View();
-=======
-                .FirstOrDefault(b => b.MaBaiViet == id);
-
-            if (sanPham == null) return NotFound();
-
-            var gioHangTam = new GioHang
-            {
-                ChiTietGioHangs = new List<ChiTietGioHang>
-        {
-            new ChiTietGioHang
-            {
-                BaiViet = sanPham,
-                SoLuong = 1
-            }
-        }
-            };
-
-            // 🔹 Bơm danh sách voucher đã lưu cho view dùng dropdown
-            ViewBag.UserVouchers = LayVoucherDaLuu(maNguoiDung.Value);
-
-            return View("Index", gioHangTam);
-        }
-
-
-        // ===========================================================
-        // 🟢 Trang Thông báo sau khi đặt hàng
-        // ===========================================================
-        // Trang Thông báo sau khi đặt hàng
-        public IActionResult ThongBao()
-        {
-            TempData["DaDatHang"] = true;
-            TempData.Keep("DaDatHang");
-            ViewBag.Message = "Đơn hàng của bạn đã được đặt thành công và đang chờ người bán xác nhận!";
-            return View(); // Đảm bảo rằng ThongBao.cshtml tồn tại trong thư mục Views/ThanhToan
-        }
-
-        private List<UserVoucher> LayVoucherDaLuu(int maNguoiDung)
-        {
-            return _context.UserVouchers
-                .Include(uv => uv.Voucher) // UuDai
-                .Where(uv => uv.UserId == maNguoiDung
-                             && uv.Voucher.NgayBatDau <= DateTime.Today
-                             && uv.Voucher.NgayKetThuc >= DateTime.Today
-                             && uv.Voucher.TrangThai == "HoatDong")
-                .OrderBy(uv => uv.Voucher.NgayKetThuc)
-                .ToList();
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         }
 
     }

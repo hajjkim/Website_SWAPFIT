@@ -3,319 +3,155 @@
     ViewData["Title"] = "Đăng ký tài khoản";
 }
 
-<<<<<<< HEAD
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<div class="container mt-5">
-    <div class="col-md-6 mx-auto">
-        <div class="card shadow-lg">
-            <div class="card-header bg-success text-white text-center">
-                <h4>Đăng ký tài khoản</h4>
-            </div>
-            <div class="card-body">
-                @if (ViewBag.Error != null)
-                {
-                    <div class="alert alert-danger">@ViewBag.Error</div>
-                }
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-lg border-0 rounded-4">
 
-                <form asp-action="Register" method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label class="form-label">Tên đăng nhập</label>
-                        <input asp-for="TenDangNhap" class="form-control" required />
-                    </div>
+                <!-- HEADER -->
+                <div class="card-header bg-success text-white text-center rounded-top-4 py-3">
+                    <h4 class="mb-0 fw-bold">📝 Đăng ký tài khoản</h4>
+                    <small>Tạo tài khoản để sử dụng SWAPFIT</small>
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Mật khẩu</label>
-                        <input asp-for="MatKhau" type="password" class="form-control" required />
-                    </div>
+                <div class="card-body p-4">
 
-                    <div class="mb-3">
-                        <label class="form-label">Họ và tên</label>
-                        <input asp-for="HoTen" class="form-control" />
-                    </div>
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger text-center">
+                            @ViewBag.Error
+                        </div>
+                    }
 
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input asp-for="Email" type="email" class="form-control" />
-                    </div>
+                    <form asp-action="Register" method="post" enctype="multipart/form-data">
 
-                    <div class="mb-3">
-                        <label class="form-label">Số điện thoại</label>
-                        <input asp-for="SoDienThoai" class="form-control" />
-                    </div>
+                        <!-- ===================== -->
+                        <!-- 🧑‍💻 THÔNG TIN TÀI KHOẢN -->
+                        <!-- ===================== -->
+                        <h6 class="fw-bold text-success mb-3">🧑‍💻 Thông tin tài khoản</h6>
 
-                    <div class="mb-3">
-                        <label class="form-label">Ảnh đại diện</label>
-                        <input type="file" name="anhDaiDien" class="form-control" />
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tên đăng nhập</label>
+                            <input asp-for="TenDangNhap" class="form-control" placeholder="Nhập tên đăng nhập" required />
+                        </div>
 
-                    <button type="submit" class="btn btn-success w-100">Đăng ký</button>
+                        <div class="mb-3">
+                            <label class="form-label">Mật khẩu</label>
+                            <input asp-for="MatKhau" type="password" class="form-control" placeholder="••••••••" required />
+                        </div>
 
-                    <div class="text-center mt-3">
-                        <a href="/Account/Login">Đã có tài khoản? Đăng nhập</a>
-                    </div>
-                </form>
+                        <div class="mb-3">
+                            <label class="form-label">Họ và tên</label>
+                            <input asp-for="HoTen" class="form-control" placeholder="Nguyễn Văn A" />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="email@example.com" />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Số điện thoại</label>
+                                <input asp-for="SoDienThoai" class="form-control" placeholder="0xxx xxx xxx" />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Ảnh đại diện</label>
+                            <input type="file" name="anhDaiDien" class="form-control" />
+                        </div>
+
+                       
+                        <div class="p-3 rounded-3 bg-light border mb-4">
+                            <h6 class="fw-bold text-success mb-3">🏦 Tài khoản ngân hàng (tuỳ chọn)</h6>
+
+                            <div class="mb-3">
+                                <label class="form-label">Tên ngân hàng</label>
+                                <select name="tenNganHang" class="form-select">
+                                    <option value="">-- Chọn ngân hàng --</option>
+
+                                    <option value="Ngân hàng Nhà nước Việt Nam">Ngân hàng Nhà nước Việt Nam</option>
+
+                                    <option value="BIDV">BIDV - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+                                    <option value="Vietcombank">Vietcombank - Ngân hàng Ngoại thương Việt Nam</option>
+                                    <option value="VietinBank">VietinBank - Ngân hàng Công Thương Việt Nam</option>
+                                    <option value="Agribank">Agribank - Ngân hàng Nông nghiệp & PTNT Việt Nam</option>
+
+                                    <option value="ACB">ACB - Ngân hàng Á Châu</option>
+                                    <option value="Techcombank">Techcombank - Ngân hàng Kỹ Thương Việt Nam</option>
+                                    <option value="MB Bank">MB Bank - Ngân hàng Quân đội</option>
+                                    <option value="Sacombank">Sacombank - Ngân hàng Sài Gòn Thương Tín</option>
+                                    <option value="VPBank">VPBank - Ngân hàng Việt Nam Thịnh Vượng</option>
+                                    <option value="TPBank">TPBank - Ngân hàng Tiên Phong</option>
+                                    <option value="SHB">SHB - Ngân hàng Sài Gòn – Hà Nội</option>
+                                    <option value="HDBank">HDBank - Ngân hàng Phát triển TP.HCM</option>
+                                    <option value="OCB">OCB - Ngân hàng Phương Đông</option>
+                                    <option value="SeABank">SeABank - Ngân hàng Đông Nam Á</option>
+                                    <option value="VIB">VIB - Ngân hàng Quốc tế</option>
+                                    <option value="Eximbank">Eximbank - Ngân hàng Xuất Nhập Khẩu</option>
+                                    <option value="LienVietPostBank">LPBank - Ngân hàng Bưu điện Liên Việt</option>
+                                    <option value="Nam A Bank">Nam A Bank</option>
+                                    <option value="Bac A Bank">Bac A Bank</option>
+                                    <option value="PVcomBank">PVcomBank</option>
+                                    <option value="VietBank">VietBank</option>
+                                    <option value="Saigonbank">Saigonbank</option>
+                                    <option value="KienlongBank">KienlongBank</option>
+                                    <option value="NCB">NCB - Ngân hàng Quốc Dân</option>
+                                    <option value="BaoVietBank">BaoViet Bank</option>
+                                    <option value="ABBANK">ABBank</option>
+
+                                    <option value="HSBC">HSBC Việt Nam</option>
+                                    <option value="Standard Chartered">Standard Chartered Việt Nam</option>
+                                    <option value="Shinhan Bank">Shinhan Bank Việt Nam</option>
+                                    <option value="Woori Bank">Woori Bank Việt Nam</option>
+                                    <option value="UOB">UOB Việt Nam</option>
+                                    <option value="Public Bank">Public Bank Việt Nam</option>
+
+                                    <option value="MoMo">Ví MoMo</option>
+                                    <option value="ZaloPay">ZaloPay</option>
+                                    <option value="VNPay">VNPay</option>
+                                </select>
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label class="form-label">Số tài khoản</label>
+                                <input name="soTaiKhoan" class="form-control" placeholder="VD: 0123456789" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Chủ tài khoản</label>
+                                <input name="chuTaiKhoan" class="form-control" placeholder="NGUYEN VAN A" />
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label">Ảnh QR (tối đa 8 ảnh)</label>
+                                <input type="file" name="qrImages" class="form-control" multiple accept="image/*" />
+                                <small class="text-muted">
+                                    Hỗ trợ PNG / JPG / JPEG / WEBP
+                                </small>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold">
+                            ✅ Đăng ký
+                        </button>
+
+                        <div class="text-center mt-3">
+                            <small>
+                                Đã có tài khoản?
+                                <a href="/Account/Login" class="text-success fw-semibold text-decoration-none">
+                                    Đăng nhập
+                                </a>
+                            </small>
+                        </div>
+
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
-=======
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
-
-<style>
-    body {
-        background: radial-gradient(circle at top left, #e8f9f1, #f7fff9);
-        min-height: 100vh;
-    }
-
-    .auth-wrapper {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .auth-card {
-        border-radius: 18px;
-        border: none;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-        max-width: 520px;
-        width: 100%;
-    }
-
-    .auth-header {
-        background: linear-gradient(135deg, #28a745, #6ad790);
-        color: #fff;
-        padding: 20px 24px;
-        text-align: center;
-    }
-
-        .auth-header h3 {
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .auth-header p {
-            margin: 0;
-            opacity: 0.9;
-            font-size: 0.95rem;
-        }
-
-    .brand-circle {
-        width: 54px;
-        height: 54px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.18);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 10px;
-        font-size: 24px;
-    }
-
-    .auth-body {
-        padding: 24px 24px 20px;
-        background-color: #ffffff;
-    }
-
-    .form-label {
-        font-weight: 600;
-        font-size: 0.95rem;
-    }
-
-    .input-group-text {
-        background-color: #f4f8f5;
-        border-right: none;
-    }
-
-    .form-control {
-        border-left: none;
-        background-color: #f9fcfa;
-    }
-
-        .form-control:focus {
-            box-shadow: none;
-            border-color: #28a745;
-            background-color: #ffffff;
-        }
-
-    .btn-primary-auth {
-        background: #28a745;
-        border-color: #28a745;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-    }
-
-        .btn-primary-auth:hover {
-            background: #208a38;
-            border-color: #208a38;
-        }
-
-    .small-text {
-        font-size: 0.9rem;
-    }
-
-    .link-green {
-        color: #28a745;
-    }
-
-        .link-green:hover {
-            color: #1f6f32;
-        }
-
-    .avatar-preview {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #e3f2ea;
-        margin-right: 10px;
-    }
-
-    .toggle-password {
-        cursor: pointer;
-    }
-</style>
-
-<div class="auth-wrapper">
-    <div class="card auth-card">
-        <div class="auth-header">
-            <div class="brand-circle">
-                <i class="bi bi-person-plus"></i>
-            </div>
-            <h3>Tạo tài khoản mới</h3>
-            <p>Tham gia cộng đồng trao đổi tủ đồ xanh cùng SWAPFIT 🌿</p>
-        </div>
-
-        <div class="auth-body">
-            @if (ViewBag.Error != null)
-            {
-                <div class="alert alert-danger mb-3">@ViewBag.Error</div>
-            }
-
-            <form asp-action="Register" method="post" enctype="multipart/form-data" novalidate>
-                <div class="mb-3">
-                    <label class="form-label">Tên đăng nhập</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-person"></i>
-                        </span>
-                        <input asp-for="TenDangNhap" class="form-control" placeholder="Chọn tên đăng nhập" required />
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Mật khẩu</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-lock"></i>
-                        </span>
-                        <input asp-for="MatKhau"
-                               type="password"
-                               id="passwordInput"
-                               class="form-control"
-                               placeholder="Nhập mật khẩu"
-                               required />
-                        <span class="input-group-text toggle-password" id="togglePassword">
-                            <i class="bi bi-eye-slash"></i>
-                        </span>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Họ và tên</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-card-text"></i>
-                        </span>
-                        <input asp-for="HoTen" class="form-control" placeholder="Nhập họ tên (không bắt buộc)" />
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-envelope"></i>
-                        </span>
-                        <input asp-for="Email" type="email" class="form-control" placeholder="you@example.com" />
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Số điện thoại</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-telephone"></i>
-                        </span>
-                        <input asp-for="SoDienThoai" class="form-control" placeholder="Nhập số điện thoại" />
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Ảnh đại diện</label>
-                    <div class="d-flex align-items-center">
-                        <img id="avatarPreview" src="~/images/default-avatar.png" alt="Avatar" class="avatar-preview" />
-                        <input type="file" name="anhDaiDien" id="avatarInput" class="form-control" accept="image/*" />
-                    </div>
-                    <small class="text-muted small-text">
-                        Định dạng: JPG, PNG. Kích thước nhỏ hơn 2MB.
-                    </small>
-                </div>
-
-                <button type="submit" class="btn btn-primary-auth w-100 py-2 mt-2">
-                    Đăng ký
-                </button>
-
-                <p class="text-center mt-3 mb-0 small-text">
-                    Đã có tài khoản?
-                    <a href="/Account/Login" class="text-decoration-none fw-semibold link-green">
-                        Đăng nhập ngay
-                    </a>
-                </p>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Hiện / ẩn mật khẩu
-    const passwordInput = document.getElementById('passwordInput');
-    const togglePassword = document.getElementById('togglePassword');
-
-    if (passwordInput && togglePassword) {
-        togglePassword.addEventListener('click', function () {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-
-            const icon = this.querySelector('i');
-            if (type === 'password') {
-                icon.classList.remove('bi-eye');
-                icon.classList.add('bi-eye-slash');
-            } else {
-                icon.classList.remove('bi-eye-slash');
-                icon.classList.add('bi-eye');
-            }
-        });
-    }
-
-    // Preview ảnh đại diện
-    const avatarInput = document.getElementById('avatarInput');
-    const avatarPreview = document.getElementById('avatarPreview');
-
-    if (avatarInput && avatarPreview) {
-        avatarInput.addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    avatarPreview.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-</script>
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff

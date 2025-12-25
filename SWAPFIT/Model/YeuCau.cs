@@ -22,7 +22,6 @@ namespace SWAPFIT.Models
 
         public DateTime? NgayGui { get; set; }
 
-        // 🟢 Navigation properties (để EF nhận dạng trong OnModelCreating)
         [ForeignKey(nameof(NguoiGuiId))]
         public NguoiDung? NguoiGui { get; set; }
 

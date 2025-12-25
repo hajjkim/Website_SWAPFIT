@@ -12,8 +12,6 @@ namespace SWAPFIT.Models
         public int ChoDuyet { get; set; }
         public int DangHienThi { get; set; }
         public int TuChoi { get; set; }
-
-        // Dùng cho trang chi tiết 1 user
         public List<BaiViet> DanhSachBaiViet { get; set; } = new List<BaiViet>();
     }
 }

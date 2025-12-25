@@ -14,22 +14,22 @@ namespace SWAPFIT.Controllers
             _context = context;
         }
 
-        // Hiển thị danh sách địa chỉ
+       
         public IActionResult Index()
         {
             var diaChis = _context.DiaChis.ToList();
             return View(diaChis);
         }
 
-        // GET: /DiaChi/Create
+        
         public IActionResult Create()
         {
-            // Nếu cần dropdown chọn người dùng
+            
             ViewBag.NguoiDungs = _context.NguoiDungs.ToList();
             return View();
         }
 
-        // POST: /DiaChi/Create
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(DiaChi diaChi)

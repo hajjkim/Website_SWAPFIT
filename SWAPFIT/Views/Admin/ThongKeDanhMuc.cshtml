@@ -18,7 +18,6 @@
     }
     else
     {
-        <!-- Bảng tổng hợp -->
         <div class="table-responsive">
             <table class="table table-hover align-middle">
                 <thead class="table-success">
@@ -32,13 +31,12 @@
                 <tbody>
                     @{
                         var stt = 1;
-                        // Tìm danh mục có lượt mua cao nhất để highlight
                         var maxMua = Model.Max(x => x.TongSoLuotMua);
                     }
                     @foreach (var dm in Model)
                     {
-                        var isMaxBai = (stt == 1);                 // hạng 1 về bài đăng
-                        var isMaxMua = (dm.TongSoLuotMua == maxMua && maxMua > 0); // top mua
+                        var isMaxBai = (stt == 1);                
+                        var isMaxMua = (dm.TongSoLuotMua == maxMua && maxMua > 0); 
 
                         <tr>
                             <td class="text-center fw-bold">

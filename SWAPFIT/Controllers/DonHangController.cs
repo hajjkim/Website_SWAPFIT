@@ -14,9 +14,7 @@ namespace SWAPFIT.Controllers
             _context = context;
         }
 
-        // ===============================
-        // 🛒 Người mua: Lịch sử đơn hàng
-        // ===============================
+       
         public IActionResult LichSuDonHang()
         {
             var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
@@ -33,78 +31,32 @@ namespace SWAPFIT.Controllers
             return View(donHangs);
         }
 
-        // ===============================
-<<<<<<< HEAD
-        // 🧾 Chi tiết đơn hàng
-        // ===============================
-        //public IActionResult ChiTietDonHang(int id)
-        //{
-        //    var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-        //    if (maNguoiDung == null) return RedirectToAction("Login", "Account");
-
-        //    var donHang = _context.DonHangs
-        //        .Where(d => d.MaDonHang == id && d.MaNguoiBan == maNguoiDung)
-        //        .Include(d => d.ChiTietDonHangs)
-        //            .ThenInclude(ct => ct.BaiViet)
-        //        .Include(d => d.NguoiMua)
-        //        .FirstOrDefault();
-
-        //    if (donHang == null) return NotFound();
-
-        //    return View(donHang);
-        //}
+       
 
         public IActionResult ChiTietDonHang(int id)
         {
             var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-            if (maNguoiDung == null)
+            if (!maNguoiDung.HasValue)
                 return RedirectToAction("Login", "Account");
 
-            // Lấy chi tiết đơn hàng
+            int sellerId = maNguoiDung.Value;
+
             var donHang = _context.DonHangs
-                .Where(d => d.MaDonHang == id && d.MaNguoiBan == maNguoiDung) // Đảm bảo chỉ người bán mới xem được
+                .Where(d => d.MaDonHang == id && d.MaNguoiBan == sellerId)
                 .Include(d => d.ChiTietDonHangs)
                     .ThenInclude(ct => ct.BaiViet)
-                     .ThenInclude(bv => bv.AnhBaiViets)
+                        .ThenInclude(bv => bv.AnhBaiViets)
                 .Include(d => d.NguoiMua)
+               
                 .FirstOrDefault();
 
-            if (donHang == null)
-                return NotFound();
+            if (donHang == null) return NotFound();
 
             return View(donHang);
         }
 
 
-        // ===============================
-        // 🛍️ Người bán: Danh sách đơn hàng của tôi
-=======
-        // 🧾 Chi tiết đơn hàng (người bán xem)
-        // ===============================
-        public IActionResult ChiTietDonHang(int id)
-        {
-            var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-            if (maNguoiDung == null) return RedirectToAction("Login", "Account");
-
-            var donHang = _context.DonHangs
-                .Where(d => d.MaDonHang == id && d.MaNguoiBan == maNguoiDung)
-                .Include(d => d.ChiTietDonHangs)
-                    .ThenInclude(ct => ct.BaiViet)
-                    .ThenInclude(bv => bv.AnhBaiViets)
-                .Include(d => d.NguoiMua)
-                .FirstOrDefault();
-
-            if (donHang == null) return NotFound();
-
-            return View(donHang);  // Ensure you're passing DonHang model
-        }
-
-
-
-        // ===============================
-        // 🛍️ Người mua: Đơn tôi đã mua
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
-        // ===============================
+     
         public IActionResult DonHangToiDaMua()
         {
             var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
@@ -121,12 +73,6 @@ namespace SWAPFIT.Controllers
             return View(donHangs);
         }
 
-<<<<<<< HEAD
-=======
-        // ===============================
-        // 🛍️ Người bán: Đơn người khác mua từ tôi
-        // ===============================
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         public IActionResult DonHangNguoiKhacMuaTuToi()
         {
             var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
@@ -143,96 +89,96 @@ namespace SWAPFIT.Controllers
             return View(donHangs);
         }
 
-        // ===============================
-        // ⚙️ Người bán: Cập nhật trạng thái đơn hàng
-        // ===============================
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CapNhatTrangThai(int id, string trangThai)
         {
             var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
+            if (maNguoiDung == null) return RedirectToAction("Login", "Account");
+
             var donHang = _context.DonHangs.FirstOrDefault(d => d.MaDonHang == id);
             if (donHang == null) return NotFound();
 
-            // Chỉ người bán mới cập nhật được
-            if (donHang.MaNguoiBan != maNguoiDung)
+            if (donHang.MaNguoiBan != maNguoiDung.Value)
                 return Forbid();
 
             donHang.TrangThai = trangThai;
+            if (!donHang.MaNguoiMua.HasValue)
+            {
+                TempData["Error"] = "Không xác định được người mua để gửi thông báo.";
+                return RedirectToAction("ChiTietDonHang", new { id = id });
+            }
+
+            _context.ThongBaos.Add(new ThongBao
+            {
+                MaNguoiDung = donHang.MaNguoiMua.Value,
+                NoiDung = $"Đơn #{donHang.MaDonHang} đã được cập nhật trạng thái: {trangThai}.",
+                LienKet = Url.Action("DonHangToiDaMua", "DonHang"),
+                DaXem = false,
+                NgayTao = DateTime.Now,
+                Loai = "DonHang",
+                ThamChieuId = donHang.MaDonHang
+            });
+
             _context.SaveChanges();
 
             TempData["Success"] = "Cập nhật trạng thái thành công!";
-<<<<<<< HEAD
             return RedirectToAction("ChiTietDonHang", new { id = id });
         }
-=======
-            return RedirectToAction("ChiTietDonHang", new { id });
-        }
-       
 
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult HuyDonHangNguoiMua(int id, string? lyDoHuy)
+        public IActionResult HuyDonHangNguoiMua(int id, string lyDoHuy)
         {
             var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
-            if (maNguoiDung == null)
-                return RedirectToAction("Login", "Account");
+            if (maNguoiDung == null) return RedirectToAction("Login", "Account");
 
-            // Tìm đơn của chính người mua
+            if (string.IsNullOrWhiteSpace(lyDoHuy))
+            {
+                TempData["Error"] = "Vui lòng nhập lý do hủy.";
+                return RedirectToAction("DonHangToiDaMua");
+            }
+
             var donHang = _context.DonHangs
-                .Include(d => d.ChiTietDonHangs).ThenInclude(ct => ct.BaiViet)
-                .Include(d => d.NguoiBan)
-                .FirstOrDefault(d => d.MaDonHang == id && d.MaNguoiMua == maNguoiDung);
+                .FirstOrDefault(d => d.MaDonHang == id && d.MaNguoiMua == maNguoiDung.Value);
 
-            if (donHang == null)
+            if (donHang == null) return NotFound();
+
+            var tt = (donHang.TrangThai ?? "").Trim();
+            if (!string.Equals(tt, "Chờ xác nhận", StringComparison.OrdinalIgnoreCase))
             {
-                TempData["Error"] = "Không tìm thấy đơn hàng.";
-                return RedirectToAction("LichSuDonHang");
+                TempData["Error"] = "Chỉ có thể hủy đơn khi đơn đang ở trạng thái 'Chờ xác nhận'.";
+                return RedirectToAction("DonHangToiDaMua");
             }
 
-            // Không cho hủy nếu đã hoàn thành / đã giao
-            if (donHang.TrangThai == "HoanThanh" || donHang.TrangThai == "DaGiao")
+            donHang.TrangThai = "Đã hủy";
+
+            if (!donHang.MaNguoiBan.HasValue)
             {
-                TempData["Error"] = "Đơn hàng đã được xác nhận giao hoặc hoàn thành, không thể hủy.";
-                return RedirectToAction("LichSuDonHang");
+                _context.SaveChanges();
+                TempData["Error"] = "Không xác định được người bán để gửi thông báo.";
+                return RedirectToAction("DonHangToiDaMua");
             }
 
-            // Nếu đã hủy rồi thì thôi
-            if (donHang.TrangThai == "DaHuy")
+            _context.ThongBaos.Add(new ThongBao
             {
-                TempData["Error"] = "Đơn hàng đã được hủy trước đó.";
-                return RedirectToAction("LichSuDonHang");
-            }
-
-            // Cập nhật trạng thái + lý do
-            donHang.TrangThai = "DaHuy";
-            donHang.LyDoHuy = lyDoHuy;
-
-            // Gửi thông báo cho người bán
-            var baiVietDauTien = donHang.ChiTietDonHangs.FirstOrDefault()?.BaiViet;
-            var maNguoiBan = baiVietDauTien?.MaNguoiDung ?? donHang.MaNguoiBan;
-
-            if (maNguoiBan != null)
-            {
-                var tb = new ThongBao
-                {
-                    MaNguoiDung = maNguoiBan.Value,
-                    NoiDung = $"Đơn hàng #{donHang.MaDonHang} đã bị người mua hủy. Lý do: {lyDoHuy}",
-                    LienKet = Url.Action("ChiTietDonHang", "DonHang",
-                                         new { id = donHang.MaDonHang }, Request.Scheme),
-                    DaXem = false,
-                    NgayTao = DateTime.Now
-                };
-                _context.ThongBaos.Add(tb);
-            }
+                MaNguoiDung = donHang.MaNguoiBan.Value,
+                NoiDung = $"Đơn #{donHang.MaDonHang} đã bị người mua hủy. Lý do: {lyDoHuy}",
+                LienKet = Url.Action("ChiTietDonHang", "DonHang", new { id = donHang.MaDonHang }),
+                DaXem = false,
+                NgayTao = DateTime.Now,
+                Loai = "DonHang",
+                ThamChieuId = donHang.MaDonHang
+            });
 
             _context.SaveChanges();
 
-            TempData["Success"] = "Bạn đã hủy đơn hàng thành công.";
-            return RedirectToAction("LichSuDonHang");
+            TempData["Success"] = "Đã hủy đơn và đã thông báo cho người bán!";
+            return RedirectToAction("DonHangToiDaMua");
         }
-        
 
 
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
+
     }
 }

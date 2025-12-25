@@ -18,13 +18,13 @@ namespace SWAPFIT.Models
 
         public DateTime? NgayBinhLuan { get; set; }
 
-        // 💡 Thêm trường ParentId để hỗ trợ reply
-        public int? ParentId { get; set; }  // null = bình luận cha, != null = reply
+      
+        public int? ParentId { get; set; }  
 
         [ForeignKey("ParentId")]
         public BinhLuanTinTuc? Parent { get; set; }
 
-        public ICollection<BinhLuanTinTuc>? Replies { get; set; }  // danh sách reply
+        public ICollection<BinhLuanTinTuc>? Replies { get; set; }  
 
         [ForeignKey("MaNguoiDung")]
         public NguoiDung? NguoiDung { get; set; }

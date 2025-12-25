@@ -15,9 +15,19 @@ namespace YourProject.Controllers
         }
         public IActionResult Phoido()
         {
-            return View(); // tìm Views/Pages/Phoido.cshtml
-            // hoặc return View("~/Views/Pages/Phoido.cshtml");
+            return View(); 
         }
+        [HttpGet]
+        public IActionResult PrivacyPolicy() => View();
+
+        [HttpGet]
+        public IActionResult InspectionPolicy() => View();
+
+        [HttpGet]
+        public IActionResult About() => View();
+
+        [HttpGet]
+        public IActionResult Terms() => View();
     }
 
 }

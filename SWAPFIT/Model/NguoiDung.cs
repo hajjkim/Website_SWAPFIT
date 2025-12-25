@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SWAPFIT.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -34,14 +35,13 @@ namespace SWAPFIT.Models
 
         public DateTime? NgayTao { get; set; }
 
-        // Bài viết người dùng đăng
         [InverseProperty("NguoiDung")]
         public ICollection<BaiViet>? BaiViets { get; set; }
 
-        // Đơn người dùng đã mua
         public ICollection<DonHang>? DonMua { get; set; }
 
-        // Đơn người dùng bán (người khác mua sản phẩm của họ)
         public ICollection<DonHang>? DonBan { get; set; }
+        public TaiKhoanNganHang? TaiKhoanNganHang { get; set; }
+
     }
 }

@@ -40,18 +40,8 @@ namespace SWAPFIT.Models
         [DataType(DataType.DateTime)]
         public DateTime NgayTao { get; set; } = DateTime.Now;
 
-<<<<<<< HEAD
         // 🆕 THÊM SIZE
         [StringLength(20)]
         public string? Size { get; set; }
     }
-=======
-        // 🆕 Thêm MaBaiViet (Foreign Key to BaiViet)
-        public int? MaBaiViet { get; set; }  // Foreign Key
-
-        // Navigation Property to BaiViet
-        public BaiViet? BaiViet { get; set; } // Navigation Property to BaiViet
-    }
-
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 }

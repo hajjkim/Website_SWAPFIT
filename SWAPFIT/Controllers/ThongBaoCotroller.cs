@@ -25,24 +25,20 @@ public class ThongBaoController : Controller
             .OrderByDescending(t => t.NgayTao)
             .ToList();
 
-        // Đánh dấu các thông báo là đã xem
         foreach (var t in thongBaos)
         {
             t.DaXem = true;
         }
         _context.SaveChanges();
 
-        // Thêm thông báo tin nhắn chưa đọc
         var soLuongThongBaoChuaDoc = _context.ThongBaos
             .Where(t => t.MaNguoiDung == maNguoiDung.Value && t.DaXem == false)
             .Count();
 
-        // Thêm thông báo đơn hàng (chưa được xử lý)
         var soLuongDonHangChuaXuly = _context.DonHangs
             .Where(d => d.MaNguoiMua == maNguoiDung.Value && d.TrangThai == "Chờ xử lý")
             .Count();
 
-        // Thêm thông báo bài viết
         var soLuongBaiVietDuyet = _context.BaiViets
             .Where(b => b.MaNguoiDung == maNguoiDung.Value && b.TrangThai == "Đã duyệt")
             .Count();
@@ -51,7 +47,6 @@ public class ThongBaoController : Controller
             .Where(b => b.MaNguoiDung == maNguoiDung.Value && b.TrangThai == "Bị từ chối")
             .Count();
 
-        // Gửi thông báo tới View
         ViewBag.SLTinNhan = soLuongThongBaoChuaDoc;
         ViewBag.SLDonHang = soLuongDonHangChuaXuly;
         ViewBag.SLBaiVietDuyet = soLuongBaiVietDuyet;
@@ -59,4 +54,39 @@ public class ThongBaoController : Controller
 
         return View(thongBaos);
     }
+    [HttpPost]
+    public IActionResult MarkAsRead(int id)
+    {
+        int? maNguoiDung = _httpContextAccessor.HttpContext?.Session.GetInt32("MaNguoiDung");
+        if (!maNguoiDung.HasValue) return Unauthorized();
+
+        var tb = _context.ThongBaos.FirstOrDefault(x => x.Id == id && x.MaNguoiDung == maNguoiDung.Value);
+        if (tb == null) return NotFound();
+
+        tb.DaXem = true;
+        _context.SaveChanges();
+        return Ok();
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult XoaTatCa()
+    {
+        var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
+        if (!maNguoiDung.HasValue)
+            return RedirectToAction("Login", "Account");
+
+        var list = _context.ThongBaos
+            .Where(t => t.MaNguoiDung == maNguoiDung.Value)
+            .ToList();
+
+        if (list.Any())
+        {
+            _context.ThongBaos.RemoveRange(list);
+            _context.SaveChanges();
+        }
+
+        return Redirect(Request.Headers["Referer"].ToString());
+    }
+
+
 }

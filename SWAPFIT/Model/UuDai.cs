@@ -16,7 +16,7 @@ namespace SWAPFIT.Models
         public string? MoTa { get; set; }
 
         [StringLength(20)]
-        public string LoaiUuDai { get; set; } = "PhanTram"; // PhanTram hoặc TienMat
+        public string LoaiUuDai { get; set; } = "PhanTram";
 
         [Column(TypeName = "decimal(10,2)")]
         public decimal GiaTri { get; set; }

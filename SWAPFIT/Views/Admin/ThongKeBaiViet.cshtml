@@ -10,7 +10,6 @@
         📋 Thống kê bài viết của @(!string.IsNullOrEmpty(Model.HoTen) ? Model.HoTen : Model.TenDangNhap)
     </h3>
 
-    <!-- THỐNG KÊ TỔNG QUAN -->
     <div class="row mb-4 text-center">
         <div class="col-md-3 mb-2">
             <div class="card shadow-sm border-0">
@@ -46,7 +45,6 @@
         </div>
     </div>
 
-    <!-- DANH SÁCH BÀI VIẾT -->
     <h5 class="mb-3">📜 Danh sách bài viết</h5>
 
     @if (!Model.DanhSachBaiViet.Any())
@@ -78,19 +76,11 @@
                             <td class="text-center">@post.NgayTao?.ToString("dd/MM/yyyy")</td>
                             <td class="text-center">
                                 <span class="badge
-<<<<<<< HEAD
                                                     @(post.TrangThai == "Đang hiển thị" || post.TrangThai == "Đã duyệt"
                                                                                                                     ? "bg-success"
                                                                                                                     : post.TrangThai == "Chờ duyệt"
                                                                                                                         ? "bg-warning text-dark"
                                                                                                                         : "bg-danger")">
-=======
-                                            @(post.TrangThai == "Đang hiển thị" || post.TrangThai == "Đã duyệt"
-                                                                              ? "bg-success"
-                                                                              : post.TrangThai == "Chờ duyệt"
-                                                                                  ? "bg-warning text-dark"
-                                                                                  : "bg-danger")">
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                             @post.TrangThai
                         </span>
                     </td>

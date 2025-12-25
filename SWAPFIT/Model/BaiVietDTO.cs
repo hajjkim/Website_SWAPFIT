@@ -15,13 +15,12 @@ namespace SWAPFIT.Model
         public string TenDanhMuc { get; set; }
         public string NoiDung { get; set; }
         public decimal? GiaSanPham { get; set; }
-        public string LoaiBaiDang { get; set; } // Add missing field
+        public string LoaiBaiDang { get; set; } 
         public DateTime? NgayTao { get; set; }
         public string? TrangThai { get; set; }
         public int? MaDanhMuc { get; set; }
         public int? MaThuongHieu { get; set; }
         public int? MaDiaChi { get; set; }
-      //  public string? Size { get; set; }
         public List<string> HinhAnhs { get; set; }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-<<<<<<< HEAD
+using Microsoft.EntityFrameworkCore;
 using SWAPFIT.Data;
+using SWAPFIT.Models;
+using System;
+using System.Linq;
 
 public class TinNhanController : Controller
 {
@@ -11,78 +14,80 @@ public class TinNhanController : Controller
         _context = context;
     }
 
-    // ⭐ TRANG CHAT
     public IActionResult Chat(int nguoiNhanId)
     {
         var userId = HttpContext.Session.GetInt32("MaNguoiDung");
+        if (userId == null) return RedirectToAction("Login", "Account");
 
-        if (userId == null)
-            return RedirectToAction("Login", "Account");
-
-        var otherUser = _context.NguoiDungs
-            .FirstOrDefault(x => x.MaNguoiDung == nguoiNhanId);
-
-        if (otherUser == null)
-            return NotFound();
+        var otherUser = _context.NguoiDungs.FirstOrDefault(x => x.MaNguoiDung == nguoiNhanId);
+        if (otherUser == null) return NotFound();
 
         ViewBag.OtherUser = otherUser;
 
-        // Lấy toàn bộ lịch sử chat giữa 2 người
         var messages = _context.TinNhans
             .Where(t =>
-                (t.MaNguoiGui == userId && t.MaNguoiNhan == nguoiNhanId) ||
-                (t.MaNguoiGui == nguoiNhanId && t.MaNguoiNhan == userId)
+                (t.MaNguoiGui == userId.Value && t.MaNguoiNhan == nguoiNhanId) ||
+                (t.MaNguoiGui == nguoiNhanId && t.MaNguoiNhan == userId.Value)
             )
             .OrderBy(t => t.ThoiGianGui)
             .ToList();
 
-        return View(messages); // Trả về các tin nhắn cho View
+        var unread = _context.TinNhans
+            .Where(t => t.MaNguoiGui == nguoiNhanId && t.MaNguoiNhan == userId.Value && t.DaDoc != true)
+            .ToList();
+
+        if (unread.Any())
+        {
+            foreach (var m in unread) m.DaDoc = true;
+            _context.SaveChanges();
+        }
+
+        return View(messages);
     }
 
-    
-=======
-using Microsoft.EntityFrameworkCore;
-using SWAPFIT.Data;
-
-namespace SWAPFIT.Controllers
-{
-    public class TinNhanController : Controller
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult GuiTinNhan(int nguoiNhanId, string noiDung)
     {
-        private readonly ApplicationDbContext _context;
+        var userId = HttpContext.Session.GetInt32("MaNguoiDung");
+        if (userId == null) return RedirectToAction("Login", "Account");
 
-        public TinNhanController(ApplicationDbContext context)
+        noiDung = (noiDung ?? "").Trim();
+        if (string.IsNullOrWhiteSpace(noiDung))
+            return RedirectToAction("Chat", new { nguoiNhanId });
+
+        var tn = new TinNhan
         {
-            _context = context;
-        }
+            MaNguoiGui = userId.Value,
+            MaNguoiNhan = nguoiNhanId,
+            NoiDung = noiDung,
+            ThoiGianGui = DateTime.Now,
+            DaDoc = false
+        };
+        _context.TinNhans.Add(tn);
 
-        // ⭐ TRANG CHAT
-        public IActionResult Chat(int nguoiNhanId)
+        var nguoiGui = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == userId.Value);
+        string tenNguoiGui = nguoiGui?.HoTen ?? nguoiGui?.TenDangNhap ?? $"Người dùng {userId.Value}";
+
+        var oldNoti = _context.ThongBaos
+            .Where(t => t.MaNguoiDung == nguoiNhanId
+                        && t.DaXem != true
+                        && t.LienKet != null
+                        && t.LienKet.Contains($"/TinNhan/Chat?nguoiNhanId={userId.Value}"))
+            .ToList();
+        if (oldNoti.Any()) _context.ThongBaos.RemoveRange(oldNoti);
+
+        _context.ThongBaos.Add(new ThongBao
         {
-            var userId = HttpContext.Session.GetInt32("MaNguoiDung");
+            MaNguoiDung = nguoiNhanId,
+            NoiDung = $"Bạn có tin nhắn mới từ {tenNguoiGui}",
+            LienKet = Url.Action("Chat", "TinNhan", new { nguoiNhanId = userId.Value }),
+            DaXem = false,
+            NgayTao = DateTime.Now
+        });
 
-            if (userId == null)
-                return RedirectToAction("Login", "Account");
+        _context.SaveChanges();
 
-            var otherUser = _context.NguoiDungs
-                .FirstOrDefault(x => x.MaNguoiDung == nguoiNhanId);
-
-            if (otherUser == null)
-                return NotFound();
-
-            ViewBag.OtherUser = otherUser;
-
-            // ⭐ Lấy toàn bộ lịch sử chat giữa 2 người
-            var messages = _context.TinNhans
-                .Where(t =>
-                    (t.MaNguoiGui == userId && t.MaNguoiNhan == nguoiNhanId) ||
-                    (t.MaNguoiGui == nguoiNhanId && t.MaNguoiNhan == userId)
-                )
-                .OrderBy(t => t.ThoiGianGui)
-                .ToList();
-
-            return View(messages);   // Trả cho model của view Chat.cshtml
-        }
-
+        return RedirectToAction("Chat", new { nguoiNhanId });
     }
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 }

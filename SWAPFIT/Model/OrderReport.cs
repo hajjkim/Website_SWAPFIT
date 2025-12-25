@@ -9,7 +9,7 @@
         public int DonHienTai { get; set; }
         public int DonHoanThanh { get; set; }
         public int DonHuy { get; set; }
-        public decimal TongTien { get; set; } // Tổng tiền cho tất cả các đơn hàng của người dùng
+        public decimal TongTien { get; set; }
     }
 
 }

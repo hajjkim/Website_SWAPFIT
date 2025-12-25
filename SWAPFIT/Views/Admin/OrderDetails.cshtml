@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ﻿@model SWAPFIT.Models.DonHang
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -11,7 +10,6 @@
         <div class="card-body">
             <h4 class="mb-3 text-success fw-bold">Mã đơn hàng: @Model.MaDonHang</h4>
 
-            <!-- NGƯỜI MUA – HIỂN THỊ ĐÚNG 100% DÙ TÀI KHOẢN BỊ XÓA -->
             <p class="mb-2">
                 <strong>Người mua:</strong>
                 @{
@@ -22,37 +20,10 @@
                         ? Model.NguoiMua.HoTen
                         : (!string.IsNullOrWhiteSpace(Model.NguoiMua.TenDangNhap)
                         ? Model.NguoiMua.TenDangNhap
-=======
-﻿@model SWAPFIT.Models.BaiViet
-@{
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    ViewData["Title"] = "Chi tiết bài đăng";
-}
-
-<div class="container mt-4 mb-5">
-    <h3 class="mb-4 text-primary fw-bold">Chi tiết bài đăng</h3>
-
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <h4 class="mb-3 text-success fw-bold">@Model.TieuDe</h4>
-
-            <!-- NGƯỜI ĐĂNG – HIỂN THỊ ĐÚNG 100% DÙ TÀI KHOẢN BỊ XÓA -->
-            <p class="mb-2">
-                <strong>Người đăng:</strong>
-                @{
-                    var tenHienThi = "Tài khoản đã xóa";
-                    if (Model.NguoiDung != null)
-                    {
-                        tenHienThi = !string.IsNullOrWhiteSpace(Model.NguoiDung.HoTen)
-                        ? Model.NguoiDung.HoTen
-                        : (!string.IsNullOrWhiteSpace(Model.NguoiDung.TenDangNhap)
-                        ? Model.NguoiDung.TenDangNhap
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         : "Tài khoản đã xóa");
                     }
                 }
                 <span class="fw-bold">@tenHienThi</span>
-<<<<<<< HEAD
             </p>
 
             <p><strong>Người bán:</strong> @Model.NguoiBan?.HoTen</p>
@@ -61,41 +32,19 @@
             <p><strong>Phương thức giao hàng:</strong> @Model.PhuongThucGiaoHang</p>
             <span class="text-danger fw-bold">@Model.TongTien.ToString("N0") ₫</span>
             <p><strong>Ngày đặt:</strong> @Model.NgayDat.ToString("HH:mm - dd/MM/yyyy")</p>
-=======
-                @if (Model.NguoiDung?.TenDangNhap != null &&
-                                string.IsNullOrWhiteSpace(Model.NguoiDung.HoTen) == false &&
-                                Model.NguoiDung.HoTen != Model.NguoiDung.TenDangNhap)
-                {
-                    <small class="text-muted">(@Model.NguoiDung.TenDangNhap)</small>
-                }
-            </p>
-
-            <p><strong>Danh mục:</strong> @Model.DanhMuc?.TenDanhMuc</p>
-            <p><strong>Loại bài:</strong> <span class="badge bg-info">@Model.LoaiBaiDang</span></p>
-            <span class="text-danger fw-bold">@((Model.GiaSanPham ?? 0).ToString("N0")) ₫</span>         
-            <p><strong>Số lượng:</strong> @Model.SoLuong</p>
-            <p><strong>Ngày tạo:</strong> @Model.NgayTao?.ToString("HH:mm - dd/MM/yyyy")</p>
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
             <p>
                 <strong>Trạng thái:</strong>
                 <span class="badge @(Model.TrangThai == "Chờ duyệt" ? "bg-warning text-dark" :
-<<<<<<< HEAD
                                                                                                                                               Model.TrangThai == "Đang xử lý" ? "bg-primary" :
                                                                                                                                               Model.TrangThai == "Hoàn thành" ? "bg-success" :
                                                                                                                                               Model.TrangThai == "Đã hủy" ? "bg-danger" : "bg-secondary")">
-=======
-                                                          Model.TrangThai == "Đang hiển thị" ? "bg-success" :
-                                                          Model.TrangThai == "Từ chối" ? "bg-danger" :
-                                                          Model.TrangThai == "Đã xóa" ? "bg-secondary" : "bg-primary")">
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                     @Model.TrangThai
                 </span>
             </p>
 
             <hr class="my-4">
 
-<<<<<<< HEAD
             <p><strong>Chi tiết đơn hàng:</strong></p>
             <div class="border rounded p-3 bg-light mb-4">
                 @foreach (var item in Model.ChiTietDonHangs)
@@ -104,7 +53,6 @@
                         <strong>Sản phẩm:</strong> @item.BaiViet.TieuDe
                     </div>
 
-                    <!-- Hiển thị hình ảnh sản phẩm -->
                     @if (item.BaiViet.AnhBaiViets != null && item.BaiViet.AnhBaiViets.Any())
                     {
                         <div class="mb-3">
@@ -140,76 +88,12 @@
                     <hr />
                 }
             </div>
-=======
-            <p><strong>Mô tả chi tiết:</strong></p>
-            <div class="border rounded p-3 bg-light mb-4">
-                @if (!string.IsNullOrWhiteSpace(Model.NoiDung))
-                {
-                    @Html.Raw(Model.NoiDung.Replace("\n", "<br>"))
-                }
-                else
-                {
-                    <em class="text-muted">Chưa có nội dung mô tả</em>
-                }
-            </div>
-
-            <!-- HÌNH ẢNH -->
-            @if (Model.AnhBaiViets != null && Model.AnhBaiViets.Any())
-            {
-                <p class="mb-2"><strong>Hình ảnh bài viết:</strong></p>
-                <div class="row g-3">
-                    @foreach (var img in Model.AnhBaiViets)
-                    {
-                        <div class="col-md-4 col-6">
-                            <a href="@img.DuongDan" target="_blank">
-                                <img src="@img.DuongDan" class="img-fluid rounded border shadow-sm" alt="Ảnh bài viết" />
-                            </a>
-                        </div>
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="text-muted mt-3">Bài viết chưa có hình ảnh.</p>
-            }
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
         </div>
     </div>
 
-    <!-- NÚT THAO TÁC -->
     <div class="d-flex flex-wrap gap-3 align-items-center">
-<<<<<<< HEAD
         <a asp-action="Orders" class="btn btn-outline-secondary ms-auto">
             ← Quay lại danh sách đơn hàng
         </a>
     </div>
 </div>
-=======
-        @if (Model.TrangThai == "Chờ duyệt")
-        {
-            <a asp-action="Duyet" asp-route-id="@Model.MaBaiViet" class="btn btn-success btn-lg">
-                Duyệt bài
-            </a>
-            <a asp-action="TuChoi" asp-route-id="@Model.MaBaiViet" class="btn btn-warning btn-lg">
-                Từ chối
-            </a>
-            <form asp-action="DeletePostAdmin" asp-route-id="@Model.MaBaiViet" method="post" class="d-inline">
-                <button type="submit" class="btn btn-danger btn-lg"
-                        onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này không?')">
-                    Xóa bài
-                </button>
-            </form>
-        }
-        else
-        {
-            <div class="alert alert-info mb-0">
-                Bài viết đã được <strong>@Model.TrangThai.ToLower()</strong>
-            </div>
-        }
-
-        <a asp-action="Posts" class="btn btn-outline-secondary ms-auto">
-            ← Quay lại danh sách bài viết
-        </a>
-    </div>
-</div>
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff

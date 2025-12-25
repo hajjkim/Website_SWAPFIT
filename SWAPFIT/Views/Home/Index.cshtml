@@ -6,13 +6,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 
 <style>
-    /* ================== BANNER CAROUSEL ================== */
     #bannerCarousel {
         max-width: 1300px;
         margin: 0 auto;
         border-radius: 16px;
         box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-        overflow: hidden; /* ẩn phần ảnh thừa */
+        overflow: hidden; 
     }
 
         #bannerCarousel .carousel-inner {
@@ -20,44 +19,43 @@
         }
 
         #bannerCarousel .carousel-item {
-            height: 420px; /* chiều cao chung cho mọi banner - chỉnh tùy ý */
-            transition: opacity 1s ease-in-out; /* fade mượt */
+            height: 420px; 
+            transition: opacity 1s ease-in-out; 
         }
 
         #bannerCarousel .banner-img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* cắt cho vừa khung nhưng giữ tỷ lệ */
+            object-fit: cover; 
             display: block;
-            object-fit: cover; /* ảnh lấp đầy nhưng không méo */
-            object-position: center; /* canh giữa ảnh */
+            object-fit: cover; 
+            object-position: center;
         }
 
-    /* ================== VOUCHER CARD ================== */
     .voucher-card {
-        background-color: #a8e6cf; /* Voucher background color */
+        background-color: #a8e6cf; 
         color: white;
-        width: 100%; /* Full width */
-        max-width: 600px; /* Adjust to make it wider */
-        height: 150px; /* Adjust height for horizontal layout */
+        width: 100%; 
+        max-width: 600px; 
+        height: 150px; 
         border-radius: 8px;
         padding: 15px;
-        text-align: left; /* Align content to the left */
+        text-align: left; 
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        display: flex; /* Use flexbox for horizontal layout */
+        display: flex; 
         align-items: center;
         justify-content: space-between;
     }
 
     .voucher-logo {
-        width: 60px; /* Larger size for horizontal layout */
+        width: 60px; 
         height: auto;
-        margin-right: 20px; /* Space between logo and text */
+        margin-right: 20px;
     }
 
     .voucher-details {
-        flex-grow: 1; /* Make the text section grow */
-        text-align: left; /* Align text to the left */
+        flex-grow: 1; 
+        text-align: left; 
     }
 
     .voucher-card h5 {
@@ -71,7 +69,7 @@
     }
 
     .voucher-card .btn {
-        background-color: #ffcc00; /* Button color */
+        background-color: #ffcc00;
         color: black;
         border: none;
         padding: 10px;
@@ -85,7 +83,6 @@
         }
 </style>
 
-<!-- ================== BANNER CAROUSEL ================== -->
 <section class="my-5">
     <div id="bannerCarousel"
          class="carousel slide carousel-fade"
@@ -124,7 +121,6 @@
             </div>
         </div>
 
-        <!-- Nút điều hướng trái/phải -->
         <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon"></span>
         </button>
@@ -132,7 +128,6 @@
             <span class="carousel-control-next-icon"></span>
         </button>
 
-        <!-- Dots ở dưới -->
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active"></button>
             <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1"></button>
@@ -144,7 +139,6 @@
     </div>
 </section>
 
-<!-- ================== THƯƠNG HIỆU HOT ================== -->
 <section class="brands-section text-center my-5">
     <h2 class="fw-bold fs-2 mb-5">
         Thương hiệu <span class="text-warning">Hot tuần này</span>
@@ -209,7 +203,6 @@
                 {
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="voucher-card d-flex align-items-center justify-content-between">
-                            <!-- Logo + Nội dung -->
                             <div class="d-flex align-items-center flex-grow-1">
                                 <div class="me-4">
                                     <img src="~/images/logo.png" alt="SWAPFIT" class="img-fluid rounded" style="width: 80px;" />
@@ -223,7 +216,6 @@
                                 </div>
                             </div>
 
-                            <!-- Nút lưu voucher -->
                             <button type="button"
                                     class="btn btn-warning text-dark fw-bold px-4 save-voucher-btn"
                                     data-voucher-id="@voucher.MaUuDai">
@@ -240,19 +232,14 @@
                 <p class="text-muted fs-4">Hiện chưa có voucher nào đang hoạt động</p>
             </div>
         }
-<<<<<<< HEAD
 
 
-=======
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     </div>
 </section>
 
-<!-- ================== SWAPFIT BANNER PHỐI ĐỒ ================== -->
 <section class="swapfit-banner my-5">
     <div class="container-fluid px-0">
         <div class="row align-items-center g-0">
-            <!-- Phần chữ bên trái -->
             <div class="col-12 col-md-7 p-5 banner-text">
                 <p class="text-muted mb-1">
                     <span class="text-success fw-bold">SWAPfit</span> mang đến cho bạn sự mới lạ qua từng phong cách
@@ -265,7 +252,6 @@
                 </a>
             </div>
 
-            <!-- Phần hình ảnh bên phải -->
             <div class="col-12 col-md-5">
                 <div class="banner-grid">
                     <img src="~/images/a1.jpg" alt="Look 1" />
@@ -335,7 +321,6 @@
     $(document).ready(function () {
         $('.save-voucher-btn').on('click', function () {
             var btn = $(this);
-<<<<<<< HEAD
             var id = btn.data('voucher-id');
 
             if (btn.prop('disabled')) return;
@@ -348,35 +333,15 @@
                     if (res.success) {
                         btn.removeClass('btn-warning').addClass('btn-success')
                            .html('Đã lưu ✓').prop('disabled', true);
-=======
-            var voucherId = btn.data('voucher-id');
-
-            // Ngăn bấm liên tục
-            if (btn.prop('disabled')) return;
-
-            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Đang lưu...');
-
-            $.post('/UuDai/SaveVoucher', { voucherId: voucherId })
-                .done(function (res) {
-                    if (res.success) {
-                        btn.removeClass('btn-warning').addClass('btn-success')
-                           .html('Đã lưu').prop('disabled', true);
-                        // Tùy chọn: hiện toast đẹp
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         alert(res.message);
                     } else {
                         alert(res.message);
                         btn.prop('disabled', false).html('Lưu voucher');
                     }
                 })
-<<<<<<< HEAD
                 .fail(function (xhr) {
                     console.log(xhr.responseText);
                     alert('Lỗi hệ thống! Vui lòng thử lại hoặc đăng nhập lại.');
-=======
-                .fail(function () {
-                    alert('Lỗi kết nối, vui lòng thử lại!');
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                     btn.prop('disabled', false).html('Lưu voucher');
                 });
         });

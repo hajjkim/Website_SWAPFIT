@@ -17,26 +17,20 @@ namespace SWAPFIT.Controllers
             _context = context;
         }
 
-        // 🟢 Hiển thị giỏ hàng
         public IActionResult Index()
         {
             var maNguoiDung = HttpContext.Session.GetInt32("MaNguoiDung");
             if (maNguoiDung == null)
             {
-                //TempData["Error"] = "Vui lòng đăng nhập để xem giỏ hàng!";
                 return RedirectToAction("Login", "Account");
             }
 
-<<<<<<< HEAD
-            // Clear temporary cart (GioHangTam) from session when accessing the main cart page
             HttpContext.Session.Remove("GioHangTam");
 
-=======
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             var gioHang = _context.GioHangs
                 .Include(g => g.ChiTietGioHangs)
                 .ThenInclude(c => c.BaiViet)
-                .ThenInclude(bv => bv.AnhBaiViets) // 🟢 thêm dòng này
+                .ThenInclude(bv => bv.AnhBaiViets) 
                 .FirstOrDefault(g => g.MaNguoiDung == maNguoiDung);
 
             if (gioHang == null)
@@ -54,7 +48,6 @@ namespace SWAPFIT.Controllers
             return View(gioHang);
         }
 
-        // 🟢 Thêm sản phẩm vào giỏ hàng
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult ThemVaoGio(int maBaiViet)
@@ -80,10 +73,9 @@ namespace SWAPFIT.Controllers
                 };
 
                 _context.GioHangs.Add(gioHang);
-                _context.SaveChanges(); // ⚡ Bắt buộc có dòng này để tạo MaGioHang thật
+                _context.SaveChanges(); 
             }
 
-            // ✅ Gọi lại ID đã có thật trong DB
             var chiTiet = _context.ChiTietGioHangs
                 .FirstOrDefault(c => c.MaGioHang == gioHang.MaGioHang && c.MaBaiViet == maBaiViet);
 
@@ -113,7 +105,6 @@ namespace SWAPFIT.Controllers
         }
 
 
-        // 🟢 Xóa sản phẩm khỏi giỏ hàng
         [HttpPost]
         public IActionResult XoaSanPham(int maChiTiet)
         {
@@ -146,7 +137,6 @@ namespace SWAPFIT.Controllers
                 return RedirectToAction("Index");
             }
 
-            // ⚡ Kiểm tra số lượng tối đa dựa trên BaiViet.SoLuong
             if (soLuongMoi > chiTiet.BaiViet.SoLuong)
             {
                 TempData["Error"] = $"Chỉ còn {chiTiet.BaiViet.SoLuong} sản phẩm trong kho.";
@@ -168,7 +158,6 @@ namespace SWAPFIT.Controllers
 
             if (baiViet == null) return NotFound();
 
-            // Tạo model tạm để hiển thị
             var model = new DonHang
             {
                 MaNguoiBan = baiViet.MaNguoiDung,
@@ -191,9 +180,7 @@ namespace SWAPFIT.Controllers
             return View(model);
         }
 
-        // ------------------------------------------------------------------------------------
-        // 🟢 3) XỬ LÝ ĐẶT HÀNG (MUA NGAY)
-        // ------------------------------------------------------------------------------------
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DatHang(DonHang model)
@@ -207,21 +194,16 @@ namespace SWAPFIT.Controllers
             model.NgayDat = DateTime.Now;
             model.TrangThai = "Đang xử lý";
 
-<<<<<<< HEAD
             Console.WriteLine($"Đặt hàng: MaNguoiBan={model.MaNguoiBan}, TongTien={model.TongTien}");
 
-=======
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
             _context.DonHangs.Add(model);
             await _context.SaveChangesAsync();
 
-            // Lưu chi tiết
             foreach (var ct in model.ChiTietDonHangs)
             {
                 ct.MaDonHang = model.MaDonHang;
                 _context.ChiTietDonHangs.Add(ct);
 
-                // Trừ kho sản phẩm
                 var sp = await _context.BaiViets.FindAsync(ct.MaBaiViet);
                 if (sp != null)
                 {
@@ -240,10 +222,6 @@ namespace SWAPFIT.Controllers
         {
             return View();
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     }
 
 }

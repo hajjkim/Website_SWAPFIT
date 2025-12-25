@@ -140,25 +140,25 @@
 
     .voucher-card {
         transition: all 0.3s ease;
-        border-radius: 12px; /* Rounded corners */
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        border-radius: 12px; 
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
         padding: 1rem;
-        background: linear-gradient(120deg, #e9f5e2, #d1e9d2); /* Softer green gradient */
+        background: linear-gradient(120deg, #e9f5e2, #d1e9d2);
         overflow: hidden;
     }
 
         .voucher-card:hover {
-            transform: translateY(-5px); /* Hover lift effect */
-            box-shadow: 0 15px 35px rgba(40, 167, 69, 0.2); /* Stronger shadow on hover */
+            transform: translateY(-5px); 
+            box-shadow: 0 15px 35px rgba(40, 167, 69, 0.2); 
         }
 
         .voucher-card img {
             transition: transform 0.3s ease;
-            max-width: 100%; /* Ensure images fill the space */
+            max-width: 100%;
         }
 
             .voucher-card img:hover {
-                transform: scale(1.05); /* Zoom-in effect on image hover */
+                transform: scale(1.05);
             }
 
         .voucher-card .voucher-info {
@@ -171,31 +171,30 @@
             .voucher-card .voucher-info h5 {
                 font-size: 1.3rem;
                 font-weight: bold;
-                color: #28a745; /* Green color for title */
+                color: #28a745; 
             }
 
             .voucher-card .voucher-info p {
                 font-size: 0.95rem;
-                color: #333; /* Darker text for description */
+                color: #333; 
             }
 
             .voucher-card .voucher-info .expiry {
                 font-size: 0.9rem;
-                color: #d9534f; /* Red color for expiration date */
+                color: #d9534f; 
             }
 
             .voucher-card .voucher-info .discount {
                 font-size: 1.6rem;
                 font-weight: 600;
-                color: #f0ad4e; /* Gold color for discount value */
+                color: #f0ad4e;
             }
 
             .voucher-card .voucher-info .value {
                 font-size: 1.3rem;
-                color: #5bc0de; /* Light blue for value (percentage or amount) */
+                color: #5bc0de; 
             }
 
-        /* Adjust the layout of the image and text */
         .voucher-card .voucher-image {
             flex: 0 0 30%;
             padding: 0.5rem;
@@ -237,7 +236,6 @@
 </style>
 
 <div class="container py-4 py-md-5">
-    <!-- Header cá nhân -->
     <div class="profile-header d-flex flex-column flex-md-row align-items-center gap-4 text-center text-md-start">
         <img src="@(Model.AnhDaiDien ?? "/images/default-avatar.png")" alt="Avatar" class="profile-avatar rounded-circle">
         <div class="flex-grow-1">
@@ -256,9 +254,7 @@
     </div>
 
     <div class="row g-4">
-        <!-- Cột trái: Bài đăng + Tin nhắn -->
         <div class="col-lg-8">
-            <!-- Bài đăng -->
             <div class="section-card">
                 <h4 class="section-title">Sản phẩm đã đăng (@(baiViets?.Count ?? 0))</h4>
                 @if (baiViets != null && baiViets.Count > 0)
@@ -288,7 +284,6 @@
                 }
             </div>
 
-            <!-- Tin nhắn gần đây -->
             <div class="section-card">
                 <h4 class="section-title">Tin nhắn gần đây</h4>
                 @if (tinNhanGanDay != null && tinNhanGanDay.Any())
@@ -303,12 +298,11 @@
                             string avatarPath;
                             if (string.IsNullOrWhiteSpace(other.AnhDaiDien))
                             {
-                                // ảnh mặc định
+                              
                                 avatarPath = Url.Content("~/images/default-avatar.png");
                             }
                             else
                             {
-                                // other.AnhDaiDien có thể là "uploads/avatars/a.png" hoặc "/uploads/avatars/a.png"
                                 var raw = other.AnhDaiDien.TrimStart('~', '/');
                                 avatarPath = Url.Content("~/" + raw);
                             }
@@ -341,11 +335,10 @@
             </div>
         </div>
 
-        <!-- Cột phải: Lịch sử giao dịch -->
         <div class="col-lg-4">
-            <!-- Đơn đã mua -->
             <div class="section-card">
                 <h4 class="section-title">Đơn hàng đã mua (@(donMua?.Count ?? 0))</h4>
+
                 @if (donMua != null && donMua.Count > 0)
                 {
                     <div class="table-responsive">
@@ -362,13 +355,16 @@
                             <tbody>
                                 @foreach (var dh in donMua.OrderByDescending(d => d.NgayDat).Take(5))
                                 {
-                                    // ⚠️ Chỉnh lại các chuỗi trạng thái cho đúng với DB của bạn
-                                    bool daHoanThanh = dh.TrangThai == "Hoàn tất" || dh.TrangThai == "DaHoanThanh";
-                                    bool daGiao = dh.TrangThai == "Đã giao" || dh.TrangThai == "DaGiao";
-                                    bool daHuy = dh.TrangThai == "Đã hủy" || dh.TrangThai == "DaHuy";
+                                    bool coTheHuy = string.Equals((dh.TrangThai ?? "").Trim(), "Chờ xác nhận", StringComparison.OrdinalIgnoreCase);
 
-                                    // Người mua CHỈ được hủy khi người bán CHƯA cập nhật Đã giao / Hoàn tất / Đã hủy
-                                    bool coTheHuy = !(daHoanThanh || daGiao || daHuy);
+                                    bool daHoanThanh = string.Equals((dh.TrangThai ?? "").Trim(), "Hoàn tất", StringComparison.OrdinalIgnoreCase)
+                                    || string.Equals((dh.TrangThai ?? "").Trim(), "DaHoanThanh", StringComparison.OrdinalIgnoreCase);
+
+                                    bool daGiao = string.Equals((dh.TrangThai ?? "").Trim(), "Đã giao", StringComparison.OrdinalIgnoreCase)
+                                    || string.Equals((dh.TrangThai ?? "").Trim(), "DaGiao", StringComparison.OrdinalIgnoreCase);
+
+                                    bool daHuy = string.Equals((dh.TrangThai ?? "").Trim(), "Đã hủy", StringComparison.OrdinalIgnoreCase)
+                                    || string.Equals((dh.TrangThai ?? "").Trim(), "DaHuy", StringComparison.OrdinalIgnoreCase);
 
                                     <tr>
                                         <td class="fw-bold">#@dh.MaDonHang</td>
@@ -376,24 +372,16 @@
                                         <td>@dh.NgayDat.ToString("dd/MM")</td>
                                         <td>
                                             <span class="badge
-<<<<<<< HEAD
-                                                    @(daHoanThanh ? "bg-success" :
-                                                                                                                                          daHuy ? "bg-secondary" :
-                                                                                                                                          daGiao ? "bg-info" :
-                                                                                                                                          "bg-warning")">
-=======
                                             @(daHoanThanh ? "bg-success" :
                                                                                         daHuy ? "bg-secondary" :
                                                                                         daGiao ? "bg-info" :
                                                                                         "bg-warning")">
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                                         @dh.TrangThai
                                     </span>
                                 </td>
                                 <td>
                                     @if (coTheHuy)
                                             {
-                                                <!-- Nút mở modal hủy đơn -->
                                                 <button type="button"
                                                         class="btn btn-sm btn-outline-danger"
                                                         data-bs-toggle="modal"
@@ -401,11 +389,11 @@
                                                     Hủy đơn
                                                 </button>
 
-                                                <!-- Modal nhập lý do hủy -->
                                                 <div class="modal fade" id="modalHuy_@dh.MaDonHang" tabindex="-1"
                                                      aria-labelledby="modalHuyLabel_@dh.MaDonHang" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content">
+
                                                             <form asp-controller="DonHang"
                                                                   asp-action="HuyDonHangNguoiMua"
                                                                   method="post">
@@ -415,28 +403,27 @@
                                                                     <h5 class="modal-title" id="modalHuyLabel_@dh.MaDonHang">
                                                                         Hủy đơn #@dh.MaDonHang
                                                                     </h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
 
                                                                 <div class="modal-body">
                                                                     <input type="hidden" name="id" value="@dh.MaDonHang" />
 
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label fw-semibold">Lý do hủy đơn</label>
-                                                                        <textarea name="lyDoHuy"
-                                                                      class="form-control"
-                                                                      rows="3"
-                                                                      required></textarea>
-                                                                    </div>
-                                                                    <div class="alert alert-warning py-2 mb-0 small">
+                                                                    <label class="form-label fw-semibold">Lý do hủy đơn</label>
+                                                                    <textarea name="lyDoHuy"
+                                                                  class="form-control"
+                                                                  rows="3"
+                                                                  maxlength="300"
+                                                                  placeholder="Ví dụ: Mình đặt nhầm / đổi ý / cần sửa địa chỉ..."
+                                                                  required></textarea>
+
+                                                                    <div class="small text-muted mt-2">
                                                                         Lý do hủy sẽ được gửi cho người bán.
                                                                     </div>
                                                                 </div>
 
                                                                 <div class="modal-footer">
-                                                                    <button type="button"
-                                                                            class="btn btn-secondary"
-                                                                            data-bs-dismiss="modal">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                                         Đóng
                                                                     </button>
                                                                     <button type="submit" class="btn btn-danger">
@@ -444,34 +431,24 @@
                                                                     </button>
                                                                 </div>
                                                             </form>
+
                                                         </div>
                                                     </div>
                                                 </div>
-
                                             }
                                             else
                                             {
-                                                <span class="text-muted small">Không thể hủy</span>
+                                                <button class="btn btn-sm btn-outline-secondary"
+                                                        disabled
+                                                        title="Chỉ có thể hủy khi đơn ở trạng thái 'Chờ xác nhận'">
+                                                    Không thể hủy
+                                                </button>
                                             }
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
-                        @if (donMua.Count > 5)
-                        {
-<<<<<<< HEAD
-                            @* <a href="@Url.Action("LichSuMua", "DonHang")"
-                               class="btn btn-outline-success btn-sm w-100">
-                                Xem tất cả →
-                            </a> *@
-=======
-                            <a href="@Url.Action("LichSuMua", "DonHang")"
-                               class="btn btn-outline-success btn-sm w-100">
-                                Xem tất cả →
-                            </a>
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
-                        }
                     </div>
                 }
                 else
@@ -482,7 +459,7 @@
 
 
 
-            <!-- Đơn đang bán -->
+
             <div class="section-card">
                 <h4 class="section-title">Đơn hàng đang bán (@(donBan?.Count ?? 0))</h4>
                 @if (donBan != null && donBan.Count > 0)
@@ -514,11 +491,6 @@
                         </table>
                         @if (donBan.Count > 5)
                         {
-<<<<<<< HEAD
-                            @* <a href="@Url.Action("DonHangCuaToi", "DonHang")" class="btn btn-outline-success btn-sm w-100">Xem tất cả →</a> *@
-=======
-                            <a href="@Url.Action("DonHangCuaToi", "DonHang")" class="btn btn-outline-success btn-sm w-100">Xem tất cả →</a>
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                         }
                     </div>
                 }
@@ -528,7 +500,6 @@
                 }
             </div>
             <div class="container py-4 py-md-5">
-                <!-- Section for Claimed Vouchers -->
                 <div class="section-card">
                     <h4 class="section-title">Vouchers đã săn (@(ViewBag.ClaimedVouchers?.Count ?? 0))</h4>
                     @if (ViewBag.ClaimedVouchers != null && ((IEnumerable<dynamic>)ViewBag.ClaimedVouchers).Any())
@@ -539,10 +510,8 @@
                                 var voucher = userVoucher.Voucher;
 
                                 <div class="col-12 col-md-6 col-lg-12">
-                                    <!-- VOUCHER CARD -->
                                     <div class="voucher-card">
                                         <div class="row g-0 align-items-center">
-                                            <!-- Left Side: Voucher Information -->
                                             <div class="voucher-text">
                                                 <div class="voucher-info">
                                                     <h5>@voucher.TenUuDai</h5>
@@ -552,12 +521,10 @@
                                                         <div class="text-end">
                                                             @if (voucher.LoaiUuDai == "PhanTram")
                                                             {
-                                                                <!-- Display discount percentage without decimals -->
                                                                 <span class="discount">Giảm @voucher.GiaTri.ToString("0")%</span>
                                                             }
                                                             else
                                                             {
-                                                                <!-- Display discount value with commas, no decimals -->
                                                                 <span class="value">Giảm @string.Format("{0:N0}", voucher.GiaTri)đ</span>
                                                             }
                                                         </div>
@@ -565,16 +532,10 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Right Side: Voucher Image -->
-                                            @* <div class="voucher-image">
-                                                <img src="@(voucher.AnhBia ?? "/images/logo.png")"
-                                                     alt="@voucher.TenUuDai"
-                                                     class="img-fluid rounded-3"
-                                                     style="max-height: 140px; object-fit: contain;">
-                                            </div> *@
+                                          
                                         </div>
 
-                                        <!-- Bottom Border -->
+                                       
                                         <div class="text-center py-2 border-top border-dashed border-success">
                                             <small class="text-success fw-bold">
                                                 Đã lưu vào ví voucher • Có thể dùng ngay
@@ -598,11 +559,7 @@
                 </div>
             </div>
 
-<<<<<<< HEAD
 
-=======
-            
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 
 
 

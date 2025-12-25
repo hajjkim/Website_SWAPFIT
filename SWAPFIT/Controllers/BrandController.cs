@@ -14,14 +14,14 @@ namespace SWAPFIT.Controllers
             _context = context;
         }
 
-        // 📦 Hiển thị danh sách thương hiệu
+ 
         public IActionResult Index()
         {
             var brands = _context.ThuongHieus.OrderBy(t => t.TenThuongHieu).ToList();
             return View("~/Views/Admin/Brands/Index.cshtml", brands);
         }
 
-        // ➕ Thêm thương hiệu mới
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddBrand(ThuongHieu model)
@@ -40,7 +40,7 @@ namespace SWAPFIT.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // 🗑️ Xóa thương hiệu
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteBrand(int id)
@@ -59,14 +59,12 @@ namespace SWAPFIT.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-<<<<<<< HEAD
-        // GET: Hiển thị form thêm thương hiệu
+        
         public IActionResult Create()
         {
             return View("~/Views/Brands/Create.cshtml");
         }
 
-        // POST: Xử lý thêm thương hiệu
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(ThuongHieu model)
@@ -79,10 +77,7 @@ namespace SWAPFIT.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Nếu có lỗi → trả lại form với dữ liệu đã nhập
             return View("~/Views/Brands/Create.cshtml", model);
         }
-=======
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     }
 }

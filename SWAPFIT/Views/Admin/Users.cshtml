@@ -1,84 +1,15 @@
 ﻿@model List<SWAPFIT.Models.NguoiDung>
-<<<<<<< HEAD
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     ViewData["Title"] = "Quản lý bài viết";
 }
 @{
-=======
-
-@{
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     ViewData["Title"] = "Quản lý người dùng";
 }
 
 <div class="container mt-5">
     <h2 class="text-center mb-4 text-primary fw-bold">👥 Quản lý người dùng</h2>
 
-<<<<<<< HEAD
-=======
-    <!-- TOP 3 NGƯỜI ĐĂNG BÀI NHIỀU NHẤT -->
-    @{
-        var top3 = ViewBag.Top3NguoiDung as IEnumerable<dynamic>;
-    }
-
-    @if (top3 != null && top3.Any())
-    {
-        <div class="row mb-4 justify-content-center">
-            <div class="col-lg-8">
-                <div class="card shadow-sm border-success">
-                    <div class="card-body p-3">
-                        <h5 class="mb-3 text-success fw-semibold">
-                            🏆 Top 3 người đăng bài nhiều nhất
-                        </h5>
-                        <div class="table-responsive">
-                            <table class="table table-sm align-middle mb-0">
-                                <thead class="table-success">
-                                    <tr class="text-center">
-                                        <th>Hạng</th>
-                                        <th class="text-start">Người dùng</th>
-                                        <th>Số bài viết</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @{
-                                        var stt = 1;
-                                    }
-                                    @foreach (var u in top3)
-                                    {
-                                        <tr>
-                                            <td class="text-center fw-bold">@stt</td>
-                                            <td>
-                                                <div class="fw-semibold">
-                                                    @(!string.IsNullOrEmpty((string)u.HoTen) ? u.HoTen : u.TenDangNhap)
-                                                </div>
-                                                <div class="text-muted small">@u.TenDangNhap</div>
-                                            </td>
-                                            <td class="text-center fw-bold text-primary">@u.SoBaiViet</td>
-                                            <td class="text-center">
-                                                <a asp-controller="Admin"
-                                                   asp-action="ThongKeBaiViet"
-                                                   asp-route-id="@u.MaNguoiDung"
-                                                   class="btn btn-outline-primary btn-sm">
-                                                    Xem thống kê
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        stt++;
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-
-    <!-- BẢNG QUẢN LÝ NGƯỜI DÙNG -->
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
     <div class="card shadow-sm">
         <div class="card-body p-3">
             <div class="table-responsive">
@@ -113,13 +44,7 @@
                                         </span>
                                     </td>
                                     <td>
-<<<<<<< HEAD
                                         <div class="d-flex justify-content-center gap-2">
-=======
-                                        <div class="d-flex justify-content-center gap-2 flex-wrap">
-
-                                            <!-- Khóa / mở khóa -->
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                                             <form asp-action="ToggleBlockUser" method="post" style="display:inline;">
                                                 <input type="hidden" name="id" value="@user.MaNguoiDung" />
                                                 <button type="submit" class="btn btn-sm @(user.TrangThai == "Bị khóa" ? "btn-success" : "btn-warning")">
@@ -127,32 +52,12 @@
                                                 </button>
                                             </form>
 
-<<<<<<< HEAD
                                             <form asp-action="DeleteUser" method="post" style="display:inline;">
                                                 <input type="hidden" name="id" value="@user.MaNguoiDung" />
                                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn chắc chắn muốn xóa người dùng này?');">
                                                     Xóa
                                                 </button>
                                             </form>
-=======
-                                            <!-- Xóa user -->
-                                            <form asp-action="DeleteUser" method="post" style="display:inline;">
-                                                <input type="hidden" name="id" value="@user.MaNguoiDung" />
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('Bạn chắc chắn muốn xóa người dùng này?');">
-                                                    Xóa
-                                                </button>
-                                            </form>
-
-                                            <!-- 🔹 THỐNG KÊ BÀI VIẾT CỦA USER -->
-                                            <a asp-controller="Admin"
-                                               asp-action="ThongKeBaiViet"
-                                               asp-route-id="@user.MaNguoiDung"
-                                               class="btn btn-info btn-sm">
-                                                Thống kê bài viết
-                                            </a>
-
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
                                         </div>
                                     </td>
                                 </tr>
@@ -172,28 +77,19 @@
 </div>
 
 <style>
-    /* Hover row nổi bật */
     table.table-hover tbody tr:hover {
         background-color: rgba(0, 123, 255, 0.1);
         transition: background-color 0.2s ease-in-out;
     }
 
-    /* Badge font đậm hơn */
     .badge {
         font-size: 0.9rem;
     }
 
-    /* Button nhỏ, dễ thao tác */
     .btn-sm {
         font-size: 0.85rem;
         padding: 0.25rem 0.5rem;
     }
-<<<<<<< HEAD
-
-    /* Responsive scroll cho bảng */
-   
 
     }
-=======
->>>>>>> cff493713bfe5280dbb98db99eb56a2baceef7ff
 </style>
