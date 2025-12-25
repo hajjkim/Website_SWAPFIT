@@ -1,0 +1,158 @@
+﻿@model SWAPFIT.Models.DonHang
+<style>
+    .ck-box {
+        border: 1px dashed #28a745;
+        background: #f6fffa;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin: 10px 0 16px 0;
+    }
+
+    .ck-title {
+        font-weight: 700;
+        color: #198754;
+    }
+
+    .ck-code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        letter-spacing: .3px;
+        font-weight: 700;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #198754;
+        color: #fff;
+        display: inline-block;
+    }
+</style>
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h3 class="mb-3 fw-bold">🧾 Đơn hàng #@Model.MaDonHang</h3>
+
+            @if ((Model.PhuongThucThanhToan ?? "").Trim() == "ChuyenKhoan"
+                        && !string.IsNullOrWhiteSpace(Model.NoiDungChuyenKhoan))
+            {
+                <div class="alert alert-success d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>✅ Nội dung người mua đã chuyển khoản:</strong>
+                        <span class="badge bg-success ms-2" style="font-size: 1rem;">
+                            @Model.NoiDungChuyenKhoan
+                        </span>
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-outline-success btn-sm"
+                            onclick="copyText('@Model.NoiDungChuyenKhoan')">
+                        📋 Copy
+                    </button>
+                </div>
+            }
+
+
+
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <p><strong>Người mua:</strong> @Model.NguoiMua?.HoTen</p>
+                    <p><strong>Địa chỉ giao hàng:</strong> @Model.DiaChiGiaoHang</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Ngày đặt:</strong> @Model.NgayDat.ToString("dd/MM/yyyy")</p>
+                    <p>
+                        <strong>Tổng tiền:</strong>
+                        <span class="text-danger fw-bold">@Model.TongTien.ToString("N0") đ</span>
+                    </p>
+                </div>
+            </div>
+
+            <span class="badge
+                @(Model.TrangThai == "Chờ xác nhận" ? "bg-warning text-dark" :
+                                                      Model.TrangThai == "Đang giao" ? "bg-info" :
+                                                      Model.TrangThai == "Đã hoàn thành" ? "bg-success" : "bg-danger")
+                px-3 py-2 fs-6">
+                @Model.TrangThai
+            </span>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light fw-bold fs-5">
+            Sản phẩm trong đơn hàng
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr class="text-center">
+                        <th style="width:80px;">Ảnh</th>
+                        <th class="text-start">Sản phẩm</th>
+                        <th style="width:90px;">Số lượng</th>
+                        <th class="text-end" style="width:120px;">Giá</th>
+                        <th class="text-end" style="width:140px;">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ct in Model.ChiTietDonHangs)
+                    {
+                        var anhSanPham = "/images/no-image.png";
+                        var firstImg = ct.BaiViet?.AnhBaiViets?.OrderBy(a => a.MaAnh).FirstOrDefault();
+                        if (firstImg != null)
+                        {
+                            anhSanPham = firstImg.DuongDan.StartsWith("/")
+                            ? firstImg.DuongDan
+                            : "/images/products/" + firstImg.DuongDan;
+                        }
+                        <tr>
+                            <td>
+                                <img src="@Url.Content(anhSanPham)"
+                                     alt="@ct.BaiViet?.TieuDe"
+                                     class="rounded shadow-sm"
+                                     style="width: 80px; height: 80px; object-fit: cover;"
+                                     onerror="this.src='/images/no-image.png'" />
+                            </td>
+                            <td class="fw-medium">
+                                <div>@(ct.BaiViet?.TieuDe ?? "<em class='text-muted'>Sản phẩm đã xóa</em>")</div>
+                                @if (ct.BaiViet == null)
+                                {
+                                    <small class="text-danger">Sản phẩm không còn tồn tại</small>
+                                }
+                            </td>
+                            <td class="text-center fw-bold">@ct.SoLuong</td>
+                            <td class="text-end">@ct.Gia.ToString("N0") đ</td>
+                            <td class="text-end text-success fw-bold">@((ct.SoLuong * ct.Gia).ToString("N0")) đ</td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    @if (Model.MaNguoiBan == Context.Session.GetInt32("MaNguoiDung"))
+    {
+        <div class="card shadow-sm border-0 p-4">
+            <h5 class="fw-bold mb-3">Cập nhật trạng thái đơn hàng</h5>
+
+            <form asp-action="CapNhatTrangThai" method="post" class="row g-3 align-items-end">
+                <input type="hidden" name="id" value="@Model.MaDonHang" />
+
+                <div class="col-md-4">
+                    <select name="trangThai" class="form-select">
+                        <option value="Chờ xác nhận" selected="@(Model.TrangThai == "Chờ xác nhận")">Chờ xác nhận</option>
+                        <option value="Đang giao" selected="@(Model.TrangThai == "Đang giao")">Đang giao</option>
+                        <option value="Đã hoàn thành" selected="@(Model.TrangThai == "Đã hoàn thành")">Đã hoàn thành</option>
+                        <option value="Đã hủy" selected="@(Model.TrangThai == "Đã hủy")">Đã hủy</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <button class="btn btn-primary px-4">💾 Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    }
+</div>
+
+
+

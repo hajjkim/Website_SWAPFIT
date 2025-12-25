@@ -1,0 +1,51 @@
+﻿@model IEnumerable<SWAPFIT.Models.DiaChi>
+@{
+    ViewData["Title"] = "Danh sách địa chỉ";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Danh sách địa chỉ</h2>
+
+    <a asp-action="Create" class="btn btn-success mb-3">+ Thêm địa chỉ mới</a>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Tỉnh / Thành phố</th>
+                <th>Quận / Huyện</th>
+                <th>Phường / Xã</th>
+                <th>Chi tiết</th>
+                <th>Mặc định</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Tinh</td>
+                        <td>@item.Huyen</td>
+                        <td>@item.Xa</td>
+                        <td>@item.ChiTiet</td>
+                        @if (item.LaMacDinh == true)
+                        {
+                            <td>✅</td>
+                        }
+                        else
+                        {
+                            <td>❌</td>
+                        }
+
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Chưa có địa chỉ nào</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

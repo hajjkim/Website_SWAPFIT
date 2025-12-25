@@ -46,3 +46,12 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+/* Thêm khoảng cách cho header */
+header {
+    padding-top: 20px; /* Bạn có thể điều chỉnh giá trị này để có khoảng cách vừa ý */
+}
+
+/* Thêm margin-top cho phần nội dung chính */
+.main-content {
+    margin-top: 30px; /* Khoảng cách giữa nội dung và header */
+}

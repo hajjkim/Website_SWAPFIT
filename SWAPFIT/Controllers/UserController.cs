@@ -1,0 +1,182 @@
+﻿
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SWAPFIT.Data;
+using SWAPFIT.Models;
+
+namespace SWAPFIT.Controllers
+{
+    public class UserController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+
+        public UserController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        public IActionResult Index()
+        {
+            var userId = HttpContext.Session.GetInt32("MaNguoiDung");
+            if (userId == null)
+                return RedirectToAction("Login", "Account");
+
+            var user = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == userId);
+            if (user == null)
+                return RedirectToAction("Login", "Account");
+            ViewBag.BaiViets = _context.BaiViets
+                .Include(b => b.AnhBaiViets)
+                .Where(b => b.MaNguoiDung == userId)
+                .OrderByDescending(b => b.NgayTao)
+                .ToList();
+            ViewBag.DonMua = _context.DonHangs
+                .Where(d => d.MaNguoiMua == userId)
+                .Include(d => d.ChiTietDonHangs).ThenInclude(ct => ct.BaiViet)
+                .Include(d => d.NguoiBan)
+                .OrderByDescending(d => d.NgayDat)
+                .ToList();
+            ViewBag.DonBan = _context.DonHangs
+                .Where(d => d.MaNguoiBan == userId)
+                .Include(d => d.ChiTietDonHangs).ThenInclude(ct => ct.BaiViet)
+                .Include(d => d.NguoiMua)
+                .OrderByDescending(d => d.NgayDat)
+                .ToList();
+            ViewBag.TinNhanGanDay =
+            _context.TinNhans
+                .Where(t => t.MaNguoiGui == userId || t.MaNguoiNhan == userId)
+                .OrderByDescending(t => t.ThoiGianGui)
+                .AsEnumerable()
+                .GroupBy(t => t.MaNguoiGui == userId ? t.MaNguoiNhan : t.MaNguoiGui)
+                .Select(g =>
+                {
+                    var tn = g.First(); 
+                    int otherId = tn.MaNguoiGui == userId ? tn.MaNguoiNhan : tn.MaNguoiGui;
+
+                    tn.NguoiGui = _context.NguoiDungs.FirstOrDefault(x => x.MaNguoiDung == tn.MaNguoiGui);
+                    tn.NguoiNhan = _context.NguoiDungs.FirstOrDefault(x => x.MaNguoiDung == tn.MaNguoiNhan);
+
+                    return tn;
+                })
+                .ToList();
+            var claimedVouchers = _context.UserVouchers
+                .Where(uv => uv.UserId == userId)
+                .Include(uv => uv.Voucher) 
+                .ToList();
+            ViewBag.ClaimedVouchers = claimedVouchers;
+            return View(user);
+        }
+        public IActionResult XemTrangCaNhan(int id)
+        {
+            var nguoiBan = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == id);
+
+            if (nguoiBan == null)
+                return NotFound();
+
+            var baiViets = _context.BaiViets
+                .Include(b => b.AnhBaiViets)
+                .Where(b => b.MaNguoiDung == id)
+                .OrderByDescending(b => b.NgayTao)
+                .ToList();
+
+            nguoiBan.BaiViets = baiViets;
+
+            return View(nguoiBan);
+        }
+        [HttpPost]
+        public IActionResult DanhDauDaXem(int id)
+        {
+            var tb = _context.ThongBaos.Find(id);
+            if (tb != null && tb.MaNguoiDung == HttpContext.Session.GetInt32("MaNguoiDung"))
+            {
+                tb.DaXem = true;
+                _context.SaveChanges();
+            }
+            return Json(new { success = true });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BaoCaoNguoiDung(int nguoiBiBaoCaoId, string lyDo, string? moTaChiTiet, List<IFormFile> files)
+        {
+            var userId = HttpContext.Session.GetInt32("MaNguoiDung");
+            if (userId == null)
+                return RedirectToAction("Login", "Account");
+
+            if (userId == nguoiBiBaoCaoId)
+            {
+                TempData["Error"] = "Bạn không thể tự báo cáo chính mình.";
+                return RedirectToAction("XemTrangCaNhan", new { id = nguoiBiBaoCaoId });
+            }
+
+            var nguoiBiBaoCao = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == nguoiBiBaoCaoId);
+            if (nguoiBiBaoCao == null)
+            {
+                TempData["Error"] = "Không tìm thấy tài khoản cần báo cáo.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var nguoiBaoCao = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == userId.Value);
+            var baoCao = new BaoCaoTaiKhoan
+            {
+                MaNguoiBaoCao = userId.Value,
+                MaNguoiBiBaoCao = nguoiBiBaoCaoId,
+                LyDo = lyDo,
+                MoTaChiTiet = moTaChiTiet,
+                NgayTao = DateTime.Now,
+                TrangThai = "Moi"
+            };
+            _context.BaoCaoTaiKhoans.Add(baoCao);
+            await _context.SaveChangesAsync();
+            if (files != null && files.Count > 0)
+            {
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        var fileName = Path.GetFileName(file.FileName);
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/bcc/", fileName);
+                        try
+                        {
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await file.CopyToAsync(stream);
+                            }
+                            var baoCaoAnh = new BaoCaoTaiKhoanAnh
+                            {
+                                BaoCaoTaiKhoanId = baoCao.Id,
+                                DuongDan = "/images/bcc/" + fileName
+                            };
+                            _context.BaoCaoTaiKhoanAnhs.Add(baoCaoAnh);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error while saving file: {ex.Message}");
+                        }
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+            var admin = _context.NguoiDungs
+                .FirstOrDefault(u => u.VaiTro == "Admin" || u.VaiTro == "admin");
+            if (admin != null)
+            {
+                string tenBaoCao = nguoiBaoCao?.HoTen ?? nguoiBaoCao?.TenDangNhap ?? "Người dùng";
+                string tenBiBaoCao = nguoiBiBaoCao.HoTen ?? nguoiBiBaoCao.TenDangNhap ?? "Không rõ";
+                var noiDungThongBao = $"{tenBaoCao} đã báo cáo tài khoản {tenBiBaoCao}. Lý do: {lyDo}";
+                if (!string.IsNullOrWhiteSpace(moTaChiTiet))
+                    noiDungThongBao += $" | Chi tiết: {moTaChiTiet}";
+                var tb = new ThongBao
+                {
+                    MaNguoiDung = admin.MaNguoiDung,
+                    NoiDung = noiDungThongBao,
+                    NgayTao = DateTime.Now,
+                    DaXem = false,
+                };
+                _context.ThongBaos.Add(tb);
+                await _context.SaveChangesAsync();
+            }
+
+            TempData["Success"] = "Báo cáo đã được gửi thành công. Cảm ơn bạn!";
+            return RedirectToAction("XemTrangCaNhan", new { id = nguoiBiBaoCaoId });
+        }
+
+    }
+}

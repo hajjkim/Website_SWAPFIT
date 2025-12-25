@@ -1,0 +1,74 @@
+﻿@model List<SWAPFIT.Models.ThongKeDanhMucTongHop>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Thống kê danh mục bài đăng & lượt mua";
+}
+
+<div class="container mt-4">
+    <h3 class="mb-3 text-success fw-bold">
+        📊 Thống kê danh mục: nhiều bài đăng & được mua nhiều nhất
+    </h3>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-light border">
+            Chưa có dữ liệu để thống kê.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-success">
+                    <tr class="text-center">
+                        <th>Hạng (bài đăng)</th>
+                        <th class="text-start">Danh mục</th>
+                        <th>Tổng số bài đăng</th>
+                        <th>Tổng lượt mua</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var stt = 1;
+                        var maxMua = Model.Max(x => x.TongSoLuotMua);
+                    }
+                    @foreach (var dm in Model)
+                    {
+                        var isMaxBai = (stt == 1);                
+                        var isMaxMua = (dm.TongSoLuotMua == maxMua && maxMua > 0); 
+
+                        <tr>
+                            <td class="text-center fw-bold">
+                                @stt
+                                @if (isMaxBai)
+                                {
+                                    <span class="badge bg-warning text-dark ms-1">Nhiều bài nhất</span>
+                                }
+                            </td>
+                            <td class="text-start fw-semibold">
+                                @dm.TenDanhMuc
+                            </td>
+                            <td class="text-center fw-bold text-primary">
+                                @dm.TongSoBai
+                            </td>
+                            <td class="text-center fw-bold @(isMaxMua ? "text-danger" : "text-secondary")">
+                                @dm.TongSoLuotMua
+                                @if (isMaxMua)
+                                {
+                                    <span class="badge bg-danger ms-1">Mua nhiều nhất</span>
+                                }
+                            </td>
+                        </tr>
+
+                        stt++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <a asp-action="Dashboard" class="btn btn-outline-secondary mt-3">
+        ⬅ Quay lại Dashboard
+    </a>
+</div>

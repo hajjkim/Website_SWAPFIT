@@ -1,0 +1,24 @@
+﻿@using SWAPFIT.Data
+@using SWAPFIT.Models
+@inject ApplicationDbContext _context
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var maNguoiDung = HttpContextAccessor.HttpContext?.Session.GetInt32("MaNguoiDung");
+    int soLuong = 0;
+
+    if (maNguoiDung != null)
+    {
+        soLuong = _context.ChiTietGioHangs
+            .Where(ct => ct.GioHang.MaNguoiDung == maNguoiDung)
+            .Sum(ct => (int?)ct.SoLuong) ?? 0;
+    }
+}
+
+<a asp-controller="GioHang" asp-action="Index" class="position-relative me-3" style="color:#222; text-decoration:none;">
+    <i class="fa fa-shopping-cart fa-lg"></i>
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        @soLuong
+    </span>
+</a>

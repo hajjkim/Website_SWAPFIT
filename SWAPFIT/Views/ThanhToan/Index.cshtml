@@ -1,0 +1,425 @@
+﻿@model SWAPFIT.Models.GioHangViewModel
+@using SWAPFIT.Model
+
+<style>
+    .checkout-container {
+        font-family: 'Arial', sans-serif;
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .checkout-header h2 {
+        font-size: 24px;
+        color: #333;
+    }
+
+    .form-label {
+        font-size: 16px;
+        font-weight: 600;
+        color: #444;
+    }
+
+    .table th {
+        background-color: #e9ecef;
+        font-weight: bold;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .product-img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        margin-right: 10px;
+        border-radius: 6px;
+    }
+
+    .total-box {
+        background-color: #e8f5e9;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    #phiShipAlert {
+        background-color: #d1e7dd;
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 10px;
+    }
+
+    .btn-success {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    #bankInfoBox {
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
+        border-radius: 10px;
+        padding: 14px;
+        margin-top: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .bank-card {
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        padding: 12px;
+        background: #f8fafc;
+        margin-bottom: 12px;
+    }
+
+    .bank-title {
+        font-weight: 700;
+        color: #198754;
+        margin-bottom: 6px;
+    }
+
+    .qr-grid img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+        padding: 4px;
+        background: #fff;
+    }
+
+    @@media screen and (max-width: 768px) {
+        .checkout-container {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .table th, .table td {
+            padding: 8px;
+        }
+    }
+</style>
+
+@{
+    var bankInfos = ViewBag.BankInfos as List<TaiKhoanNganHang> ?? new List<TaiKhoanNganHang>();
+    var sellerIds = ViewBag.SellerIds as List<int> ?? new List<int>();
+    var missingSellers = sellerIds.Where(id => !bankInfos.Any(b => b.MaNguoiDung == id)).ToList();
+}
+
+<div class="checkout-container">
+    <div class="checkout-header d-flex justify-content-between align-items-center mb-4">
+        <h2>Xác nhận thanh toán</h2>
+        <a asp-controller="GioHang" asp-action="Index" class="btn btn-outline-success btn-sm">
+            Quay lại giỏ hàng
+        </a>
+    </div>
+
+    <form asp-action="XacNhanThanhToan" method="post">
+        <div class="mb-4">
+            <label class="form-label">Địa chỉ giao hàng</label>
+            <input type="text" name="diaChiGiaoHang" class="form-control" placeholder="Nhập địa chỉ nhận hàng của bạn..." required />
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold mb-2">Phương thức thanh toán</label>
+
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio"
+                       name="phuongThucThanhToan" id="ptttCOD"
+                       value="COD" checked>
+                <label class="form-check-label" for="ptttCOD">
+                    Thanh toán khi nhận hàng (COD)
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio"
+                       name="phuongThucThanhToan" id="ptttCK"
+                       value="ChuyenKhoan">
+                <label class="form-check-label" for="ptttCK">
+                    Chuyển khoản ngân hàng
+                </label>
+            </div>
+
+            <div id="bankInfoBox" style="display:none;">
+                <div class="fw-bold mb-2">🏦 Thông tin chuyển khoản </div>
+                <input type="hidden" name="maDonHangTam" value="@ViewBag.MaDonHangTam" />
+
+                <div class="alert alert-info mb-3">
+                    ✅ Vui lòng ghi đúng nội dung chuyển khoản để người bán/ hệ thống đối soát nhanh.<br />
+                    Gợi ý nội dung: <b>SWAPFIT_HọvàTên_NgàyĐặt_Tổngtiền</b>
+                </div>
+
+               
+
+                @if (missingSellers.Any())
+                {
+                    <div class="alert alert-warning mb-3">
+                        ⚠️ Có người bán chưa đăng ký tài khoản ngân hàng:
+                        <b>@string.Join(", ", missingSellers)</b>.
+                        Bạn nên chọn COD hoặc liên hệ người bán.
+                    </div>
+                }
+
+                @if (bankInfos.Any())
+                {
+                    foreach (var bank in bankInfos)
+                    {
+                        var qrList = (bank.QrCodeImage ?? "")
+                        .Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        .Take(8)
+                        .ToList();
+
+                        <div class="bank-card">
+                            <div class="bank-title">Người bán #@bank.MaNguoiDung</div>
+                            <div><b>Ngân hàng:</b> @bank.TenNganHang</div>
+                            <div><b>Số tài khoản:</b> @bank.SoTaiKhoan</div>
+                            <div><b>Chủ tài khoản:</b> @bank.ChuTaiKhoan</div>
+
+                            @if (qrList.Any())
+                            {
+                               
+                                <div class="row g-2 mt-1 qr-grid">
+                                    @foreach (var qr in qrList)
+                                    {
+                                        <div class="col-4 col-md-3">
+                                            <img src="@qr" alt="QR" />
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-muted mt-2">Người bán chưa tải ảnh QR.</div>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-info mb-0">
+                        Không có thông tin ngân hàng để hiển thị.
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold mb-2">Phương thức giao hàng</label>
+
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio"
+                       name="phuongThucGiaoHang" id="ptghTanNoi"
+                       value="GiaoTanNoi" checked>
+                <label class="form-check-label" for="ptghTanNoi">
+                    Giao tận nơi (2–4 ngày)
+                </label>
+            </div>
+
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio"
+                       name="phuongThucGiaoHang" id="ptghTaiDiem"
+                       value="NhanTaiDiem">
+                <label class="form-check-label" for="ptghTaiDiem">
+                    Nhận tại điểm giao (miễn phí ship)
+                </label>
+            </div>
+
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio"
+                       name="phuongThucGiaoHang" id="ptghNhanh"
+                       value="GiaoNhanh">
+                <label class="form-check-label" for="ptghNhanh">
+                    Giao hỏa tốc
+                </label>
+            </div>
+
+            <div id="phiShipAlert" class="alert alert-info mt-3 py-2 px-3" style="display: none;">
+                🚀 Đã cộng <strong>50.000đ</strong> phí giao hỏa tốc vào tổng tiền.
+            </div>
+        </div>
+
+        <table class="table table-hover align-middle text-center table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 300px;">Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.GioHang != null && Model.GioHang.ChiTietGioHangs.Any())
+                {
+                    foreach (var item in Model.GioHang.ChiTietGioHangs)
+                    {
+                        var thanhTien = (item.BaiViet.GiaSanPham ?? 0m) * item.SoLuong;
+                        <tr>
+                            <td class="text-start d-flex align-items-center">
+                                <img src="@Url.Content(item.BaiViet.AnhBaiViets?.FirstOrDefault()?.DuongDan ?? "/images/no-image.png")" class="product-img" alt="Product" />
+                                <div class="ms-2">
+                                    <span class="fw-semibold d-block">@item.BaiViet.TieuDe</span>
+                                </div>
+                            </td>
+                            <td>@item.SoLuong</td>
+                            <td>@string.Format("{0:N0} đ", item.BaiViet.GiaSanPham ?? 0m)</td>
+                            <td class="text-success fw-bold">@thanhTien.ToString("N0") đ</td>
+                        </tr>
+                    }
+                }
+                else if (Model.GioHangTam != null && Model.GioHangTam.Any())
+                {
+                    foreach (var item in Model.GioHangTam)
+                    {
+                        var thanhTien = item.GiaSanPham * item.SoLuong;
+                        <tr>
+                            <td class="text-start d-flex align-items-center">
+                                <img src="@Url.Content(item.AnhSanPham ?? "/images/no-image.png")" class="product-img" alt="Product" />
+                                <div class="ms-2">
+                                    <span class="fw-semibold d-block">@item.TenSanPham</span>
+                                </div>
+                            </td>
+                            <td>@item.SoLuong</td>
+                            <td>@string.Format("{0:N0} đ", item.GiaSanPham)</td>
+                            <td class="text-success fw-bold">@thanhTien.ToString("N0") đ</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+        @{
+            var now = DateTime.Now;
+        }
+
+        <div class="my-4">
+            <label class="form-label fw-bold">Chọn Voucher</label>
+
+            <select id="voucherSelect" name="voucherId" class="form-control">
+                <option value="">-- Chọn voucher đã lưu --</option>
+
+                @if (ViewBag.UserVouchers != null && ((System.Collections.IEnumerable)ViewBag.UserVouchers).Cast<object>().Any())
+                {
+                    foreach (var v in ViewBag.UserVouchers)
+                    {
+                        bool hetHan = v.TrangThai?.Trim() != "HoatDong"
+                        || v.NgayBatDau > now
+                        || v.NgayKetThuc < now;
+
+                        <option value="@v.MaUuDai"
+                                data-loai="@v.LoaiUuDai"
+                                data-giaTri="@v.GiaTri"
+                                data-start="@v.NgayBatDau.ToString("yyyy-MM-ddTHH:mm:ss")"
+                                data-end="@v.NgayKetThuc.ToString("yyyy-MM-ddTHH:mm:ss")"
+                                disabled="@(hetHan ? "disabled" : null)"
+                                class="@(hetHan ? "voucher-expired" : "")">
+                            @v.TenUuDai - Giảm @(v.LoaiUuDai == "PhanTram" ? $"{v.GiaTri}%" : $"{v.GiaTri:N0}đ")
+                            @(hetHan ? " (Hết hạn)" : "")
+                        </option>
+                    }
+                }
+                else
+                {
+                    <option value="" disabled>Chưa có voucher nào</option>
+                }
+            </select>
+        </div>
+
+        <div class="total-box mb-4">
+            <h5 class="mb-0">Tổng tiền:</h5>
+            @{
+                var tongHienThi = ViewBag.TongTien as decimal? ?? 0m;
+            }
+            <h4 id="tongTienHienThi" class="text-success fw-bold mb-0">
+                @tongHienThi.ToString("N0") đ
+            </h4>
+            <input type="hidden" id="tongTienInput" name="tongTien" value="@tongHienThi" />
+        </div>
+       
+        <div class="text-end mt-4">
+            <button id="btnSubmit" type="submit" class="btn btn-success px-4 py-2">
+                Xác nhận đặt hàng
+            </button>
+        </div>
+       
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const tongTienGoc = @Html.Raw(Json.Serialize(ViewBag.TongTien ?? 0m));
+        const voucherSelect = document.getElementById("voucherSelect");
+        const tongTienHienThi = document.getElementById("tongTienHienThi");
+        const tongTienInput = document.getElementById("tongTienInput");
+        const phiShipAlert = document.getElementById("phiShipAlert");
+
+        const ckRadio = document.getElementById("ptttCK");
+        const codRadio = document.getElementById("ptttCOD");
+        const bankBox = document.getElementById("bankInfoBox");
+
+        function toggleBankBox() {
+            if (ckRadio && ckRadio.checked) bankBox.style.display = "block";
+            else bankBox.style.display = "none";
+        }
+
+        if (ckRadio) ckRadio.addEventListener("change", toggleBankBox);
+        if (codRadio) codRadio.addEventListener("change", toggleBankBox);
+        toggleBankBox();
+
+        function capNhatTongTien() {
+            let tong = tongTienGoc;
+
+            const giaoNhanh = document.querySelector('input[name="phuongThucGiaoHang"]:checked')?.value === "GiaoNhanh";
+            if (giaoNhanh) {
+                tong += 50000;
+                phiShipAlert.style.display = "block";
+            } else {
+                phiShipAlert.style.display = "none";
+            }
+
+            if (tong === 0) {
+                voucherSelect.disabled = true;
+                console.log("Total is 0, voucher cannot be applied.");
+            } else {
+                voucherSelect.disabled = false;
+            }
+
+            if (voucherSelect.value && tong !== 0) {
+                const selectedOption = voucherSelect.querySelector(`option[value='${voucherSelect.value}']`);
+                const loaiVoucher = selectedOption ? selectedOption.dataset.loai : null;
+                const giaTriVoucher = selectedOption ? parseFloat(selectedOption.dataset.giatri) : 0;
+
+                console.log("Voucher ID:", voucherSelect.value);
+                console.log("Voucher Type:", loaiVoucher);
+                console.log("Voucher Value:", giaTriVoucher);
+
+                if (loaiVoucher === "PhanTram") {
+                    tong -= tong * giaTriVoucher / 100;
+                } else if (loaiVoucher === "TienMat") {
+                    tong = Math.max(0, tong - giaTriVoucher);
+                }
+            }
+
+            tong = Math.round(tong);
+            tongTienHienThi.textContent = tong.toLocaleString('vi-VN') + " đ";
+            tongTienInput.value = tong;
+        }
+
+        capNhatTongTien();
+        voucherSelect.addEventListener("change", capNhatTongTien);
+        document.querySelectorAll('input[name="phuongThucGiaoHang"]').forEach(radio => {
+            radio.addEventListener("change", capNhatTongTien);
+        });
+
+        const selectedOption = voucherSelect.querySelector(`option[value='${voucherSelect.value}']`);
+        if (selectedOption && selectedOption.disabled) {
+            alert("Voucher đã hết hạn hoặc không còn hợp lệ.");
+            voucherSelect.value = "";
+        }
+    });
+</script>
+
+

@@ -1,0 +1,39 @@
+﻿@model SWAPFIT.Models.TuChoiBaiVietViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Từ chối bài viết";
+}
+
+<div class="container mt-4">
+    <h3 class="mb-3 text-danger fw-bold">❌ Từ chối bài viết</h3>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p><strong>Mã bài viết:</strong> @Model.MaBaiViet</p>
+            <p><strong>Tiêu đề:</strong> @Model.TieuDe</p>
+
+            <form asp-action="TuChoi" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="MaBaiViet" />
+
+                <div class="mb-3">
+                    <label asp-for="LyDoTuChoi" class="form-label">Lý do từ chối</label>
+                    <textarea asp-for="LyDoTuChoi" class="form-control" rows="4"
+                              placeholder="Nhập lý do cụ thể để gửi cho người đăng..."></textarea>
+                    <span asp-validation-for="LyDoTuChoi" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-danger">
+                    Xác nhận từ chối
+                </button>
+                <a asp-action="Dashboard" class="btn btn-secondary ms-2">
+                    Hủy
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

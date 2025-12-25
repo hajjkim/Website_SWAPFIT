@@ -1,0 +1,181 @@
+﻿@{
+    ViewData["Title"] = "REshare - Phong cách phối đồ";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    .style-section {
+        margin-top: 80px;
+        margin-bottom: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 40px;
+    }
+
+        .style-section .text-content {
+            flex: 1;
+        }
+
+        .style-section h2 {
+            font-weight: 700;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .style-section p {
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .style-section img.decor {
+            width: 220px;
+            opacity: 0.9;
+            margin-top: 20px;
+        }
+
+    .style-gallery {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 40px;
+    }
+
+        .style-gallery img {
+            border-radius: 5px;
+            border: 4px solid #d4e1d4;
+            width: 250px;
+            transition: 0.3s;
+        }
+
+            .style-gallery img:hover {
+                transform: scale(1.05);
+            }
+
+    /* Màu riêng từng style */
+    .comfy-theme h2 span {
+        color: #b5cc84;
+    }
+
+    .classic-theme h2 span {
+        color: #b36d4b;
+    }
+
+    .comfy-theme img.decor {
+        filter: hue-rotate(40deg);
+    }
+
+    .classic-theme img.decor {
+        filter: sepia(50%) hue-rotate(-20deg);
+    }
+
+    .elegant-theme h2 span {
+        color: #9c7ed1;
+    }
+
+    .elegant-theme img.decor {
+        filter: hue-rotate(250deg);
+    }
+
+    .minimal-theme h2 span {
+        color: #808080;
+    }
+
+    .minimal-theme img.decor {
+        filter: grayscale(80%);
+    }
+
+</style>
+
+<div class="container">
+
+    <!-- PHONG CÁCH COMFY -->
+    <div class="style-section comfy-theme">
+        <div class="text-content">
+            <h2><span>🌿</span> Phong cách Thoải mái - <span>Comfy</span></h2>
+            <p>
+                Phong cách này tập trung vào sự thoải mái và đơn giản, tạo cảm giác dễ chịu cho người mặc, tự do trong di chuyển.
+                Các trang phục thường là những bộ quần áo rộng rãi, nhẹ nhàng, không quá cầu kỳ về kiểu dáng và màu sắc.
+                Vật liệu thường được sử dụng như cotton, len, jean, thô, đũi...
+            </p>
+            @* <img src="~/images/comfy_text.png" alt="Comfy Decor" class="decor"> *@
+            <p class="mt-3 text-center">
+                <strong>Gợi ý sản phẩm theo phong cách Comfy</strong>
+            </p>
+        </div>
+
+        <div class="style-gallery">
+            <img src="~/images/pc1.png" alt="Comfy 1">
+            <img src="~/images/pc2.png" alt="Comfy 2">
+            <img src="~/images/pc3.png" alt="Comfy 3">
+        </div>
+    </div>
+
+    <!-- PHONG CÁCH CLASSIC -->
+    <div class="style-section classic-theme">
+        <div class="text-content">
+            <h2><span>⭐</span> Phong cách Cổ điển - <span>Classic</span></h2>
+            <p>
+                Phong cách cổ điển là phong cách mang đậm nét lịch sử, xuất hiện từ những năm 1920 đến 1960.
+                Trong phong cách này, người ta thường chọn những trang phục có kiểu dáng đơn giản, nhưng lại rất tinh tế
+                và có nhiều chi tiết như áo sơ mi cổ điển, quần âu, giày oxford, áo vest, nơ cổ, quần tây,...
+                Màu sắc thường là trắng, đen, xám, nâu. Điểm nhấn là các chi tiết tinh tế như dáu nếp, tay áo lớn, nơ cổ.
+            </p>
+           
+            <p class="mt-3 text-center">
+                <strong>Gợi ý sản phẩm theo phong cách Classic</strong>
+            </p>
+        </div>
+
+        <div class="style-gallery">
+            <img src="~/images/pt2.png" alt="Classic 1">
+           
+        </div>
+    </div>
+    <!-- PHONG CÁCH ELEGANT -->
+    <div class="style-section elegant-theme">
+        <div class="text-content">
+            <h2><span>💜</span> Phong cách Thanh lịch - <span>Elegant</span></h2>
+            <p>
+                Phong cách này tập trung vào việc kết hợp các trang phục và phụ kiện đơn giản nhưng tinh tế,
+                mang lại sự sang trọng nhưng không kém phần hiện đại. Màu sắc được sử dụng có thể đa dạng hơn,
+                nhưng vẫn giữ được sự thanh lịch và tinh tế. Vật liệu thường được sử dụng cao cấp hơn như lụa, satin,
+                chiffon, voan, cashmere, da cá sấu, da bê, v.v. Điểm nhấn của phong cách này là sử dụng các phụ kiện nhỏ
+                nhưng đẹp mắt như khuy, dây đeo, kim cương, vòng tay,...
+            </p>
+            
+            <p class="mt-3 text-center">
+                <strong>Gợi ý sản phẩm theo phong cách Elegant</strong>
+            </p>
+        </div>
+
+        <div class="style-gallery">
+            <img src="~/images/pt6.png" alt="Elegant 1">
+           
+        </div>
+    </div>
+
+    <!-- PHONG CÁCH MINIMAL -->
+    <div class="style-section minimal-theme">
+        <div class="text-content">
+            <h2><span>⚪</span> Phong cách Tối giản - <span>Minimal</span></h2>
+            <p>
+                Phong cách tối giản (Minimal) hướng đến sự tinh gọn, hiện đại và thanh thoát.
+                Những bộ trang phục thuộc phong cách này thường mang màu trung tính như trắng, đen, be, xám
+                và chú trọng vào đường cắt may tinh tế. Thiết kế không cầu kỳ, không thừa chi tiết, nhưng vẫn thể hiện
+                được sự sang trọng và gu thẩm mỹ cao của người mặc.
+            </p>
+            <p class="mt-3 text-center">
+                <strong>Gợi ý sản phẩm theo phong cách Minimal</strong>
+            </p>
+        </div>
+
+        <div class="style-gallery">
+            <img src="~/images/pt8.png" alt="Minimal 1">
+            <img src="~/images/pt9.png" alt="Minimal 2">
+           
+        </div>
+    </div>
+</div>
+
+</div>

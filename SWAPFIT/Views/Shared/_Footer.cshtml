@@ -10,15 +10,35 @@
             <div class="col-md-3">
                 <h6 class="fw-bold mb-3">Chính sách</h6>
                 <ul class="list-unstyled">
-                    <li><a href="#" class="text-dark text-decoration-none">Chính sách bảo mật</a></li>
-                    <li><a href="#" class="text-dark text-decoration-none">Chính sách kiểm hàng</a></li>
+                    <li>
+                        <a asp-controller="Pages" asp-action="PrivacyPolicy"
+                           class="text-dark text-decoration-none">
+                            Chính sách bảo mật
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Pages" asp-action="InspectionPolicy"
+                           class="text-dark text-decoration-none">
+                            Chính sách kiểm hàng
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div class="col-md-3">
                 <h6 class="fw-bold mb-3">Về chúng tôi</h6>
                 <ul class="list-unstyled">
-                    <li><a href="#" class="text-dark text-decoration-none">Giới thiệu</a></li>
-                    <li><a href="#" class="text-dark text-decoration-none">Điều khoản</a></li>
+                    <li>
+                        <a asp-controller="Pages" asp-action="About"
+                           class="text-dark text-decoration-none">
+                            Giới thiệu
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Pages" asp-action="Terms"
+                           class="text-dark text-decoration-none">
+                            Điều khoản
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div class="col-md-3">

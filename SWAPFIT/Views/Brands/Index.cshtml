@@ -1,0 +1,37 @@
+﻿@model IEnumerable<SWAPFIT.Models.ThuongHieu>
+
+@{
+    ViewData["Title"] = "Danh sách thương hiệu";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Danh sách thương hiệu</h2>
+
+
+<a asp-action="Create" asp-controller="Brand" class="btn btn-success btn">
+    <i class="fas fa-plus"></i> Thêm thương hiệu mới
+</a>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Mã</th>
+            <th>Tên thương hiệu</th>
+            <th>Mô tả</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaThuongHieu</td>
+                <td>@item.TenThuongHieu</td>
+                <td>@item.MoTa</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MaThuongHieu" class="btn btn-sm btn-warning">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.MaThuongHieu" class="btn btn-sm btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
