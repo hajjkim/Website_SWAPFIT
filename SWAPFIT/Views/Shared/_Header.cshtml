@@ -1,0 +1,216 @@
+﻿@using Microsoft.AspNetCore.Http
+@using SWAPFIT.Data
+@using SWAPFIT.Models
+@inject ApplicationDbContext _context
+@inject IHttpContextAccessor HttpContextAccessor
+
+<style>
+    /* Tạo khoảng cách cho body để không bị dính header */
+    body {
+        padding-top: 80px; /* Tăng khoảng cách từ đầu trang đến navbar */
+    }
+
+    /* Navbar fixed với padding trên */
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1050;
+        background-color: #96D37E;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Wrapper bao quanh nội dung chính, tạo khoảng cách từ navbar */
+    .wrapper {
+        margin-top: 00px; /* Đảm bảo nội dung không bị dính vào navbar */
+    }
+
+    /* Tạo khoảng cách dưới navbar để tránh nội dung bị dính */
+    .main-content {
+        margin-top: 80px; /* Điều chỉnh theo yêu cầu */
+    }
+
+
+</style>
+
+@{
+    // Code logic giữ nguyên như cũ...
+    int? maNguoiDung = HttpContextAccessor.HttpContext?.Session.GetInt32("MaNguoiDung");
+    string tenDangNhap = HttpContextAccessor.HttpContext?.Session.GetString("TenDangNhap") ?? "Khách";
+    int soLuongGioHang = 0;
+    int soLuongThongBaoChuaDoc = 0;
+    var thongBaos = new List<ThongBao>();
+
+    if (maNguoiDung.HasValue)
+    {
+        soLuongGioHang = _context.ChiTietGioHangs
+            .Where(ct => ct.GioHang.MaNguoiDung == maNguoiDung.Value)
+            .Sum(ct => (int?)ct.SoLuong) ?? 0;
+
+        thongBaos = _context.ThongBaos
+            .Where(t => t.MaNguoiDung == maNguoiDung.Value)
+            .OrderByDescending(t => t.NgayTao)
+            .Take(15)
+            .ToList();
+
+        soLuongThongBaoChuaDoc = thongBaos.Count(t => t.DaXem != true);
+}
+}
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm" style="background-color:#96D37E; padding:10px 40px; position:fixed; top:0; left:0; width:100%; z-index:1050;">
+    <!-- Nội dung navbar giữ nguyên 100% -->
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="~/images/logo.png" alt="SWAPFIT Logo" style="height:40px; margin-right:10px;">
+            <span class="fw-bold text-dark fs-5">SWAPFIT</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-dark fw-medium" href="#" data-bs-toggle="dropdown">Mua sắm</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/TinTuc/ThanhLy">Đồ thanh lý</a></li>
+                        <li><a class="dropdown-item" href="/TinTuc/ChoTang">Tủ đồ 0đ</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown ms-3">
+                    <a class="nav-link dropdown-toggle text-dark fw-medium" href="#" data-bs-toggle="dropdown">Dọn dẹp</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/BaiViet/Create">Cho tặng</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center gap-3">
+                <!-- Giỏ hàng - KHÔNG CÒN DẤU CHẤM -->
+                <a asp-controller="GioHang" asp-action="Index" class="text-dark fs-4 position-relative">
+                    <i class="bi bi-cart3"></i>
+                    @if (soLuongGioHang > 0)
+                    {
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                              style="font-size:0.65rem; pointer-events:none;">
+                            @(soLuongGioHang > 99 ? "99+" : soLuongGioHang.ToString())
+                        </span>
+                    }
+                </a>
+
+                <!-- Thông báo - KHÔNG CÒN DẤU CHẤM + SỬA LẠI CẤU TRÚC dropdown -->
+                <!-- THÔNG BÁO – KHÔNG THANH KÉO NGANG, TỰ XUỐNG DÒNG, SIÊU ĐẸP -->
+                @if (maNguoiDung.HasValue)
+                {
+                    <div class="dropdown">
+                        <a class="text-dark fs-4 position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-bell"></i>
+                            @if (ViewBag.SLTinNhan > 0)
+                            {
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                      style="font-size:0.65rem; pointer-events:none;">
+                                    @(ViewBag.SLTinNhan > 99 ? "99+" : ViewBag.SLTinNhan.ToString())
+                                </span>
+                            }
+                            @if (ViewBag.SLDonHang > 0)
+                            {
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning"
+                                      style="font-size:0.65rem; pointer-events:none;">
+                                    @(ViewBag.SLDonHang > 99 ? "99+" : ViewBag.SLDonHang.ToString())
+                                </span>
+                            }
+                            @if (ViewBag.SLBaiVietDuyet > 0)
+                            {
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                                      style="font-size:0.65rem; pointer-events:none;">
+                                    @(ViewBag.SLBaiVietDuyet > 99 ? "99+" : ViewBag.SLBaiVietDuyet.ToString())
+                                </span>
+                            }
+                            @if (ViewBag.SLBaiVietTuChoi > 0)
+                            {
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                      style="font-size:0.65rem; pointer-events:none;">
+                                    @(ViewBag.SLBaiVietTuChoi > 99 ? "99+" : ViewBag.SLBaiVietTuChoi.ToString())
+                                </span>
+                            }
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end p-0 shadow-lg border-0"
+                            style="width: 360px; max-height: 80vh; overflow-y: auto; border-radius: 16px; margin-top: 12px;">
+                            <li class="dropdown-header bg-white px-4 py-3 border-bottom sticky-top fw-bold" style="border-radius: 16px 16px 0 0; font-size: 1.1rem;">
+                                Thông báo
+                            </li>
+                            @if (thongBaos.Any())
+                            {
+                                @foreach (var tb in thongBaos)
+                                {
+                                    var isRead = tb.DaXem == true;
+                                    <li>
+                                        <a href="@tb.LienKet"
+                                           class="dropdown-item px-4 py-3 d-flex align-items-start gap-3 text-decoration-none @(isRead ? "text-secondary" : "fw-semibold text-dark")"
+                                           style="transition: background 0.2s; white-space: normal;">
+                                            <div class="flex-shrink-0">
+                                                <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width: 40px; height: 40px;">
+                                                    <i class="bi bi-bell fs-5"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1" style="font-size: 14px; line-height: 1.5;">
+                                                <div>@tb.NoiDung</div>
+                                                <small class="text-muted d-block mt-1">
+                                                    @tb.NgayTao??.ToString("HH:mm, dd/MM")
+                                                </small>
+                                            </div>
+                                            @if (!isRead)
+                                            {
+                                                <div class="flex-shrink-0">
+                                                    <span class="d-inline-block rounded-circle bg-success"
+                                                          style="width: 10px; height: 10px;"></span>
+                                                </div>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li>
+                                    <div class="dropdown-item text-center text-muted py-5">
+                                        <i class="bi bi-bell-slash fs-1 d-block mb-3 opacity-50"></i>
+                                        <small>Chưa có thông báo nào</small>
+                                    </div>
+                                </li>
+                            }
+                            @* <li class="border-top bg-light" style="border-radius: 0 0 16px 16px;">
+                                <a href="/ThongBao/Index" class="dropdown-item text-center py-3 text-primary fw-medium small">
+                                    Xem tất cả thông báo
+                                </a>
+                            </li> *@
+                        </ul>
+                    </div>
+                }
+
+
+                <!-- Tài khoản -->
+                @if (maNguoiDung.HasValue)
+                {
+                    <div class="dropdown">
+                        <a class="btn btn-outline-dark dropdown-toggle px-3 py-1" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i> @tenDangNhap
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/User/Index">Hồ sơ</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn text-white px-4 py-2"
+                       style="background:#0B421A; border-radius:30px; font-weight:500;">Đăng nhập</a>
+                }
+            </div>
+        </div>
+    </div>
+</nav>

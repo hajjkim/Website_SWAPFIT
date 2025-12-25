@@ -1,0 +1,15 @@
+﻿@model IEnumerable<SWAPFIT.Models.UuDai>
+
+@foreach (var voucher in Model)
+{
+    <div>
+        <p>@voucher.TenUuDai</p>
+
+        <form asp-controller="UuDai" asp-action="ClaimVoucher" method="post">
+            <input type="hidden" name="id" value="@voucher.MaUuDai" />
+            <button type="submit" class="btn btn-sm btn-success">
+                Đã lưu vào ví voucher
+            </button>
+        </form>
+    </div>
+}

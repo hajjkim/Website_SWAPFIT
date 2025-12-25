@@ -1,0 +1,276 @@
+﻿@model SWAPFIT.Models.GioHangViewModel
+
+<style>
+    .checkout-container {
+        font-family: 'Arial', sans-serif;
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .checkout-header h2 {
+        font-size: 24px;
+        color: #333;
+    }
+
+    .form-label {
+        font-size: 16px;
+        font-weight: 600;
+        color: #444;
+    }
+
+    .table th {
+        background-color: #e9ecef;
+        font-weight: bold;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .product-img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        margin-right: 10px;
+    }
+
+    .total-box {
+        background-color: #e8f5e9;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    #phiShipAlert {
+        background-color: #d1e7dd;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 10px;
+    }
+
+    .btn-success {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    @@media screen and (max-width: 768px) {
+        .checkout-container {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .table th, .table td {
+            padding: 8px;
+        }
+    }
+</style>
+
+<div class="checkout-container">
+    <div class="checkout-header d-flex justify-content-between align-items-center mb-4">
+        <h2>Xác nhận thanh toán</h2>
+        <a asp-controller="GioHang" asp-action="Index" class="btn btn-outline-success btn-sm">
+            Quay lại giỏ hàng
+        </a>
+    </div>
+
+    <form asp-action="XacNhanThanhToan" method="post">
+        <!-- Địa chỉ giao hàng -->
+        <div class="mb-4">
+            <label class="form-label">Địa chỉ giao hàng</label>
+            <input type="text" name="diaChiGiaoHang" class="form-control" placeholder="Nhập địa chỉ nhận hàng của bạn..." required />
+        </div>
+
+        <!-- Phương thức thanh toán -->
+        <div class="mb-4">
+            <label class="form-label">Phương thức thanh toán</label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="phuongThucThanhToan" value="COD" checked />
+                <label class="form-check-label">Thanh toán khi nhận hàng (COD)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="phuongThucThanhToan" value="ChuyenKhoan" />
+                <label class="form-check-label">Chuyển khoản ngân hàng</label>
+            </div>
+        </div>
+
+        <!-- Phương thức giao hàng -->
+        <div class="mb-4">
+            <label class="form-label">Phương thức giao hàng</label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="phuongThucGiaoHang" value="GiaoTanNoi" checked />
+                <label class="form-check-label">Giao tận nơi (2–4 ngày)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="phuongThucGiaoHang" value="NhanTaiDiem" />
+                <label class="form-check-label">Nhận tại điểm giao (miễn phí ship)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="phuongThucGiaoHang" value="GiaoNhanh" />
+                <label class="form-check-label">Giao hỏa tốc (nội thành trong 4 giờ)</label>
+            </div>
+            <div id="phiShipAlert" class="alert alert-info mt-2" style="display: none;">
+                Đã cộng 50.000đ phí giao hỏa tốc vào tổng tiền.
+            </div>
+        </div>
+
+        <!-- Danh sách sản phẩm -->
+        <table class="table table-hover align-middle text-center table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 300px;">Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.GioHang != null && Model.GioHang.ChiTietGioHangs.Any())
+                {
+                    foreach (var item in Model.GioHang.ChiTietGioHangs)
+                    {
+                        var thanhTien = (item.BaiViet.GiaSanPham ?? 0m) * item.SoLuong;
+                        <tr>
+                            <td class="text-start d-flex align-items-center">
+                                <img src="@Url.Content(item.BaiViet.AnhBaiViets?.FirstOrDefault()?.DuongDan ?? "/images/no-image.png")" class="product-img" alt="Product" />
+                                <div class="ms-2">
+                                    <span class="fw-semibold d-block">@item.BaiViet.TieuDe</span>
+                                </div>
+                            </td>
+                            <td>@item.SoLuong</td>
+                            <td>@string.Format("{0:N0} đ", item.BaiViet.GiaSanPham ?? 0m)</td>
+                            <td class="text-success fw-bold">@thanhTien.ToString("N0") đ</td>
+                        </tr>
+                    }
+                }
+                else if (Model.GioHangTam != null && Model.GioHangTam.Any())
+                {
+                    foreach (var item in Model.GioHangTam)
+                    {
+                        var thanhTien = item.GiaSanPham * item.SoLuong;
+                        <tr>
+                            <td class="text-start d-flex align-items-center">
+                                <img src="@Url.Content(item.AnhSanPham ?? "/images/no-image.png")" class="product-img" alt="Product" />
+                                <div class="ms-2">
+                                    <span class="fw-semibold d-block">@item.TenSanPham</span>
+                                </div>
+                            </td>
+                            <td>@item.SoLuong</td>
+                            <td>@string.Format("{0:N0} đ", item.GiaSanPham)</td>
+                            <td class="text-success fw-bold">@thanhTien.ToString("N0") đ</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+        <!-- VOUCHER -->
+        <div class="my-4">
+            <label class="form-label fw-bold">Chọn Voucher</label>
+            <select id="voucherSelect" name="voucherId" class="form-control">
+                <option value="">-- Chọn voucher đã lưu --</option>
+                @if (ViewBag.UserVouchers != null && ((System.Collections.IEnumerable)ViewBag.UserVouchers).Cast<object>().Any())
+                {
+                    foreach (var v in ViewBag.UserVouchers)
+                    {
+                        <option value="@v.MaUuDai"
+                                data-loai="@v.LoaiUuDai"
+                                data-giaTri="@v.GiaTri">
+                            @v.TenUuDai - Giảm @(v.LoaiUuDai == "PhanTram" ? $"{v.GiaTri}%" : $"{v.GiaTri:N0}đ")
+                        </option>
+                    }
+                }
+                else
+                {
+                    <option value="" disabled>Chưa có voucher nào</option>
+                }
+            </select>
+        </div>
+
+        <!-- TỔNG TIỀN – DÙNG CHUNG ViewBag.TongTien -->
+        <div class="total-box mb-4">
+            <h5 class="mb-0">Tổng cộng:</h5>
+            @{
+                var tongHienThi = ViewBag.TongTien as decimal? ?? 0m;
+            }
+            <h4 id="tongTienHienThi" class="text-success fw-bold mb-0">
+                @tongHienThi.ToString("N0") đ
+            </h4>
+            <input type="hidden" id="tongTienInput" name="tongTien" value="@tongHienThi" />
+        </div>
+
+        <div class="text-end mt-4">
+            <button type="submit" class="btn btn-success px-4 py-2">
+                Xác nhận đặt hàng
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- SCRIPT HOÀN HẢO – GIẢM % + CỘNG PHÍ SHIP REALTIME -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const tongTienGoc = @Html.Raw(Json.Serialize(ViewBag.TongTien ?? 0m));
+        const voucherSelect = document.getElementById("voucherSelect");
+        const tongTienHienThi = document.getElementById("tongTienHienThi");
+        const tongTienInput = document.getElementById("tongTienInput");
+        const phiShipAlert = document.getElementById("phiShipAlert");
+
+        // Update function to handle voucher selection and discount calculation
+        function capNhatTongTien() {
+            let tong = tongTienGoc;
+
+            // 1. Kiểm tra phí ship
+            const giaoNhanh = document.querySelector('input[name="phuongThucGiaoHang"]:checked')?.value === "GiaoNhanh";
+            if (giaoNhanh) {
+                tong += 50000;
+                phiShipAlert.style.display = "block";  // Hiển thị phí ship
+            } else {
+                phiShipAlert.style.display = "none";  // Ẩn phí ship
+            }
+
+            // 2. Kiểm tra nếu tổng tiền bằng 0 thì không áp dụng voucher
+            if (tong === 0) {
+                // Disable voucher select if total is 0
+                voucherSelect.disabled = true;
+                console.log("Total is 0, voucher cannot be applied.");
+            } else {
+                // Enable voucher select if total is not 0
+                voucherSelect.disabled = false;
+            }
+
+            // 3. Lấy giá trị voucher nếu tổng tiền không phải 0
+            if (voucherSelect.value && tong !== 0) {
+                const selectedOption = voucherSelect.querySelector(`option[value='${voucherSelect.value}']`);
+                const loaiVoucher = selectedOption ? selectedOption.dataset.loai : null;
+                const giaTriVoucher = selectedOption ? parseFloat(selectedOption.dataset.giatri) : 0;
+
+                console.log("Voucher ID:", voucherSelect.value);
+                console.log("Voucher Type:", loaiVoucher);
+                console.log("Voucher Value:", giaTriVoucher);
+
+                // Apply voucher discount
+                if (loaiVoucher === "PhanTram") {
+                    tong -= tong * giaTriVoucher / 100;  // Giảm theo % nếu voucher là giảm theo phần trăm
+                } else if (loaiVoucher === "TienMat") {
+                    tong = Math.max(0, tong - giaTriVoucher);  // Giảm theo giá trị cụ thể
+                }
+            }
+
+            // Cập nhật tổng tiền sau khi tính toán
+            tong = Math.round(tong);
+            tongTienHienThi.textContent = tong.toLocaleString('vi-VN') + " đ";  // Hiển thị tổng tiền
+            tongTienInput.value = tong;  // Cập nhật giá trị ẩn cho form
+        }
+
+        // Gọi hàm tính toán khi có thay đổi
+        capNhatTongTien();
+        voucherSelect.addEventListener("change", capNhatTongTien);  // Lắng nghe sự kiện thay đổi voucher
+        document.querySelectorAll('input[name="phuongThucGiaoHang"]').forEach(radio => {
+            radio.addEventListener("change", capNhatTongTien);  // Lắng nghe sự kiện thay đổi phương thức giao hàng
+        });
+    });
+</script>

@@ -1,0 +1,128 @@
+﻿@{
+    ViewData["Title"] = "Phủ xanh Măng Đen";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    .hero-section {
+        background: url('/images/banner2.png') center/cover no-repeat;
+        position: relative;
+        color: #fff;
+        text-align: center;
+        padding: 100px 20px;
+    }
+
+
+    .hero-overlay {
+        background-color: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: #e8f5e9;
+    }
+
+    .guide-section {
+        padding: 60px 0;
+    }
+
+    .guide-step {
+        text-align: center;
+        padding: 20px;
+    }
+
+        .guide-step img {
+            width: 150px; /* tăng kích thước ảnh */
+            height: auto; /* giữ tỷ lệ gốc, không méo */
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .guide-step img:hover {
+                transform: scale(1.1); /* phóng nhẹ khi hover */
+                box-shadow: 0 8px 16px rgba(0,0,0,0.15); /* tạo độ nổi */
+            }
+
+
+        .guide-step h5 {
+            color: #1b5e20;
+            font-weight: 600;
+        }
+
+        .guide-step p {
+            color: #555;
+        }
+
+    .wave-line {
+        width: 100%;
+        height: 100px;
+        background-size: contain;
+        margin: 30px 0;
+    }
+
+    .create-btn {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 30px;
+        transition: 0.3s;
+    }
+
+        .create-btn:hover {
+            background-color: #388e3c;
+        }
+</style>
+
+<!-- HERO -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1 class="hero-title">Phủ xanh Việt Nam 🌱</h1>
+        <p class="mt-3 fs-5">Hãy trao cho quần áo của bạn một vòng đời mới!</p>
+        <a href="~/BaiViet/Create" class="create-btn mt-3">Tạo bài viết</a>
+
+    </div>
+</section>
+
+<!-- HƯỚNG DẪN -->
+<section class="guide-section container text-center">
+    <h4 class="text-success fw-bold mb-2">LÀM THẾ NÀO ĐỂ TÔI CHO TẶNG?</h4>
+    <p class="text-muted mb-5">Hãy để chúng tôi giúp bạn nhé!</p>
+
+    <div class="wave-line"></div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-4 guide-step">
+            <img src="~/images/step1.png" alt="Step 1">
+            <h5>1. Chuẩn bị món đồ và chụp hình</h5>
+            <p>Chọn món đồ bạn muốn tặng, chụp vài tấm hình rõ nét.</p>
+        </div>
+
+        <div class="col-md-4 guide-step">
+            <img src="~/images/step2.png" alt="Step 1">
+            <h5>2. Điền thông tin và đăng tin</h5>
+            <p>Nhập tên, mô tả, tình trạng, danh mục và tải ảnh lên.</p>
+        </div>
+
+        <div class="col-md-4 guide-step">
+            <img src="~/images/step3.png" alt="Step 1">
+            <h5>3. Kết nối & tặng lại</h5>
+            <p>Khi có người quan tâm, bạn chỉ cần nhắn tin và trao đồ.</p>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

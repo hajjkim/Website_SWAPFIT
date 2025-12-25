@@ -1,0 +1,590 @@
+﻿@model SWAPFIT.Models.NguoiDung
+@{
+    ViewData["Title"] = "Trang cá nhân";
+    var baiViets = ViewBag.BaiViets as List<SWAPFIT.Models.BaiViet>;
+    var donMua = ViewBag.DonMua as List<SWAPFIT.Models.DonHang>;
+    var donBan = ViewBag.DonBan as List<SWAPFIT.Models.DonHang>;
+    var tinNhanGanDay = ViewBag.TinNhanGanDay as List<SWAPFIT.Models.TinNhan>;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    :root {
+        --primary: #28a745;
+        --primary-light: #e8f8ee;
+        --primary-dark: #1e6b36;
+        --border-color: #d7f0da;
+    }
+
+    body {
+        background-color: #f7fff7;
+        min-height: 100vh;
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, var(--primary-light), #d0f0d7);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(40, 167, 69, 0.15);
+        margin-bottom: 2rem;
+    }
+
+    .profile-avatar {
+        width: 110px;
+        height: 110px;
+        object-fit: cover;
+        border: 4px solid white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 14px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+        border: 1px solid var(--border-color);
+        margin-bottom: 1.8rem;
+    }
+
+    .section-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        border-left: 5px solid var(--primary);
+        padding-left: 12px;
+        margin-bottom: 1rem;
+    }
+
+    .product-card {
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.15);
+        }
+
+        .product-card img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+    .chat-list {
+        background: white;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .chat-item {
+        padding: 14px 16px;
+        border-bottom: 1px solid #f0f9f4;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+        .chat-item:hover {
+            background-color: #f3fdf7;
+        }
+
+        .chat-item:last-child {
+            border-bottom: none;
+        }
+
+    .chat-avatar {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2.5px solid var(--primary);
+    }
+
+    .chat-name {
+        font-weight: 600;
+        color: var(--primary-dark);
+        margin-bottom: 2px;
+    }
+
+    .chat-lastmsg {
+        color: #555;
+        font-size: 0.9rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 220px;
+    }
+
+    .unread-badge {
+        background: #ff3b30;
+        color: white;
+        font-size: 0.7rem;
+        padding: 3px 8px;
+        border-radius: 12px;
+        min-width: 20px;
+        text-align: center;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #666;
+        font-style: italic;
+    }
+
+
+    .voucher-card {
+        transition: all 0.3s ease;
+        border-radius: 12px; /* Rounded corners */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        padding: 1rem;
+        background: linear-gradient(120deg, #e9f5e2, #d1e9d2); /* Softer green gradient */
+        overflow: hidden;
+    }
+
+        .voucher-card:hover {
+            transform: translateY(-5px); /* Hover lift effect */
+            box-shadow: 0 15px 35px rgba(40, 167, 69, 0.2); /* Stronger shadow on hover */
+        }
+
+        .voucher-card img {
+            transition: transform 0.3s ease;
+            max-width: 100%; /* Ensure images fill the space */
+        }
+
+            .voucher-card img:hover {
+                transform: scale(1.05); /* Zoom-in effect on image hover */
+            }
+
+        .voucher-card .voucher-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+            .voucher-card .voucher-info h5 {
+                font-size: 1.3rem;
+                font-weight: bold;
+                color: #28a745; /* Green color for title */
+            }
+
+            .voucher-card .voucher-info p {
+                font-size: 0.95rem;
+                color: #333; /* Darker text for description */
+            }
+
+            .voucher-card .voucher-info .expiry {
+                font-size: 0.9rem;
+                color: #d9534f; /* Red color for expiration date */
+            }
+
+            .voucher-card .voucher-info .discount {
+                font-size: 1.6rem;
+                font-weight: 600;
+                color: #f0ad4e; /* Gold color for discount value */
+            }
+
+            .voucher-card .voucher-info .value {
+                font-size: 1.3rem;
+                color: #5bc0de; /* Light blue for value (percentage or amount) */
+            }
+
+        /* Adjust the layout of the image and text */
+        .voucher-card .voucher-image {
+            flex: 0 0 30%;
+            padding: 0.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .voucher-card .voucher-text {
+            flex: 1;
+            padding: 1rem;
+        }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-dark);
+        padding-left: 10px;
+        margin-bottom: 1rem;
+        border-left: 5px solid var(--primary);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #666;
+        font-style: italic;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+</style>
+
+<div class="container py-4 py-md-5">
+    <!-- Header cá nhân -->
+    <div class="profile-header d-flex flex-column flex-md-row align-items-center gap-4 text-center text-md-start">
+        <img src="@(Model.AnhDaiDien ?? "/images/default-avatar.png")" alt="Avatar" class="profile-avatar rounded-circle">
+        <div class="flex-grow-1">
+            <h2 class="mb-2 fw-bold text-success">@Model.HoTen</h2>
+            <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start text-muted fs-6">
+                <div><strong>Email:</strong> @Model.Email</div>
+                <div><strong>Điện thoại:</strong> @Model.SoDienThoai</div>
+            </div>
+            <div class="mt-2">
+                <span class="fw-semibold">Trạng thái:</span>
+                <span class="badge @(Model.TrangThai == "Hoạt động" ? "bg-success" : "bg-danger") fs-6 px-3 py-2">
+                    @Model.TrangThai
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Cột trái: Bài đăng + Tin nhắn -->
+        <div class="col-lg-8">
+            <!-- Bài đăng -->
+            <div class="section-card">
+                <h4 class="section-title">Sản phẩm đã đăng (@(baiViets?.Count ?? 0))</h4>
+                @if (baiViets != null && baiViets.Count > 0)
+                {
+                    <div class="row g-3">
+                        @foreach (var b in baiViets)
+                        {
+                            var anh = b.AnhBaiViets?.FirstOrDefault()?.DuongDan ?? "/images/no-image.png";
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="product-card h-100">
+                                    <img src="@anh" class="w-100" alt="@b.TieuDe">
+                                    <div class="p-3">
+                                        <h6 class="mb-2 text-truncate" title="@b.TieuDe">@b.TieuDe</h6>
+                                        <p class="text-success fw-bold mb-1">
+                                            @(string.Format("{0:N0}", b.GiaSanPham ?? 0)) đ
+                                        </p>
+                                        <span class="badge bg-success fs-7">@b.LoaiBaiDang</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">Bạn chưa đăng sản phẩm nào.</div>
+                }
+            </div>
+
+            <!-- Tin nhắn gần đây -->
+            <div class="section-card">
+                <h4 class="section-title">Tin nhắn gần đây</h4>
+                @if (tinNhanGanDay != null && tinNhanGanDay.Any())
+                {
+                    <div class="chat-list">
+                        @foreach (var tn in tinNhanGanDay)
+                        {
+                            int me = Model.MaNguoiDung;
+                            var other = tn.MaNguoiGui == me ? tn.NguoiNhan : tn.NguoiGui;
+                            if (other == null) { continue; }
+
+                            string avatarPath;
+                            if (string.IsNullOrWhiteSpace(other.AnhDaiDien))
+                            {
+                                // ảnh mặc định
+                                avatarPath = Url.Content("~/images/default-avatar.png");
+                            }
+                            else
+                            {
+                                // other.AnhDaiDien có thể là "uploads/avatars/a.png" hoặc "/uploads/avatars/a.png"
+                                var raw = other.AnhDaiDien.TrimStart('~', '/');
+                                avatarPath = Url.Content("~/" + raw);
+                            }
+
+                            <a href="@Url.Action("Chat", "TinNhan", new { nguoiNhanId = other.MaNguoiDung })"
+                               class="chat-item text-decoration-none text-dark">
+                                <img src="@avatarPath" class="chat-avatar" alt="@other.HoTen" />
+                                <div class="flex-grow-1">
+                                    <div class="chat-name">@other.HoTen</div>
+                                    <div class="chat-lastmsg">@tn.NoiDung</div>
+                                </div>
+                                <div class="text-end">
+                                    <small class="d-block text-muted mb-1">
+                                        @(tn.ThoiGianGui?.ToString("HH:mm dd/MM"))
+                                    </small>
+                                    @if (tn.DaDoc.GetValueOrDefault() == false && tn.MaNguoiGui != me)
+                                    {
+                                        <div class="unread-badge">Mới</div>
+                                    }
+                                </div>
+                            </a>
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">Bạn chưa có cuộc trò chuyện nào.</div>
+                }
+            </div>
+        </div>
+
+        <!-- Cột phải: Lịch sử giao dịch -->
+        <div class="col-lg-4">
+            <!-- Đơn đã mua -->
+            <div class="section-card">
+                <h4 class="section-title">Đơn hàng đã mua (@(donMua?.Count ?? 0))</h4>
+                @if (donMua != null && donMua.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Mã</th>
+                                    <th>Tiền</th>
+                                    <th>Ngày</th>
+                                    <th>TT</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var dh in donMua.OrderByDescending(d => d.NgayDat).Take(5))
+                                {
+                                    // ⚠️ Chỉnh lại các chuỗi trạng thái cho đúng với DB của bạn
+                                    bool daHoanThanh = dh.TrangThai == "Hoàn tất" || dh.TrangThai == "DaHoanThanh";
+                                    bool daGiao = dh.TrangThai == "Đã giao" || dh.TrangThai == "DaGiao";
+                                    bool daHuy = dh.TrangThai == "Đã hủy" || dh.TrangThai == "DaHuy";
+
+                                    // Người mua CHỈ được hủy khi người bán CHƯA cập nhật Đã giao / Hoàn tất / Đã hủy
+                                    bool coTheHuy = !(daHoanThanh || daGiao || daHuy);
+
+                                    <tr>
+                                        <td class="fw-bold">#@dh.MaDonHang</td>
+                                        <td class="text-success fw-bold">@string.Format("{0:N0}", dh.TongTien) đ</td>
+                                        <td>@dh.NgayDat.ToString("dd/MM")</td>
+                                        <td>
+                                            <span class="badge
+                                                    @(daHoanThanh ? "bg-success" :
+                                                                                                                                          daHuy ? "bg-secondary" :
+                                                                                                                                          daGiao ? "bg-info" :
+                                                                                                                                          "bg-warning")">
+                                        @dh.TrangThai
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (coTheHuy)
+                                            {
+                                                <!-- Nút mở modal hủy đơn -->
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#modalHuy_@dh.MaDonHang">
+                                                    Hủy đơn
+                                                </button>
+
+                                                <!-- Modal nhập lý do hủy -->
+                                                <div class="modal fade" id="modalHuy_@dh.MaDonHang" tabindex="-1"
+                                                     aria-labelledby="modalHuyLabel_@dh.MaDonHang" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <form asp-controller="DonHang"
+                                                                  asp-action="HuyDonHangNguoiMua"
+                                                                  method="post">
+                                                                @Html.AntiForgeryToken()
+
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="modalHuyLabel_@dh.MaDonHang">
+                                                                        Hủy đơn #@dh.MaDonHang
+                                                                    </h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                </div>
+
+                                                                <div class="modal-body">
+                                                                    <input type="hidden" name="id" value="@dh.MaDonHang" />
+
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-semibold">Lý do hủy đơn</label>
+                                                                        <textarea name="lyDoHuy"
+                                                                      class="form-control"
+                                                                      rows="3"
+                                                                      required></textarea>
+                                                                    </div>
+                                                                    <div class="alert alert-warning py-2 mb-0 small">
+                                                                        Lý do hủy sẽ được gửi cho người bán.
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="modal-footer">
+                                                                    <button type="button"
+                                                                            class="btn btn-secondary"
+                                                                            data-bs-dismiss="modal">
+                                                                        Đóng
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-danger">
+                                                                        Xác nhận hủy
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted small">Không thể hủy</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        @if (donMua.Count > 5)
+                        {
+                            @* <a href="@Url.Action("LichSuMua", "DonHang")"
+                               class="btn btn-outline-success btn-sm w-100">
+                                Xem tất cả →
+                            </a> *@
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">Chưa có đơn hàng nào.</div>
+                }
+            </div>
+
+
+
+            <!-- Đơn đang bán -->
+            <div class="section-card">
+                <h4 class="section-title">Đơn hàng đang bán (@(donBan?.Count ?? 0))</h4>
+                @if (donBan != null && donBan.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Mã</th>
+                                    <th>Tiền</th>
+                                    <th>Ngày</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var dh in donBan.OrderByDescending(d => d.NgayDat).Take(5))
+                                {
+                                    <tr>
+                                        <td class="fw-bold">#@dh.MaDonHang</td>
+                                        <td class="text-success fw-bold">@string.Format("{0:N0}", dh.TongTien) đ</td>
+                                        <td>@dh.NgayDat.ToString("dd/MM")</td>
+                                        <td>
+                                            <a href="@Url.Action("ChiTietDonHang", "DonHang", new { id = dh.MaDonHang })"
+                                               class="btn btn-info btn-sm">Xem</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        @if (donBan.Count > 5)
+                        {
+                            @* <a href="@Url.Action("DonHangCuaToi", "DonHang")" class="btn btn-outline-success btn-sm w-100">Xem tất cả →</a> *@
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">Chưa có ai mua hàng của bạn.</div>
+                }
+            </div>
+            <div class="container py-4 py-md-5">
+                <!-- Section for Claimed Vouchers -->
+                <div class="section-card">
+                    <h4 class="section-title">Vouchers đã săn (@(ViewBag.ClaimedVouchers?.Count ?? 0))</h4>
+                    @if (ViewBag.ClaimedVouchers != null && ((IEnumerable<dynamic>)ViewBag.ClaimedVouchers).Any())
+                    {
+                        <div class="row g-4">
+                            @foreach (var userVoucher in ViewBag.ClaimedVouchers)
+                            {
+                                var voucher = userVoucher.Voucher;
+
+                                <div class="col-12 col-md-6 col-lg-12">
+                                    <!-- VOUCHER CARD -->
+                                    <div class="voucher-card">
+                                        <div class="row g-0 align-items-center">
+                                            <!-- Left Side: Voucher Information -->
+                                            <div class="voucher-text">
+                                                <div class="voucher-info">
+                                                    <h5>@voucher.TenUuDai</h5>
+                                                    <p>@voucher.MoTa</p>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span class="expiry">HSD: @voucher.NgayKetThuc.ToString("dd/MM/yyyy")</span>
+                                                        <div class="text-end">
+                                                            @if (voucher.LoaiUuDai == "PhanTram")
+                                                            {
+                                                                <!-- Display discount percentage without decimals -->
+                                                                <span class="discount">Giảm @voucher.GiaTri.ToString("0")%</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <!-- Display discount value with commas, no decimals -->
+                                                                <span class="value">Giảm @string.Format("{0:N0}", voucher.GiaTri)đ</span>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Right Side: Voucher Image -->
+                                            @* <div class="voucher-image">
+                                                <img src="@(voucher.AnhBia ?? "/images/logo.png")"
+                                                     alt="@voucher.TenUuDai"
+                                                     class="img-fluid rounded-3"
+                                                     style="max-height: 140px; object-fit: contain;">
+                                            </div> *@
+                                        </div>
+
+                                        <!-- Bottom Border -->
+                                        <div class="text-center py-2 border-top border-dashed border-success">
+                                            <small class="text-success fw-bold">
+                                                Đã lưu vào ví voucher • Có thể dùng ngay
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <img src="~/images/empty-voucher.png" alt="Chưa có voucher" class="mb-3" style="width: 80px; opacity: 0.6;">
+                            <p class="text-muted">Bạn chưa lưu voucher nào.</p>
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-success btn-sm rounded-pill px-4">
+                                Săn voucher ngay
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+
+
+
+
+        </div>
+    </div>
+</div>

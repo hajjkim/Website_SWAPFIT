@@ -1,0 +1,18 @@
+﻿@model SWAPFIT.Models.ThuongHieu
+@{
+    ViewData["Title"] = "Danh sách danh mục";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Bạn có chắc muốn xóa thương hiệu này?</h2>
+
+<div class="card p-3">
+    <p><strong>Tên:</strong> @Model.TenThuongHieu</p>
+    <p><strong>Mô tả:</strong> @Model.MoTa</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="MaThuongHieu" />
+    <button type="submit" class="btn btn-danger mt-2">Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary mt-2">Hủy</a>
+</form>
