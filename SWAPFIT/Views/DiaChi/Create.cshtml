@@ -1,0 +1,54 @@
+﻿@model SWAPFIT.Models.DiaChi
+@{
+    ViewData["Title"] = "Thêm địa chỉ mới";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Thêm địa chỉ mới</h2>
+
+    <form asp-action="Create" method="post" class="card p-4 shadow-sm">
+        <div class="mb-3">
+            <label class="form-label">Người dùng</label>
+            <select asp-for="MaNguoiDung" class="form-select">
+                <option value="">-- Chọn người dùng --</option>
+                @if (ViewBag.NguoiDungs != null)
+                {
+                    foreach (var user in ViewBag.NguoiDungs)
+                    {
+                        <option value="@user.MaNguoiDung">@user.TenNguoiDung</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Tỉnh / Thành phố</label>
+                <input asp-for="Tinh" class="form-control" placeholder="Nhập tỉnh / thành phố" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Quận / Huyện</label>
+                <input asp-for="Huyen" class="form-control" placeholder="Nhập quận / huyện" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Phường / Xã</label>
+                <input asp-for="Xa" class="form-control" placeholder="Nhập phường / xã" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Chi tiết</label>
+            <textarea asp-for="ChiTiet" class="form-control" rows="2" placeholder="Số nhà, tên đường..."></textarea>
+        </div>
+
+        <div class="form-check mb-4">
+            <input asp-for="LaMacDinh" class="form-check-input" type="checkbox" />
+            <label class="form-check-label">Đặt làm địa chỉ mặc định</label>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary">Lưu địa chỉ</button>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        </div>
+    </form>
+</div>

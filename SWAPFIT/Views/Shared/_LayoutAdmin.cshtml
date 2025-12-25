@@ -1,0 +1,287 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary: #2d6a4f;
+            --primary-light: #52b788;
+            --primary-dark: #1b4332;
+        }
+
+        body {
+            background-color: #f4f6fb;
+            font-family: "Segoe UI", system-ui, sans-serif;
+            margin: 0;
+        }
+
+        .layout-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background: #ffffff;
+            border-radius: 0 32px 32px 0;
+            padding: 20px 18px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.06);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 22px;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .sidebar-divider {
+            border-top: 1px solid #edf0fa;
+            margin: 6px 0 10px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
+            flex: 1;
+        }
+
+        .sidebar-item {
+            margin-bottom: 4px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            border-radius: 999px;
+            font-size: 14px;
+            color: #4b5675;
+            text-decoration: none;
+            transition: all .2s ease;
+            white-space: nowrap; /* Prevent text from breaking */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Show ellipsis when text overflows */
+        }
+
+            .sidebar-link i {
+                font-size: 18px;
+                color: var(--primary);
+            }
+
+            .sidebar-link:hover {
+                background: #f0fff4;
+                color: var(--primary);
+            }
+
+            .sidebar-link.active {
+                background: linear-gradient(90deg, var(--primary), var(--primary-light));
+                color: #ffffff;
+                box-shadow: 0 10px 18px rgba(45, 106, 79, 0.35);
+            }
+
+        .sidebar-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* NÚT MŨI TÊN THU GỌN */
+        .sidebar-toggle {
+            position: fixed;
+            top: 50%;
+            left: 260px;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1100;
+            transition: left .25s ease, transform .25s ease;
+        }
+
+        /* TOPBAR màu xanh lá */
+        .topbar {
+            height: 60px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            margin-left: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 24px;
+            color: #fff;
+        }
+
+        .topbar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .topbar-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #d8f3dc;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        /* NỘI DUNG CHÍNH */
+        .content {
+            margin-left: 260px;
+            padding: 24px;
+        }
+
+        /* ===== TRẠNG THÁI THU GỌN ===== */
+        body.sidebar-collapsed .sidebar {
+            width: 80px;
+        }
+
+        body.sidebar-collapsed .topbar {
+            margin-left: 80px;
+        }
+
+        body.sidebar-collapsed .content {
+            margin-left: 80px;
+        }
+
+        body.sidebar-collapsed .sidebar-text {
+            display: none;
+        }
+
+        body.sidebar-collapsed .sidebar-link {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        body.sidebar-collapsed .sidebar-toggle {
+            left: 80px;
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        @@media (max-width: 992px) {
+            .sidebar {
+                position: fixed;
+                transform: translateX(-100%);
+                transition: transform .25s ease;
+            }
+
+                .sidebar.show {
+                    transform: translateX(0);
+                }
+
+            .topbar,
+            .content {
+                margin-left: 0;
+            }
+
+            .sidebar-toggle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="adminSidebar">
+            <div class="sidebar-logo">
+                <i class="bi bi-circle-fill"></i>
+                SWAPFIT <span>ADMIN</span>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <ul class="sidebar-menu">
+                <!-- Dashboard -->
+                <li class="sidebar-item"> <a asp-controller="Admin" asp-action="Dashboard" class="sidebar-link @(currentController == "Admin" && currentAction == "Dashboard" ? "active" : "")"> <i class="bi bi-house-door"></i> <span class="sidebar-text">Dashboard</span> </a> </li> <!-- New Quick Action Items -->
+                <li class="sidebar-item"> <a asp-controller="Admin" asp-action="Users" class="sidebar-link @(currentController == "Admin" && currentAction == "Users" ? "active" : "")"> <i class="bi bi-person"></i> <span class="sidebar-text">Người dùng</span> </a> </li>
+                <li class="sidebar-item"> <a asp-controller="Admin" asp-action="Posts" class="sidebar-link @(currentController == "Admin" && currentAction == "Posts" ? "active" : "")"> <i class="bi bi-newspaper"></i> <span class="sidebar-text">Bài viết</span> </a> </li>
+                <li class="sidebar-item"> <a asp-controller="Admin" asp-action="ManageVouchers" class="sidebar-link @(currentController == "Admin" && currentAction == "ManageVouchers" ? "active" : "")"> <i class="bi bi-ticket"></i> <span class="sidebar-text">Voucher</span> </a> </li>
+                <li class="sidebar-item"> <a asp-controller="Admin" asp-action="Brands" class="sidebar-link @(currentController == "Admin" && currentAction == "Brands" ? "active" : "")"> <i class="bi bi-tag"></i> <span class="sidebar-text">Thương hiệu</span> </a> </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link @(currentController == "Category" && currentAction == "Index" ? "active" : "")"
+                       href="@Url.Action("Index", "Category")">
+                        <i class="bi bi-folder"></i>
+                        <span class="sidebar-text">Danh mục</span>
+                    </a>
+                </li>
+                <li class="sidebar-item"> <a asp-controller="Admin" asp-action="ThongKeDanhMuc" class="sidebar-link @(currentController == "Admin" && currentAction == "ThongKeDanhMuc" ? "active" : "")"> <i class="bi bi-bar-chart"></i> <span class="sidebar-text">Thống kê danh mục</span> </a> </li>
+                <li class="sidebar-item"> <a asp-controller="Admin" asp-action="Orders" class="sidebar-link @(currentController == "Admin" && currentAction == "Orders" ? "active" : "")"> <i class="bi bi-box"></i> <span class="sidebar-text">Quản lý đơn hàng</span> </a> </li>
+                <li class="sidebar-item"> <a asp-controller="Admin" asp-action="OrderReportByUser" class="sidebar-link @(currentController == "Admin" && currentAction == "OrderReportByUser" ? "active" : "")"> <i class="bi bi-person-lines-fill"></i> <span class="sidebar-text">Báo cáo đơn hàng theo người dùng</span> </a> </li>
+                <li class="sidebar-item"> <a asp-controller="Admin" asp-action="OrderReportByStatus" class="sidebar-link @(currentController == "Admin" && currentAction == "OrderReportByStatus" ? "active" : "")"> <i class="bi bi-file-earmark-pdf"></i> <span class="sidebar-text">Báo cáo trạng thái đơn hàng</span> </a> </li>
+                <!-- Other menu items (as you had before) -->
+            </ul>
+        </aside>
+
+        <!-- NÚT MŨI TÊN THU GỌN -->
+        <button type="button" id="sidebarToggle" class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <div class="flex-grow-1 w-100">
+            <!-- TOPBAR -->
+            <header class="topbar">
+                <div class="topbar-user">
+                    <span class="topbar-avatar">A</span>
+                    <div>
+                        <div style="font-weight:600;">Admin</div>
+                        <small>Quản trị viên</small>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    @RenderSection("Scripts", required: false)
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-collapsed');
+        }
+    </script>
+</body>
+</html>

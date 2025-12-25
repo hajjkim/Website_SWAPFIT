@@ -1,0 +1,49 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SWAPFIT.Models
+{
+    public class DonHang
+    {
+        [Key]
+        public int MaDonHang { get; set; }
+
+        public int? MaNguoiDung { get; set; }
+
+        public string? TaiKhoan { get; set; }
+
+        public int? MaNguoiMua { get; set; }
+
+        public int? MaNguoiBan { get; set; }
+
+        [ForeignKey("MaNguoiMua")]
+        public NguoiDung? NguoiMua { get; set; }
+
+        [ForeignKey("MaNguoiBan")]
+        public NguoiDung? NguoiBan { get; set; }
+
+
+        [Required]
+        [StringLength(255)]
+        public string DiaChiGiaoHang { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string TrangThai { get; set; } = "Đang xử lý";
+
+        [DataType(DataType.DateTime)]
+        public DateTime NgayDat { get; set; } = DateTime.Now;
+
+        public decimal TongTien { get; set; }
+
+        [StringLength(50)]
+        public string? PhuongThucThanhToan { get; set; }
+
+        [StringLength(50)]
+        public string? PhuongThucGiaoHang { get; set; }
+
+        public List<ChiTietDonHang> ChiTietDonHangs { get; set; } = new();
+    }
+}
